@@ -1,21 +1,9 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import {
-  addDoc,
-  collection,
-  deleteDoc,
-  doc,
-  DocumentData,
-  getDoc,
-  getDocs,
-  onSnapshot,
-  query,
-  updateDoc,
-  where,
-} from 'firebase/firestore';
-import { db } from 'firebaseConfig'; // Ajusta la ruta según tu configuración
 import { SettingsContext } from 'contexts/SettingsProvider';
+import { collection, DocumentData, onSnapshot, query } from 'firebase/firestore';
+import { db } from 'firebaseConfig'; // Ajusta la ruta según tu configuración
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import { SERVICES } from 'services/index';
-import { Entities } from 'types/dynamicSevicesTypes';
+import { Entities, ISystemPromptEntity } from 'types/dynamicSevicesTypes';
 
 export interface IPromptItem {
   option: string;
@@ -28,104 +16,85 @@ export interface ISystemPromptDoc {
   prompts: string[];
 }
 
-export const promptOptions = [
+// Ejemplo de interfaz para un servicio (puedes ajustarla a tus necesidades)
+export interface IServiceItem {
+  option: string;
+  text: string;
+}
+
+export interface IService {
+  title: string;
+  description: string;
+  items: IServiceItem[];
+  fullChain: string;
+  // items es la "posibilidad de option, text infinitos" que mencionaste
+}
+
+export const bulletOptions = [
   {
-    label: 'Sección 1',
+    label: 'Requerido',
     options: [
-      'Tono de la conversación:',
       'Rol que debes adoptar:',
-      'Nivel de insistencia permitida:',
       'Descripción de la empresa:',
-      'Descripción de nuestros servicios:',
+      'Descripción del producto:',
+      'Descripción del servicio:',
       'Qué hacemos:',
       'Qué no hacemos:',
-      'Cómo resolver preguntas frecuentes:',
-      'Estrategias para lidiar con objeciones:',
-      'Cómo tratar con clientes molestos:',
-      'Lenguaje formal o informal:',
-      'Horario de atención estándar:',
+      'Principal objetivo:',
     ],
   },
   {
-    label: 'Sección 2',
+    label: 'Otros',
     options: [
-      'Idiomas en los que puedes responder:',
-      'Procedimientos de escalación:',
-      'Cómo ofrecer productos adicionales:',
-      'Cómo manejar devoluciones y reembolsos:',
-      'Instrucciones para derivar al equipo humano:',
-      'Cómo identificar necesidades del cliente:',
-      'Restricciones que debes respetar:',
+      'Longitud de las respuestas:',
+      'Tolerancia a conversar sobre temas distintos a la tematica del producto/servicio/empresa:',
+      'Priorización de la busqueda de objetivos:',
+      'Tono de la conversación:',
       'Casos en los que no responderás:',
-      'Qué emociones debes transmitir:',
-      'Cómo generar empatía con el cliente:',
-      'Guías para responder preguntas complejas:',
-      'Estrategias para capturar datos útiles:',
-      'Qué tono usar en emergencias:',
-    ],
-  },
-  {
-    label: 'Sección 3',
-    options: [
-      'Ejemplos de frases permitidas:',
-      'Palabras que nunca debes usar:',
-      'Cómo manejar pausas largas:',
-      'Estilo de cierre de la conversación:',
-      'Límite máximo de tiempo por respuesta:',
-      'Qué hacer si el cliente está enojado:',
-      'Cómo responder preguntas fuera de alcance:',
-      'Guías para iniciar la conversación:',
-      'Cómo preguntar datos personales:',
-      'Qué actitud tomar si dudas:',
-      'Cómo ofrecer disculpas efectivas:',
-      'Cómo incentivar una acción específica:',
-      'Qué hacer si no entiendes algo:',
-      'Cómo manejar clientes que interrumpen:',
-      'Cómo evitar respuestas automáticas repetitivas:',
-    ],
-  },
-  {
-    label: 'Sección 4',
-    options: [
-      'Frases para garantizar claridad:',
-      'Cómo ofrecer soluciones alternativas:',
-      'Cómo dirigir al cliente a la web:',
-      'Qué recursos puedes compartir:',
-      'Cómo manejar clientes indecisos:',
-      'Nivel de personalización permitido:',
-      'Cómo identificar problemas recurrentes:',
-      'Qué hacer si el cliente no responde:',
-      'Cómo informar de tiempos de espera:',
-      'Qué hacer si hay un error técnico:',
+      'Casos en los que daras información para que el usuario se comunique por mail:',
+      'mail al que esos usuarios pueden contactar por los temas relacionados con el punto anterior:',
+      'Casos en los que daras información para que el usuario se comunique por otro numero de whatsapp:',
+      'mail al que esos usuarios pueden contactar por los temas relacionados con el punto anterior:',
     ],
   },
 ];
 
+export const serviceOptions = [
+  {
+    label: 'Requerido',
+    options: ['Tiempo de entrega:', 'Metodo de pago:'],
+  },
+];
+
 interface SystemContextType {
-  currentSystemPrompt: ISystemPromptDoc | null;
-  setCurrentSystemPrompt: React.Dispatch<React.SetStateAction<ISystemPromptDoc | null>>;
+  currentSystemPrompt: ISystemPromptEntity | null;
+  setCurrentSystemPrompt: React.Dispatch<React.SetStateAction<ISystemPromptEntity | null>>;
+  allSystemPromptList: ISystemPromptEntity[];
+  setAllSystemPromptList: React.Dispatch<React.SetStateAction<ISystemPromptEntity[]>>;
   mode: 'general' | 'edit';
   setMode: React.Dispatch<React.SetStateAction<'general' | 'edit'>>;
-  systemPrompts: ISystemPromptDoc[];
-  setsystemPrompts: React.Dispatch<React.SetStateAction<ISystemPromptDoc[]>>;
-  currentEditSystemPromptDoc: ISystemPromptDoc | null;
-  setCurrentEditSystemPromptDoc: React.Dispatch<React.SetStateAction<ISystemPromptDoc | null>>;
-  newSystemPromptTitle: string;
-  setNewSystemPromptTitle: React.Dispatch<React.SetStateAction<string>>;
-  tempPrompts: string[];
-  setTempPrompts: React.Dispatch<React.SetStateAction<string[]>>;
-  newOption: string;
-  setNewOption: React.Dispatch<React.SetStateAction<string>>;
-  newText: string;
-  setNewText: React.Dispatch<React.SetStateAction<string>>;
+
+  systemPromptToEdit: ISystemPromptEntity | null;
+  setSystemPromptToEdit: React.Dispatch<React.SetStateAction<ISystemPromptEntity | null>>;
+
+  tempBullets: string[];
+  setTempBullets: React.Dispatch<React.SetStateAction<string[]>>;
+  tempServices: IService[];
+  setTempServices: React.Dispatch<React.SetStateAction<IService[]>>;
+
   handleModifyDoc: (docId: string) => Promise<void>;
-  handleAddPromptItem: () => void;
-  moveUp: (index: number) => void;
-  moveDown: (index: number) => void;
+  addBullet: (option: string, text: string) => void;
+  moveUpBullets: (index: number) => void;
+  moveDownBullets: (index: number) => void;
   handleSave: () => Promise<void>;
   handleCancel: () => void;
-  deleteSystemPromptBullet: (index: number) => void;
   updatePrompt: (index: number, value: string) => void;
+
+  addService: (service: IService) => void;
+  moveUpServices: (index: number) => void;
+  moveDownServices: (index: number) => void;
+  deleteBullet: (index: number) => void;
+  deleteService: (index: number) => void;
 }
 
 const SystemPromptContext = createContext<SystemContextType | undefined>(undefined);
@@ -140,33 +109,29 @@ export const useSystemPromptContext = () => {
 
 export const SystemPromptProvider = ({ children }: { children: React.ReactNode }) => {
   const settings = useContext(SettingsContext);
-  const [currentSystemPrompt, setCurrentSystemPrompt] = useState<ISystemPromptDoc | null>(null);
+  const [currentSystemPrompt, setCurrentSystemPrompt] = useState<ISystemPromptEntity | null>(null);
+  const [allSystemPromptList, setAllSystemPromptList] = useState<ISystemPromptEntity[]>([]);
   const [mode, setMode] = useState<'general' | 'edit'>('general');
-  const [systemPrompts, setsystemPrompts] = useState<ISystemPromptDoc[]>([]);
-  const [currentEditSystemPromptDoc, setCurrentEditSystemPromptDoc] = useState<ISystemPromptDoc | null>(null);
 
-  const [newSystemPromptTitle, setNewSystemPromptTitle] = useState('');
-  const [tempPrompts, setTempPrompts] = useState<string[]>([]);
-  const [newOption, setNewOption] = useState(promptOptions[0].options[0]);
-  const [newText, setNewText] = useState('');
+  const [systemPromptToEdit, setSystemPromptToEdit] = useState<ISystemPromptEntity | null>(null);
+
+  const [tempBullets, setTempBullets] = useState<string[]>([]);
+  const [tempServices, setTempServices] = useState<IService[]>([]);
 
   const handleModifyDoc = async (docId: string) => {
     try {
       const res = await SERVICES.CMS.get(Entities.systemPrompts, 'id', '==', docId);
 
-      console.log(res);
-
       if (!res) return;
 
-      setCurrentEditSystemPromptDoc({
-        id: res.id,
-        title: res.title || '',
-        prompts: res.prompts || [],
+      setSystemPromptToEdit({
+        ...res,
       });
 
       // Setea los bullets del systemPrompt puntual que se quiere modificar
       // Setea el modo de la tab systemPrompt en edit. Oculta el componente con el listado de systemPrompts y muestra el componente para editar un systemPrompt puntual
-      setTempPrompts(res.prompts);
+      setTempServices(res.services);
+      setTempBullets(res.bullets);
       setMode('edit');
     } catch (error) {
       console.error('Error al cargar documento:', error);
@@ -174,47 +139,84 @@ export const SystemPromptProvider = ({ children }: { children: React.ReactNode }
     }
   };
 
-  const handleAddPromptItem = () => {
-    const newItem = newOption + newText;
-    setTempPrompts([...tempPrompts, newItem]);
-    setNewOption(promptOptions[0].options[0] || '');
-    setNewText('');
+  const addBullet = (option: string, text: string) => {
+    const newItem = ' ' + option + ' ' + text;
+    setTempBullets([...tempBullets, newItem]);
   };
 
   function updatePrompt(index: number, newValue: string) {
-    const updated = [...tempPrompts];
+    const updated = [...tempBullets];
     updated[index] = newValue;
-    setTempPrompts(updated);
+    setTempBullets(updated);
   }
 
-  const deleteSystemPromptBullet = (index: number) => {
-    const updated = [...tempPrompts];
+  const deleteBullet = (index: number) => {
+    const updated = [...tempBullets];
     updated.splice(index, 1);
-    setTempPrompts(updated);
+    setTempBullets(updated);
   };
 
-  const moveUp = (index: number) => {
+  const deleteService = (index: number) => {
+    const updated = [...tempServices];
+    updated.splice(index, 1);
+    setTempServices(updated);
+  };
+
+  const moveUpBullets = (index: number) => {
     if (index === 0) return;
-    const updated = [...tempPrompts];
+    const updated = [...tempBullets];
     [updated[index - 1], updated[index]] = [updated[index], updated[index - 1]];
-    setTempPrompts(updated);
+    setTempBullets(updated);
   };
 
-  const moveDown = (index: number) => {
-    if (index === tempPrompts.length - 1) return;
-    const updated = [...tempPrompts];
+  const moveDownBullets = (index: number) => {
+    if (index === tempBullets.length - 1) return;
+    const updated = [...tempBullets];
     [updated[index + 1], updated[index]] = [updated[index], updated[index + 1]];
-    setTempPrompts(updated);
+    setTempBullets(updated);
+  };
+
+  const addService = (service: IService) => {
+    setTempServices((prev) => [...prev, service]);
+  };
+
+  /**
+   * Mueve hacia arriba el servicio en el array tempServices.
+   */
+  const moveUpServices = (index: number) => {
+    if (index === 0) return;
+    const updated = [...tempServices];
+    [updated[index - 1], updated[index]] = [updated[index], updated[index - 1]];
+    setTempServices(updated);
+  };
+
+  /**
+   * Mueve hacia abajo el servicio en el array tempServices.
+   */
+  const moveDownServices = (index: number) => {
+    if (index === tempServices.length - 1) return;
+    const updated = [...tempServices];
+    [updated[index + 1], updated[index]] = [updated[index], updated[index + 1]];
+    setTempServices(updated);
   };
 
   const handleSave = async () => {
-    if (!currentEditSystemPromptDoc) return;
+    if (!systemPromptToEdit) return;
+
     try {
-      SERVICES.CMS.update(Entities.systemPrompts, currentEditSystemPromptDoc.id, { prompts: tempPrompts });
+      SERVICES.CMS.update(Entities.systemPrompts, systemPromptToEdit.id, {
+        title: systemPromptToEdit.title,
+        bullets: tempBullets,
+        services: tempServices,
+        prompt:
+          tempBullets.join(' ') +
+          ' Servicios prestados: ' +
+          tempServices.map((item) => item.fullChain).join(' '),
+      });
 
       alert('Documento guardado correctamente');
       setMode('general');
-      setCurrentEditSystemPromptDoc(null);
+      setSystemPromptToEdit(null);
     } catch (error) {
       console.error('Error al guardar documento:', error);
       alert('Ocurrió un error al guardar.');
@@ -223,7 +225,7 @@ export const SystemPromptProvider = ({ children }: { children: React.ReactNode }
 
   const handleCancel = () => {
     setMode('general');
-    setCurrentEditSystemPromptDoc(null);
+    setSystemPromptToEdit(null);
   };
 
   const fetchCurrentSystemPrompt = async () => {
@@ -241,9 +243,7 @@ export const SystemPromptProvider = ({ children }: { children: React.ReactNode }
       if (!res) return;
 
       setCurrentSystemPrompt({
-        id: res.id,
-        title: res.title || '',
-        prompts: res.prompts || [],
+        ...res,
       });
     } catch (error) {
       console.error('Error al obtener el documento de systemPrompts:', error);
@@ -260,48 +260,52 @@ export const SystemPromptProvider = ({ children }: { children: React.ReactNode }
     const q = query(colRef);
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const data: ISystemPromptDoc[] = [];
+      const data: ISystemPromptEntity[] = [];
       snapshot.forEach((docSnap) => {
-        const docData = docSnap.data() as DocumentData;
+        const docData = docSnap.data() as ISystemPromptEntity;
         data.push({
-          id: docSnap.id,
-          title: docData.title || '',
-          prompts: docData.prompts || [],
+          ...docData,
         });
       });
-      setsystemPrompts(data);
+      setAllSystemPromptList(data);
     });
 
     return () => unsubscribe();
   }, []);
+
+  useEffect(() => {
+    console.log('BULLETS', tempBullets, 'SERVICES', tempServices);
+  }, [tempBullets, tempServices]);
 
   return (
     <SystemPromptContext.Provider
       value={{
         currentSystemPrompt,
         setCurrentSystemPrompt,
+        allSystemPromptList,
+        setAllSystemPromptList,
         mode,
         setMode,
-        systemPrompts,
-        setsystemPrompts,
-        currentEditSystemPromptDoc,
-        setCurrentEditSystemPromptDoc,
-        newSystemPromptTitle,
-        setNewSystemPromptTitle,
-        tempPrompts,
-        setTempPrompts,
-        newOption,
-        setNewOption,
-        newText,
-        setNewText,
+        systemPromptToEdit,
+        setSystemPromptToEdit,
+
+        tempBullets,
+        setTempBullets,
+
         handleModifyDoc,
-        handleAddPromptItem,
-        moveUp,
-        moveDown,
+        addBullet,
+        moveUpBullets,
+        moveDownBullets,
         handleSave,
         handleCancel,
-        deleteSystemPromptBullet,
+        deleteBullet,
         updatePrompt,
+        tempServices,
+        setTempServices,
+        addService,
+        moveUpServices,
+        moveDownServices,
+        deleteService,
       }}
     >
       {children}

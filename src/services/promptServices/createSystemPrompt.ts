@@ -9,8 +9,11 @@ export const createSystemPrompt = async (title: string) => {
 
   const payload = {
     title,
-    prompts: [],
+    bullets: [],
+    services: [],
+    prompt: '',
   };
+
   try {
     SERVICES.CMS.create(Entities.systemPrompts, payload);
   } catch (error) {

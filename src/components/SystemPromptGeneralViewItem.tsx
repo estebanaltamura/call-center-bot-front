@@ -1,14 +1,17 @@
-import { ISystemPromptDoc, useSystemPromptContext } from 'contexts/SystemPromptProvider';
+import { useSystemPromptContext } from 'contexts/SystemPromptProvider';
 import { SERVICES } from 'services/index';
-import { Entities } from 'types/dynamicSevicesTypes';
+import { Entities, ISystemPromptEntity } from 'types/dynamicSevicesTypes';
 
-const SystemPromptGeneralViewItem = ({ docItem }: { docItem: ISystemPromptDoc }) => {
+const SystemPromptGeneralViewItem = ({ docItem }: { docItem: ISystemPromptEntity }) => {
   const { handleModifyDoc } = useSystemPromptContext();
   return (
     <li key={docItem.id} className="border p-2 rounded flex justify-between items-center">
       <div>
         <strong>{docItem.title || '(Sin título)'}</strong>
-        <span className="block text-sm text-gray-600">{docItem.prompts.length} bullets</span>
+        <div className="flex gap-1">
+          <span className="block text-sm text-gray-600">{docItem.bullets.length} bullets</span>
+          <span className="block text-sm text-gray-600">{docItem.services.length} servicios</span>
+        </div>
       </div>
       <div className="flex space-x-2">
         <button
