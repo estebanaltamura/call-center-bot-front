@@ -163,6 +163,7 @@ export const SystemPromptProvider = ({ children }: { children: React.ReactNode }
   };
 
   const moveUpBullets = (index: number) => {
+    console.log(index);
     if (index === 0) return;
     const updated = [...tempBullets];
     [updated[index - 1], updated[index]] = [updated[index], updated[index - 1]];

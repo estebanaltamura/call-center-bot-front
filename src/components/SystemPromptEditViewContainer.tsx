@@ -1,9 +1,12 @@
 // SystemPromptEditViewContainer.tsx
 import { useEffect, useState } from 'react';
 import { bulletOptions, serviceOptions, useSystemPromptContext } from 'contexts/SystemPromptProvider';
-import SystemPromptEditViewListBullet from './SystemPromptEditViewListBullet';
+import SystemPromptEditViewListBullet from './SystemPromptEditViewOrderList';
 import SystemPromptEditViewListService from './SystemPromptEditViewListService';
 import { v4 as uuidv4 } from 'uuid';
+import SystemPromptEditViewOrderList from './SystemPromptEditViewOrderList';
+
+export type OrderedListType = { text: string; type: 'bullet' } | { type: 'service' };
 
 const SystemPromptEditViewContainer = () => {
   const {
@@ -17,6 +20,10 @@ const SystemPromptEditViewContainer = () => {
     handleSave,
     handleCancel,
   } = useSystemPromptContext();
+
+  //ORDERED LIST
+  const [orderedList, setOrderedList] = useState<OrderedListType[]>([]);
+  const [servicesOrderIndex, setServicesOrderIndex] = useState<number>(1);
 
   // BULLETS
   const [bulletOption, setBulletOption] = useState(bulletOptions[0].options[0]);
@@ -81,6 +88,58 @@ const SystemPromptEditViewContainer = () => {
   const saveHandler = () => {
     handleSave();
   };
+
+  useEffect(() => {
+    if (tempBullets.length === 0 && tempServices.length > 0) {
+      setOrderedList([
+        ...tempServices.map((item) => ({
+          text: item.title,
+          type: 'service' as unknown as 'service',
+        })),
+      ]);
+      return;
+    }
+
+    if (tempBullets.length > 0 && tempServices.length === 0) {
+      setOrderedList([
+        ...tempBullets.map((item) => ({
+          text: item,
+          type: 'bullet' as unknown as 'bullet',
+        })),
+      ]);
+      return;
+    }
+
+    if (tempBullets.length > 0 && tempServices.length > 0) {
+      const orderedListToPush = [
+        ...tempBullets
+          .map((item) => ({
+            text: item,
+            type: 'bullet' as unknown as 'bullet',
+          }))
+          .slice(0, servicesOrderIndex), // Bullets antes del servicio
+        { type: 'service' as unknown as 'service' },
+        ...tempBullets
+          .map((item) => ({
+            text: item,
+            type: 'bullet' as unknown as 'bullet',
+          }))
+          .slice(servicesOrderIndex), // Bullets después del servicio
+      ];
+
+      setOrderedList(orderedListToPush);
+      return;
+    }
+
+    console.log(
+      'tempBullets',
+      tempBullets,
+      'tempServices',
+      tempServices,
+      'servicesOrderIndex',
+      servicesOrderIndex,
+    );
+  }, [tempBullets, tempServices, servicesOrderIndex]);
 
   return (
     <div className="p-4 space-y-4">
@@ -206,23 +265,6 @@ const SystemPromptEditViewContainer = () => {
         </div>
       </div>
 
-      {/* ---------------------- LISTADO: BULLETS ---------------------- */}
-      <div className="border border-gray-400 p-4 bg-gray-50 rounded space-y-4">
-        <h2 className="font-semibold text-center">Bullets</h2>
-        {tempBullets.length === 0 && <p className="text-gray-400">No hay bullets aún.</p>}
-
-        <div className="space-y-2">
-          {tempBullets.map((item, index) => (
-            <SystemPromptEditViewListBullet
-              key={uuidv4()}
-              bullet={item}
-              index={index}
-              length={tempBullets.length}
-            />
-          ))}
-        </div>
-      </div>
-
       {/* ---------------------- LISTADO: SERVICIOS ---------------------- */}
       <div className="border border-gray-400 p-4 bg-gray-50 rounded space-y-4">
         <h2 className="font-semibold text-center">Servicios</h2>
@@ -242,6 +284,31 @@ const SystemPromptEditViewContainer = () => {
               // Usando las funciones del contexto en el componente para mover/borrar
             />
           ))}
+        </div>
+      </div>
+
+      {/* ---------------------- LISTADO: BULLETS ---------------------- */}
+      <div className="border border-gray-400 p-4 bg-gray-50 rounded space-y-4">
+        <h2 className="font-semibold text-center">Ordenamiento</h2>
+        {tempBullets.length === 0 && <p className="text-gray-400">No hay bullets aún.</p>}
+
+        <div className="space-y-2">
+          {orderedList.map((item, index) => {
+            const bulletIndex = index < servicesOrderIndex ? index : index - 1;
+
+            return (
+              <SystemPromptEditViewOrderList
+                key={uuidv4()}
+                data={item}
+                setServicesOrderIndex={setServicesOrderIndex}
+                servicesOrderIndex={servicesOrderIndex}
+                index={index}
+                bulletIndex={bulletIndex}
+                bulletslength={tempBullets.length}
+                dataLength={tempBullets.length}
+              />
+            );
+          })}
         </div>
       </div>
 
