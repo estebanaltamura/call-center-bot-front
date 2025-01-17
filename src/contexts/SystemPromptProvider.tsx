@@ -86,7 +86,7 @@ interface SystemContextType {
   addBullet: (option: string, text: string) => void;
   moveUpBullets: (index: number) => void;
   moveDownBullets: (index: number) => void;
-  handleSave: () => Promise<void>;
+  handleSave: (servicesOrderIndex: number) => Promise<void>;
   handleCancel: () => void;
   updatePrompt: (index: number, value: string) => void;
 
@@ -201,7 +201,7 @@ export const SystemPromptProvider = ({ children }: { children: React.ReactNode }
     setTempServices(updated);
   };
 
-  const handleSave = async () => {
+  const handleSave = async (servicesOrderIndex: number) => {
     if (!systemPromptToEdit) return;
 
     try {
@@ -209,6 +209,7 @@ export const SystemPromptProvider = ({ children }: { children: React.ReactNode }
         title: systemPromptToEdit.title,
         bullets: tempBullets,
         services: tempServices,
+        servicesOrderIndex,
         prompt:
           tempBullets.join(' ') +
           ' Servicios prestados: ' +

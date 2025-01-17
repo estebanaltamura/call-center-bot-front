@@ -23,7 +23,7 @@ const SystemPromptEditViewListService: FC<{
 
   return (
     <div className="relative bg-white border rounded p-2 flex flex-col">
-      <div className="flex justify-between items-center mb-2">
+      <div className="flex justify-between items-center">
         <span className="font-bold">{service.title}</span>
         <div className="flex items-center space-x-1">
           {index > 0 && (
@@ -57,22 +57,24 @@ const SystemPromptEditViewListService: FC<{
         </div>
       </div>
 
-      <div
-        ref={containerRef}
-        className={`
-          transition-all duration-300 ease-in-out
-          ${isExpanded ? 'max-h-[600px] overflow-auto' : 'max-h-[40px] overflow-hidden'}
-        `}
-      >
-        <p className="mt-2">{service.description}</p>
-        {service.requirements && service.requirements.length > 0 && (
-          <ul className="list-disc ml-5 mt-2">
-            {service.requirements.map((req, idx) => (
-              <li key={idx}>{req}</li>
-            ))}
-          </ul>
-        )}
-      </div>
+      {isExpanded && (
+        <div
+          ref={containerRef}
+          className={`
+      transition-all duration-300 ease-in-out
+      ${isExpanded ? 'max-h-[600px] overflow-auto' : 'max-h-[40px] overflow-hidden'}
+    `}
+        >
+          <p className="mt-2">{service.description}</p>
+          {service.requirements && service.requirements.length > 0 && (
+            <ul className="list-disc ml-5 mt-2">
+              {service.requirements.map((req, idx) => (
+                <li key={idx}>{req}</li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
 
       <div className="flex justify-center">
         <button onClick={toggleExpand} className="text-gray-500 hover:text-black flex items-center">

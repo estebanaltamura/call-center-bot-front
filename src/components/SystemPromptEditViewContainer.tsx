@@ -23,7 +23,9 @@ const SystemPromptEditViewContainer = () => {
 
   //ORDERED LIST
   const [orderedList, setOrderedList] = useState<OrderedListType[]>([]);
-  const [servicesOrderIndex, setServicesOrderIndex] = useState<number>(0);
+  const [servicesOrderIndex, setServicesOrderIndex] = useState<number>(
+    systemPromptToEdit?.servicesOrderIndex || 0,
+  );
 
   // BULLETS
   const [bulletOption, setBulletOption] = useState(bulletOptions[0].options[0]);
@@ -86,7 +88,7 @@ const SystemPromptEditViewContainer = () => {
   };
 
   const saveHandler = () => {
-    handleSave();
+    handleSave(servicesOrderIndex);
   };
 
   useEffect(() => {

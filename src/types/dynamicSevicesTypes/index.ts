@@ -24,6 +24,7 @@ export interface ISystemPrompt {
   bullets: string[];
   services: IService[];
   prompt: string;
+  servicesOrderIndex: number;
 }
 
 export enum StateTypes {

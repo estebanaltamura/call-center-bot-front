@@ -12,6 +12,7 @@ export const createSystemPrompt = async (title: string) => {
     bullets: [],
     services: [],
     prompt: '',
+    servicesOrderIndex: 0,
   };
 
   try {

@@ -136,25 +136,18 @@ const SystemPromptEditViewOrderList = ({
                 <button
                   onClick={() => {
                     setIsExpanded(false);
-                    console.log(servicesOrderIndex, bulletIndex);
 
                     //El item por encima es un bullet
                     if (bulletIndex > 0 && index !== servicesOrderIndex + 1) {
-                      console.log(servicesOrderIndex, bulletIndex);
-
                       moveUpBullets(bulletIndex);
                     }
                     //El item por encima es un servicio aunque hay mas bullets
                     else if (bulletIndex > 0 && index === servicesOrderIndex + 1) {
-                      console.log(servicesOrderIndex, bulletIndex);
-
                       setServicesOrderIndex(servicesOrderIndex + 1);
                     }
 
                     //El item por encima es un servicio y no hay mas bullets
                     else if (bulletIndex === 0 && servicesOrderIndex === 0) {
-                      console.log(servicesOrderIndex, bulletIndex);
-
                       setServicesOrderIndex(servicesOrderIndex + 1);
                     }
                   }}
