@@ -48,37 +48,39 @@ const SystemPromptEditViewOrderList = ({
 
   return (
     <>
+      {data.type === 'noData' && (
+        <div className="flex w-full justify-center">No hay bullets ni servicios agregados</div>
+      )}
+
       {data.type === 'service' && (
-        <div className="relative bg-[#3b82f6] border rounded py-4 px2 flex h-[73px] justify-center items-center">
+        <div className="relative bg-[#3b82f6] border rounded py-4 px-2 flex h-[73px] justify-center items-center">
           <Typo type="title2Semibold">SERVICIOS</Typo>
 
-          <div className="absolute right-2 flex items-center justify-center space-x-1 gap-2">
-            {index < dataLength ? (
-              <button
-                onClick={() => {
-                  setIsExpanded(false);
-                  data.type === 'service' && setServicesOrderIndex(servicesOrderIndex + 1);
-                }}
-                className="bg-gray-200 px-2 rounded w-[35px] h-[35px]"
-              >
-                ↓
-              </button>
-            ) : (
-              <div className="bg-[#3b82f6] px-2 w-[35px] h-[35px]"></div>
-            )}
-            {index > 0 ? (
-              <button
-                onClick={() => {
-                  setIsExpanded(false);
-                  data.type === 'service' && setServicesOrderIndex(servicesOrderIndex - 1);
-                }}
-                className="bg-gray-200 px-2 rounded w-[35px] h-[35px]"
-              >
-                ↑
-              </button>
-            ) : (
-              <div className="bg-[#3b82f6] px-2 w-[35px] h-[35px]"></div>
-            )}
+          <div className="absolute right-2 flex items-center justify-center gap-2">
+            <button
+              disabled={index === dataLength}
+              onClick={() => {
+                setIsExpanded(false);
+                data.type === 'service' && setServicesOrderIndex(servicesOrderIndex + 1);
+              }}
+              className={`${
+                index === dataLength ? 'bg-gray-400' : 'bg-gray-200'
+              } px-2 rounded w-[35px] h-[35px]`}
+            >
+              ↓
+            </button>
+
+            <button
+              disabled={index === 0}
+              onClick={() => {
+                setIsExpanded(false);
+                data.type === 'service' && setServicesOrderIndex(servicesOrderIndex - 1);
+              }}
+              className={`${index === 0 ? 'bg-gray-400' : 'bg-gray-200'} px-2 rounded w-[35px] h-[35px]`}
+            >
+              ↑
+            </button>
+
             <div className="bg-[#3b82f6] px-2 w-[35px] h-[35px]"></div>
           </div>
         </div>
@@ -108,27 +110,62 @@ const SystemPromptEditViewOrderList = ({
                 <button
                   onClick={() => {
                     setIsExpanded(false);
-                    data.type === 'bullet' && moveDownBullets(bulletIndex);
+                    bulletIndex !== servicesOrderIndex - 1 && moveDownBullets(bulletIndex);
+                    bulletIndex === servicesOrderIndex - 1 && setServicesOrderIndex(servicesOrderIndex - 1);
+                  }}
+                  className="bg-gray-200 px-2 rounded w-[35px] h-[35px]"
+                >
+                  ↓
+                </button>
+              ) : bulletIndex === bulletslength - 1 && servicesOrderIndex === bulletslength ? (
+                <button
+                  onClick={() => {
+                    setIsExpanded(false);
+                    setServicesOrderIndex(servicesOrderIndex - 1);
                   }}
                   className="bg-gray-200 px-2 rounded w-[35px] h-[35px]"
                 >
                   ↓
                 </button>
               ) : (
-                <div className="bg-white px-2 w-[35px] h-[35px]"></div>
+                <button disabled className="bg-gray-400 px-2 rounded w-[35px] h-[35px]">
+                  ↓
+                </button>
               )}
-              {bulletIndex > 0 ? (
+              {index > 0 ? (
                 <button
                   onClick={() => {
                     setIsExpanded(false);
-                    data.type === 'bullet' && moveUpBullets(bulletIndex);
+                    console.log(servicesOrderIndex, bulletIndex);
+
+                    //El item por encima es un bullet
+                    if (bulletIndex > 0 && index !== servicesOrderIndex + 1) {
+                      console.log(servicesOrderIndex, bulletIndex);
+
+                      moveUpBullets(bulletIndex);
+                    }
+                    //El item por encima es un servicio aunque hay mas bullets
+                    else if (bulletIndex > 0 && index === servicesOrderIndex + 1) {
+                      console.log(servicesOrderIndex, bulletIndex);
+
+                      setServicesOrderIndex(servicesOrderIndex + 1);
+                    }
+
+                    //El item por encima es un servicio y no hay mas bullets
+                    else if (bulletIndex === 0 && servicesOrderIndex === 0) {
+                      console.log(servicesOrderIndex, bulletIndex);
+
+                      setServicesOrderIndex(servicesOrderIndex + 1);
+                    }
                   }}
                   className="bg-gray-200 px-2 rounded w-[35px] h-[35px]"
                 >
                   ↑
                 </button>
               ) : (
-                <div className="bg-white px-2 w-[35px] h-[35px]"></div>
+                <button disabled className="bg-gray-400 px-2 rounded w-[35px] h-[35px]">
+                  ↑
+                </button>
               )}
               <button
                 onClick={() => deleteBullet(bulletIndex)}

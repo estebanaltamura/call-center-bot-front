@@ -6,7 +6,7 @@ import SystemPromptEditViewListService from './SystemPromptEditViewListService';
 import { v4 as uuidv4 } from 'uuid';
 import SystemPromptEditViewOrderList from './SystemPromptEditViewOrderList';
 
-export type OrderedListType = { text: string; type: 'bullet' } | { type: 'service' };
+export type OrderedListType = { text: string; type: 'bullet' } | { type: 'service' } | { type: 'noData' };
 
 const SystemPromptEditViewContainer = () => {
   const {
@@ -23,7 +23,7 @@ const SystemPromptEditViewContainer = () => {
 
   //ORDERED LIST
   const [orderedList, setOrderedList] = useState<OrderedListType[]>([]);
-  const [servicesOrderIndex, setServicesOrderIndex] = useState<number>(1);
+  const [servicesOrderIndex, setServicesOrderIndex] = useState<number>(0);
 
   // BULLETS
   const [bulletOption, setBulletOption] = useState(bulletOptions[0].options[0]);
@@ -90,12 +90,20 @@ const SystemPromptEditViewContainer = () => {
   };
 
   useEffect(() => {
+    if (tempBullets.length === 0 && tempServices.length === 0) {
+      setOrderedList([
+        {
+          type: 'noData' as unknown as 'noData',
+        },
+      ]);
+      return;
+    }
+
     if (tempBullets.length === 0 && tempServices.length > 0) {
       setOrderedList([
-        ...tempServices.map((item) => ({
-          text: item.title,
+        {
           type: 'service' as unknown as 'service',
-        })),
+        },
       ]);
       return;
     }
@@ -140,6 +148,10 @@ const SystemPromptEditViewContainer = () => {
       servicesOrderIndex,
     );
   }, [tempBullets, tempServices, servicesOrderIndex]);
+
+  useEffect(() => {
+    console.log('ORDERED LIST', orderedList);
+  }, [orderedList]);
 
   return (
     <div className="p-4 space-y-4">
@@ -268,7 +280,9 @@ const SystemPromptEditViewContainer = () => {
       {/* ---------------------- LISTADO: SERVICIOS ---------------------- */}
       <div className="border border-gray-400 p-4 bg-gray-50 rounded space-y-4">
         <h2 className="font-semibold text-center">Servicios</h2>
-        {tempServices.length === 0 && <p className="text-gray-400">No hay servicios aún.</p>}
+        {tempServices.length === 0 && (
+          <div className="flex w-full justify-center">No hay servicios agregados</div>
+        )}
 
         <div className="space-y-2">
           {tempServices.map((srv, idx) => (
@@ -290,7 +304,6 @@ const SystemPromptEditViewContainer = () => {
       {/* ---------------------- LISTADO: BULLETS ---------------------- */}
       <div className="border border-gray-400 p-4 bg-gray-50 rounded space-y-4">
         <h2 className="font-semibold text-center">Ordenamiento</h2>
-        {tempBullets.length === 0 && <p className="text-gray-400">No hay bullets aún.</p>}
 
         <div className="space-y-2">
           {orderedList.map((item, index) => {
