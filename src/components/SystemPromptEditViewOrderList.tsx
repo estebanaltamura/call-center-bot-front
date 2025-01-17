@@ -49,11 +49,11 @@ const SystemPromptEditViewOrderList = ({
   return (
     <>
       {data.type === 'service' && (
-        <div className="relative bg-[#3b82f6] border rounded py-4 px2 flex align-center justify-center">
+        <div className="relative bg-[#3b82f6] border rounded py-4 px2 flex h-[73px] justify-center items-center">
           <Typo type="title2Semibold">SERVICIOS</Typo>
 
-          <div className="absolute right-2 flex items-center justify-end space-x-1">
-            {index < dataLength && (
+          <div className="absolute right-2 flex items-center justify-center space-x-1 gap-2">
+            {index < dataLength ? (
               <button
                 onClick={() => {
                   setIsExpanded(false);
@@ -63,8 +63,10 @@ const SystemPromptEditViewOrderList = ({
               >
                 ↓
               </button>
+            ) : (
+              <div className="bg-[#3b82f6] px-2 w-[35px] h-[35px]"></div>
             )}
-            {index > 0 && (
+            {index > 0 ? (
               <button
                 onClick={() => {
                   setIsExpanded(false);
@@ -74,27 +76,35 @@ const SystemPromptEditViewOrderList = ({
               >
                 ↑
               </button>
+            ) : (
+              <div className="bg-[#3b82f6] px-2 w-[35px] h-[35px]"></div>
             )}
+            <div className="bg-[#3b82f6] px-2 w-[35px] h-[35px]"></div>
           </div>
         </div>
       )}
 
       {data.type === 'bullet' && (
         <div className="relative bg-white border rounded p-2 flex flex-col">
-          <div className="flex justify-end items-center mb-2">
-            <div className="flex items-center justify-end space-x-1">
-              {bulletIndex > 0 && (
-                <button
-                  onClick={() => {
-                    setIsExpanded(false);
-                    data.type === 'bullet' && moveUpBullets(bulletIndex);
-                  }}
-                  className="bg-gray-200 px-2 rounded w-[35px] h-[35px]"
-                >
-                  ↑
-                </button>
-              )}
-              {bulletIndex < bulletslength - 1 && (
+          <div className="flex justify-between items-start">
+            {/* Contenedor del textarea y botones */}
+            <textarea
+              ref={textRef}
+              defaultValue={data.text} // Usamos defaultValue en lugar de value para evitar overwriting en cada re-render
+              className={`
+          w-full border p-2 rounded resize-none scroll-custom
+          transition-all duration-300 ease-in-out
+          ${isExpanded ? 'overflow-auto' : 'overflow-hidden'}
+          flex-grow
+        `}
+              style={{
+                height: isExpanded ? `${textRef.current?.scrollHeight}px` : '40px',
+                maxHeight: isExpanded ? '600px' : '48px',
+              }}
+            />
+
+            <div className="flex  gap-2 ml-2 h-[40px] justify-center items-center">
+              {bulletIndex < bulletslength - 1 ? (
                 <button
                   onClick={() => {
                     setIsExpanded(false);
@@ -104,30 +114,32 @@ const SystemPromptEditViewOrderList = ({
                 >
                   ↓
                 </button>
+              ) : (
+                <div className="bg-white px-2 w-[35px] h-[35px]"></div>
+              )}
+              {bulletIndex > 0 ? (
+                <button
+                  onClick={() => {
+                    setIsExpanded(false);
+                    data.type === 'bullet' && moveUpBullets(bulletIndex);
+                  }}
+                  className="bg-gray-200 px-2 rounded w-[35px] h-[35px]"
+                >
+                  ↑
+                </button>
+              ) : (
+                <div className="bg-white px-2 w-[35px] h-[35px]"></div>
               )}
               <button
                 onClick={() => deleteBullet(bulletIndex)}
-                className="bg-red-600 text-white px-1 py-1 rounded w-[30px] h-[30px]"
+                className="bg-red-600 px-2 rounded w-[35px] h-[35px]"
               >
                 🗑️
               </button>
             </div>
           </div>
 
-          <textarea
-            ref={textRef}
-            defaultValue={data.text} // Usamos defaultValue en lugar de value para evitar overwriting en cada re-render
-            className={`
-            w-full border p-2 rounded resize-none scroll-custom
-            transition-all duration-300 ease-in-out
-            ${isExpanded ? 'overflow-auto' : 'overflow-hidden'}
-          `}
-            style={{
-              height: isExpanded ? `${textRef.current?.scrollHeight}px` : '40px',
-              maxHeight: isExpanded ? '600px' : '48px',
-            }}
-          />
-
+          {/* Expand/Collapse toggle */}
           {isOverflowing && (
             <div className="flex justify-center">
               <button onClick={toggleExpand} className="text-gray-500 hover:text-black flex items-center">
