@@ -1,4 +1,10 @@
-import React, { useState } from 'react';
+// ** React
+import { useEffect, useState } from 'react';
+
+// ** Context
+import { useSystemPromptContext } from 'contexts/SystemPromptsProvider';
+
+// ** Components
 import ChatsViewer from 'views/chatsViewerTab/ChatsViewerTab';
 import Goals from 'views/goalsTab/GoalsTab'; // Asegúrate de crear este componente
 import Settings from 'views/settingsTab/SettingsTab';
@@ -6,6 +12,7 @@ import SystemPrompt from 'views/systemPromptTab/SystemPromptTab';
 
 const Home = () => {
   const [activeTab, setActiveTab] = useState('chats');
+  const { setMode } = useSystemPromptContext();
 
   // Función para renderizar el contenido según la tab activa
   const renderContent = () => {
@@ -22,6 +29,10 @@ const Home = () => {
         return null;
     }
   };
+
+  useEffect(() => {
+    setMode('main');
+  }, [activeTab]);
 
   return (
     <div className="flex flex-col h-full">

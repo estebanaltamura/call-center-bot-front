@@ -41,3 +41,5 @@ export interface IService {
   fullChain: string;
   // items es la "posibilidad de option, text infinitos" que mencionaste
 }
+
+export type OrderedListType = { text: string; type: 'bullet' } | { type: 'service' } | { type: 'noData' };

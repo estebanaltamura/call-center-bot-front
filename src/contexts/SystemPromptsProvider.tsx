@@ -20,8 +20,8 @@ interface SystemContextType {
   setCurrentSystemPrompt: React.Dispatch<React.SetStateAction<ISystemPromptEntity | null>>;
   allSystemPromptList: ISystemPromptEntity[];
   setAllSystemPromptList: React.Dispatch<React.SetStateAction<ISystemPromptEntity[]>>;
-  mode: 'general' | 'edit';
-  setMode: React.Dispatch<React.SetStateAction<'general' | 'edit'>>;
+  mode: 'main' | 'edit';
+  setMode: React.Dispatch<React.SetStateAction<'main' | 'edit'>>;
 
   systemPromptToEdit: ISystemPromptEntity | null;
   setSystemPromptToEdit: React.Dispatch<React.SetStateAction<ISystemPromptEntity | null>>;
@@ -60,7 +60,7 @@ export const SystemPromptsProvider = ({ children }: { children: React.ReactNode 
   const settings = useContext(SettingsContext);
   const [currentSystemPrompt, setCurrentSystemPrompt] = useState<ISystemPromptEntity | null>(null);
   const [allSystemPromptList, setAllSystemPromptList] = useState<ISystemPromptEntity[]>([]);
-  const [mode, setMode] = useState<'general' | 'edit'>('general');
+  const [mode, setMode] = useState<'main' | 'edit'>('main');
 
   const [systemPromptToEdit, setSystemPromptToEdit] = useState<ISystemPromptEntity | null>(null);
 
@@ -168,7 +168,7 @@ export const SystemPromptsProvider = ({ children }: { children: React.ReactNode 
       SERVICES.CMS.update(Entities.systemPrompts, systemPromptToEdit.id, payload);
 
       alert('Documento guardado correctamente');
-      setMode('general');
+      setMode('main');
       setSystemPromptToEdit(null);
     } catch (error) {
       console.error('Error al guardar documento:', error);
@@ -177,7 +177,7 @@ export const SystemPromptsProvider = ({ children }: { children: React.ReactNode 
   };
 
   const handleCancel = () => {
-    setMode('general');
+    setMode('main');
     setSystemPromptToEdit(null);
   };
 
