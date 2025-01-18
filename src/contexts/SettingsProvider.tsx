@@ -1,11 +1,12 @@
-import { DocumentData, onSnapshot, QuerySnapshot } from 'firebase/firestore';
-import { collection } from 'firebase/firestore';
-import { db } from 'firebaseConfig';
+// ** React
 import { createContext, useEffect, useState } from 'react';
-import { Conversation } from 'types';
+
+// ** Firebase / Firestore
+import { db } from 'firebaseConfig';
+import { collection, DocumentData, onSnapshot, QuerySnapshot } from 'firebase/firestore';
 
 export interface ISettings {
-  currentPrompt: string;
+  currentPromptTitle: string;
 }
 
 export const SettingsContext = createContext<ISettings | undefined>(undefined);

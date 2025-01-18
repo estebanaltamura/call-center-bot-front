@@ -1,14 +1,15 @@
 // SystemPromptEditViewContainer.tsx
 import { useEffect, useState } from 'react';
-import { bulletOptions, serviceOptions, useSystemPromptContext } from 'contexts/SystemPromptProvider';
-import SystemPromptEditViewListBullet from './SystemPromptEditViewOrderList';
-import SystemPromptEditViewListService from './SystemPromptEditViewListService';
+import { useSystemPromptContext } from 'contexts/SystemPromptsProvider';
+import SystemPromptEditViewListBullet from './EditViewOrderList';
+import SystemPromptEditViewListService from './EditViewListService';
 import { v4 as uuidv4 } from 'uuid';
-import SystemPromptEditViewOrderList from './SystemPromptEditViewOrderList';
+import SystemPromptEditViewOrderList from './EditViewOrderList';
+import { bulletOptions, serviceOptions } from 'enums/systemPrompts';
 
 export type OrderedListType = { text: string; type: 'bullet' } | { type: 'service' } | { type: 'noData' };
 
-const SystemPromptEditViewContainer = () => {
+const EditViewContainer = () => {
   const {
     // -- Bullets (ya existentes en el contexto) --
 
@@ -340,4 +341,4 @@ const SystemPromptEditViewContainer = () => {
   );
 };
 
-export default SystemPromptEditViewContainer;
+export default EditViewContainer;

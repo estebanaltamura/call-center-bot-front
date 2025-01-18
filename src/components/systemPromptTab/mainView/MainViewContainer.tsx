@@ -1,11 +1,23 @@
-import { ISystemPromptDoc, useSystemPromptContext } from 'contexts/SystemPromptProvider';
+// ** React
 import { useState } from 'react';
-import { SERVICES } from 'services/index';
-import { ISystemPromptEntity } from 'types/dynamicSevicesTypes';
-import SystemPromptGeneralViewItem from './SystemPromptGeneralViewItem';
 
-const SystemPromptGeneralViewContainer = () => {
+// ** Context
+import { useSystemPromptContext } from 'contexts/SystemPromptsProvider';
+
+// ** Services
+import { SERVICES } from 'services/index';
+
+// ** Types
+import { ISystemPromptEntity } from 'types/dynamicSevicesTypes';
+
+// ** Components
+import SystemPromptGeneralViewItem from './MainViewItem';
+
+const MainViewContainer = () => {
+  // ** States
   const [title, setTitle] = useState<string>('');
+
+  // ** Context
   const { allSystemPromptList } = useSystemPromptContext();
 
   return (
@@ -39,4 +51,4 @@ const SystemPromptGeneralViewContainer = () => {
   );
 };
 
-export default SystemPromptGeneralViewContainer;
+export default MainViewContainer;

@@ -1,10 +1,10 @@
 // SystemPromptEditViewListBullet.tsx
 import { useEffect, useRef, useState } from 'react';
-import { useSystemPromptContext } from 'contexts/SystemPromptProvider';
-import { OrderedListType } from './SystemPromptEditViewContainer';
-import Typo from './Typo';
+import { useSystemPromptContext } from 'contexts/SystemPromptsProvider';
+import { OrderedListType } from './EditViewContainer';
+import Typo from '../../general/Typo';
 
-const SystemPromptEditViewOrderList = ({
+const EditViewOrderList = ({
   data,
   index,
   bulletslength,
@@ -183,4 +183,4 @@ const SystemPromptEditViewOrderList = ({
   );
 };
 
-export default SystemPromptEditViewOrderList;
+export default EditViewOrderList;

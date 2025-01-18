@@ -1,70 +1,19 @@
-import { SettingsContext } from 'contexts/SettingsProvider';
-import { collection, DocumentData, onSnapshot, query } from 'firebase/firestore';
-import { db } from 'firebaseConfig'; // Ajusta la ruta según tu configuración
+// ** React
 import React, { createContext, useContext, useEffect, useState } from 'react';
+
+// ** Contexts
+import { SettingsContext } from 'contexts/SettingsProvider';
+
+// ** Firebase / Firestore
+import { db } from 'firebaseConfig'; // Ajusta la ruta según tu configuración
+import { collection, onSnapshot, query } from 'firebase/firestore';
+
+// ** Services
 import { SERVICES } from 'services/index';
 import { Entities, ISystemPromptEntity } from 'types/dynamicSevicesTypes';
 
-export interface IPromptItem {
-  option: string;
-  text: string;
-}
-
-export interface ISystemPromptDoc {
-  id: string;
-  title: string;
-  prompts: string[];
-}
-
-// Ejemplo de interfaz para un servicio (puedes ajustarla a tus necesidades)
-export interface IServiceItem {
-  option: string;
-  text: string;
-}
-
-export interface IService {
-  title: string;
-  description: string;
-  items: IServiceItem[];
-  fullChain: string;
-  // items es la "posibilidad de option, text infinitos" que mencionaste
-}
-
-export const bulletOptions = [
-  {
-    label: 'Requerido',
-    options: [
-      'Rol que debes adoptar:',
-      'Descripción de la empresa:',
-      'Descripción del producto:',
-      'Descripción del servicio:',
-      'Qué hacemos:',
-      'Qué no hacemos:',
-      'Principal objetivo:',
-    ],
-  },
-  {
-    label: 'Otros',
-    options: [
-      'Longitud de las respuestas:',
-      'Tolerancia a conversar sobre temas distintos a la tematica del producto/servicio/empresa:',
-      'Priorización de la busqueda de objetivos:',
-      'Tono de la conversación:',
-      'Casos en los que no responderás:',
-      'Casos en los que daras información para que el usuario se comunique por mail:',
-      'mail al que esos usuarios pueden contactar por los temas relacionados con el punto anterior:',
-      'Casos en los que daras información para que el usuario se comunique por otro numero de whatsapp:',
-      'mail al que esos usuarios pueden contactar por los temas relacionados con el punto anterior:',
-    ],
-  },
-];
-
-export const serviceOptions = [
-  {
-    label: 'Requerido',
-    options: ['Tiempo de entrega:', 'Metodo de pago:'],
-  },
-];
+// ** Types
+import { IService } from 'types';
 
 interface SystemContextType {
   currentSystemPrompt: ISystemPromptEntity | null;
@@ -97,17 +46,17 @@ interface SystemContextType {
   deleteService: (index: number) => void;
 }
 
-const SystemPromptContext = createContext<SystemContextType | undefined>(undefined);
+const SystemPromptsContext = createContext<SystemContextType | undefined>(undefined);
 
 export const useSystemPromptContext = () => {
-  const context = useContext(SystemPromptContext);
+  const context = useContext(SystemPromptsContext);
   if (!context) {
     throw new Error('useSystemContext debe usarse dentro de un SystemPromptProvider');
   }
   return context;
 };
 
-export const SystemPromptProvider = ({ children }: { children: React.ReactNode }) => {
+export const SystemPromptsProvider = ({ children }: { children: React.ReactNode }) => {
   const settings = useContext(SettingsContext);
   const [currentSystemPrompt, setCurrentSystemPrompt] = useState<ISystemPromptEntity | null>(null);
   const [allSystemPromptList, setAllSystemPromptList] = useState<ISystemPromptEntity[]>([]);
@@ -204,17 +153,19 @@ export const SystemPromptProvider = ({ children }: { children: React.ReactNode }
   const handleSave = async (servicesOrderIndex: number) => {
     if (!systemPromptToEdit) return;
 
+    const payload = {
+      title: systemPromptToEdit.title,
+      bullets: tempBullets,
+      services: tempServices,
+      servicesOrderIndex,
+      prompt:
+        tempBullets.join(' ') +
+        ' Servicios prestados: ' +
+        tempServices.map((item) => item.fullChain).join(' '),
+    };
+
     try {
-      SERVICES.CMS.update(Entities.systemPrompts, systemPromptToEdit.id, {
-        title: systemPromptToEdit.title,
-        bullets: tempBullets,
-        services: tempServices,
-        servicesOrderIndex,
-        prompt:
-          tempBullets.join(' ') +
-          ' Servicios prestados: ' +
-          tempServices.map((item) => item.fullChain).join(' '),
-      });
+      SERVICES.CMS.update(Entities.systemPrompts, systemPromptToEdit.id, payload);
 
       alert('Documento guardado correctamente');
       setMode('general');
@@ -230,33 +181,18 @@ export const SystemPromptProvider = ({ children }: { children: React.ReactNode }
     setSystemPromptToEdit(null);
   };
 
-  const fetchCurrentSystemPrompt = async () => {
-    if (!settings) return;
-
-    const { currentPrompt } = settings;
-
-    if (!currentPrompt) {
-      setCurrentSystemPrompt(null);
-      return;
-    }
-
-    try {
-      const res = await SERVICES.CMS.get(Entities.systemPrompts, 'title', '==', currentPrompt);
-      if (!res) return;
-
-      setCurrentSystemPrompt({
-        ...res,
-      });
-    } catch (error) {
-      console.error('Error al obtener el documento de systemPrompts:', error);
-      setCurrentSystemPrompt(null);
-    }
-  };
-
+  // Cuando cargo todos los system prompts y cargo el string del titulo del system prompt en uso, se setea el estado que contiene todos los datos del prompt en uso
   useEffect(() => {
-    fetchCurrentSystemPrompt();
-  }, [settings?.currentPrompt]);
+    if (allSystemPromptList && settings?.currentPromptTitle) {
+      const currentSystemPromptData = allSystemPromptList.filter(
+        (item) => item.title === settings?.currentPromptTitle,
+      );
 
+      setCurrentSystemPrompt(currentSystemPromptData[0]);
+    }
+  }, [settings?.currentPromptTitle, allSystemPromptList]);
+
+  // Se cargan todos los systemPropmpts
   useEffect(() => {
     const colRef = collection(db, 'systemPrompts');
     const q = query(colRef);
@@ -280,7 +216,7 @@ export const SystemPromptProvider = ({ children }: { children: React.ReactNode }
   }, [tempBullets, tempServices]);
 
   return (
-    <SystemPromptContext.Provider
+    <SystemPromptsContext.Provider
       value={{
         currentSystemPrompt,
         setCurrentSystemPrompt,
@@ -311,8 +247,8 @@ export const SystemPromptProvider = ({ children }: { children: React.ReactNode }
       }}
     >
       {children}
-    </SystemPromptContext.Provider>
+    </SystemPromptsContext.Provider>
   );
 };
 
-export default SystemPromptProvider;
+export default SystemPromptsProvider;

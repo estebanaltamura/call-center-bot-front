@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import ChatsViewer from 'views/chatsViewer/ChatsViewerTab';
-import Goals from 'views/goals/GoalsTab'; // Asegúrate de crear este componente
-import Settings from 'views/settings/SettingsTab';
-import SystemPrompt from 'views/systemPrompt/SystemPromptTab';
+import ChatsViewer from 'views/chatsViewerTab/ChatsViewerTab';
+import Goals from 'views/goalsTab/GoalsTab'; // Asegúrate de crear este componente
+import Settings from 'views/settingsTab/SettingsTab';
+import SystemPrompt from 'views/systemPromptTab/SystemPromptTab';
 
 const Home = () => {
   const [activeTab, setActiveTab] = useState('chats');

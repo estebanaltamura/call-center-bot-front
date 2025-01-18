@@ -1,8 +1,12 @@
+// ** Dynamic services
 import { dynamicCreate } from './dynamicServices/dynamicCreate';
 import { dynamicDelete } from './dynamicServices/dynamicDelete';
 import { dynamicGet } from './dynamicServices/dynamicGet';
 import { dynamicUpdate } from './dynamicServices/dynamicUpdate';
-import { createSystemPrompt } from './promptServices/createSystemPrompt';
+
+// ** CustomServices
+import { createSystemPrompt } from './systemPromptServices/createSystemPrompt';
+import updateCurrentPromptTitle from './settingsServices/updateCurrentPrompt';
 
 export const SERVICES = {
   CMS: {
@@ -13,5 +17,8 @@ export const SERVICES = {
   },
   PROMPT: {
     createSystemPrompt: createSystemPrompt,
+  },
+  SETTINGS: {
+    updateCurrentPromptTitle: updateCurrentPromptTitle,
   },
 };

@@ -1,7 +1,7 @@
 import ChatHistoryContext, { ChatHistoryProvider } from 'contexts/ChatHistoryProvider';
 import { useContext, useEffect, useState } from 'react';
-import ChatDetail from '../../components/ChatDetail';
-import SideBar from '../../components/SideBar';
+import ChatDetail from '../../components/chatTab/ChatDetail';
+import SideBar from '../../components/chatTab/SideBar';
 
 const ChatsViewerTab = () => {
   const [activeChat, setActiveChat] = useState<string | null>(null);

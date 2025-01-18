@@ -1,24 +1,25 @@
 import React, { createContext, useState, useEffect, useMemo } from 'react';
 import { collection, onSnapshot, DocumentData, QuerySnapshot } from 'firebase/firestore';
-import { Conversation, Message } from 'types';
 import { db } from 'firebaseConfig';
+import { IMessage } from 'types';
+import { IConversation } from 'types';
 
-interface CombinedConversation extends Conversation {
-  messages: Message[];
+interface CombinedConversation extends IConversation {
+  messages: IMessage[];
 }
 
 const ChatHistoryContext = createContext<CombinedConversation[]>([]);
 
 const ChatHistoryProvider = ({ children }: { children: React.ReactNode }) => {
-  const [conversations, setConversations] = useState<Conversation[]>([]);
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [conversations, setConversations] = useState<IConversation[]>([]);
+  const [messages, setMessages] = useState<IMessage[]>([]);
 
   useEffect(() => {
     const unsubscribeConversations = onSnapshot(
       collection(db, 'conversations'),
       (snapshot: QuerySnapshot<DocumentData>) => {
         const convs = snapshot.docs.map((doc) => {
-          return doc.data() as Conversation;
+          return doc.data() as IConversation;
         });
         setConversations(convs);
       },
@@ -28,7 +29,7 @@ const ChatHistoryProvider = ({ children }: { children: React.ReactNode }) => {
       collection(db, 'messages'),
       (snapshot: QuerySnapshot<DocumentData>) => {
         const msgs = snapshot.docs.map((doc) => {
-          return doc.data() as Message;
+          return doc.data() as IMessage;
         });
         setMessages(msgs);
       },

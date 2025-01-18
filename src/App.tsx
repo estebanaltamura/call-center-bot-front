@@ -4,7 +4,7 @@ import Home from 'pages/Home';
 import { useEffect } from 'react';
 import { menuBarHeight } from 'globalConfig';
 import SettingsProvider from 'contexts/SettingsProvider';
-import SystemPromptProvider from 'contexts/SystemPromptProvider';
+import SystemPromptProvider from 'contexts/SystemPromptsProvider';
 import GoalsProvider from 'contexts/GoalsProvider';
 
 function App() {

@@ -1,6 +1,6 @@
 // SystemPromptEditViewListService.tsx
 import { FC, useState, useRef } from 'react';
-import { useSystemPromptContext } from 'contexts/SystemPromptProvider';
+import { useSystemPromptContext } from 'contexts/SystemPromptsProvider';
 
 interface Service {
   title: string;
@@ -8,7 +8,7 @@ interface Service {
   requirements: string[];
 }
 
-const SystemPromptEditViewListService: FC<{
+const EditViewListService: FC<{
   service: Service;
   index: number;
   length: number;
@@ -85,4 +85,4 @@ const SystemPromptEditViewListService: FC<{
   );
 };
 
-export default SystemPromptEditViewListService;
+export default EditViewListService;

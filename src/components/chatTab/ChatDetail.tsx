@@ -2,7 +2,7 @@ import ChatHistoryContext from 'contexts/ChatHistoryProvider';
 import { timestampToDate } from 'helpers';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { sendMessage } from 'services/whatspAppServices/sendMessage';
-import Loader from './Loader';
+import Loader from '../general/Loader';
 
 const ChatDetail = ({ conversationId }: { conversationId: string | null }) => {
   const combinedData = useContext(ChatHistoryContext);

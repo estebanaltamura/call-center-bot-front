@@ -1,9 +1,9 @@
 // ** Context import
-import { useSystemPromptContext } from 'contexts/SystemPromptProvider';
+import { useSystemPromptContext } from 'contexts/SystemPromptsProvider';
 
 // ** components import
-import PromptSystemEditViewContainer from 'components/SystemPromptEditViewContainer';
-import SystemPromptGeneralViewContainer from 'components/SystemPromptGeneralViewContainer';
+import PromptSystemEditViewContainer from 'components/systemPromptTab/editView/EditViewContainer';
+import SystemPromptGeneralViewContainer from 'components/systemPromptTab/mainView/MainViewContainer';
 
 const SystemPromptTab = () => {
   const { mode } = useSystemPromptContext();
