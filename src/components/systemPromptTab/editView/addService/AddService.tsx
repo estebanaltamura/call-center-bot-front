@@ -2,32 +2,22 @@ import { serviceOptions } from 'enums/systemPrompts';
 
 // ** 3rd party
 import { v4 as uuidv4 } from 'uuid';
+import { useEditViewContext } from '../EditViewContainer';
 
-const AddService = ({
-  handleAddServiceItemSegment,
-  handleFinishService,
-  serviceItems,
-  serviceOption,
-  setServiceOption,
-  serviceText,
-  setServiceText,
-  serviceTitle,
-  setServiceTitle,
-  serviceDescription,
-  setServiceDescription,
-}: {
-  handleAddServiceItemSegment: () => void;
-  handleFinishService: () => void;
-  serviceItems: any[];
-  serviceOption: string;
-  setServiceOption: React.Dispatch<React.SetStateAction<string>>;
-  serviceText: string;
-  setServiceText: React.Dispatch<React.SetStateAction<string>>;
-  serviceTitle: string;
-  setServiceTitle: React.Dispatch<React.SetStateAction<string>>;
-  serviceDescription: string;
-  setServiceDescription: React.Dispatch<React.SetStateAction<string>>;
-}) => {
+const AddService = () => {
+  const {
+    handleAddServiceItemSegment,
+    handleFinishService,
+    serviceItems,
+    serviceOption,
+    setServiceOption,
+    serviceText,
+    setServiceText,
+    serviceTitle,
+    setServiceTitle,
+    serviceDescription,
+    setServiceDescription,
+  } = useEditViewContext();
   return (
     <div className="border border-gray-400 p-4 bg-gray-50 rounded space-y-4">
       <h2 className="font-semibold text-center">Agregar servicio</h2>

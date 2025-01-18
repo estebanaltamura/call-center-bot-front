@@ -4,18 +4,11 @@ import { useEffect, useRef } from 'react';
 import { useState } from 'react';
 import { useSystemPromptContext } from 'contexts/SystemPromptsProvider';
 import Typo from 'components/general/Typo';
+import { useEditViewContext } from '../EditViewContainer';
+import ServicesList from '../servicesList/ServicesList';
 
-const OrderedList = ({
-  orderedList,
-  servicesOrderIndex,
-  setServicesOrderIndex,
-  tempBullets,
-}: {
-  orderedList: OrderedListType[];
-  servicesOrderIndex: number;
-  setServicesOrderIndex: React.Dispatch<React.SetStateAction<number>>;
-  tempBullets: string[];
-}) => {
+const OrderedList = () => {
+  const { orderedList, servicesOrderIndex, setServicesOrderIndex, tempBullets } = useEditViewContext();
   const { moveUpBullets, moveDownBullets, deleteBullet, updatePrompt } = useSystemPromptContext();
 
   const [isExpanded, setIsExpanded] = useState(false);
@@ -52,58 +45,63 @@ const OrderedList = ({
           return (
             <>
               {item.type === 'noData' && (
-                <div className="flex w-full justify-center">No hay bullets ni servicios agregados</div>
+                <div key={uuidv4()} className="flex w-full justify-center">
+                  No hay bullets ni servicios agregados
+                </div>
               )}
 
               {item.type === 'service' && (
-                <div className="relative bg-[#3b82f6] border rounded py-4 px-2 flex h-[73px] justify-center items-center">
-                  <Typo type="title2Semibold">SERVICIOS</Typo>
+                <div key={uuidv4()} className="flex flex-col border rounded">
+                  <div className="relative bg-[#3b82f6]  flex h-[73px] justify-center items-center rounded-t">
+                    <Typo type="title2Semibold">SERVICIOS</Typo>
 
-                  <div className="absolute right-2 flex items-center justify-center gap-2">
-                    <button
-                      disabled={index === orderedList.length}
-                      onClick={() => {
-                        setIsExpanded(false);
-                        item.type === 'service' && setServicesOrderIndex(servicesOrderIndex + 1);
-                      }}
-                      className={`${
-                        index === orderedList.length ? 'bg-gray-400' : 'bg-gray-200'
-                      } px-2 rounded w-[35px] h-[35px]`}
-                    >
-                      ↓
-                    </button>
+                    <div className="absolute right-8 flex items-center justify-center gap-2">
+                      <button
+                        disabled={index === orderedList.length - 1}
+                        onClick={() => {
+                          setIsExpanded(false);
+                          item.type === 'service' && setServicesOrderIndex(servicesOrderIndex + 1);
+                        }}
+                        className={`${
+                          index === orderedList.length - 1 ? 'bg-gray-400' : 'bg-gray-200'
+                        } px-2 rounded w-[35px] h-[35px]`}
+                      >
+                        ↓
+                      </button>
 
-                    <button
-                      disabled={index === 0}
-                      onClick={() => {
-                        setIsExpanded(false);
-                        item.type === 'service' && setServicesOrderIndex(servicesOrderIndex - 1);
-                      }}
-                      className={`${
-                        index === 0 ? 'bg-gray-400' : 'bg-gray-200'
-                      } px-2 rounded w-[35px] h-[35px]`}
-                    >
-                      ↑
-                    </button>
+                      <button
+                        disabled={index === 0}
+                        onClick={() => {
+                          setIsExpanded(false);
+                          item.type === 'service' && setServicesOrderIndex(servicesOrderIndex - 1);
+                        }}
+                        className={`${
+                          index === 0 ? 'bg-gray-400' : 'bg-gray-200'
+                        } px-2 rounded w-[35px] h-[35px]`}
+                      >
+                        ↑
+                      </button>
 
-                    <div className="bg-[#3b82f6] px-2 w-[35px] h-[35px]"></div>
+                      <div className="bg-[#3b82f6] px-2 w-[35px] h-[35px]"></div>
+                    </div>
                   </div>
+                  <ServicesList />
                 </div>
               )}
 
               {item.type === 'bullet' && (
-                <div className="relative bg-white border rounded p-2 flex flex-col">
+                <div key={uuidv4()} className="relative bg-white border rounded p-2 mx-5 flex flex-col">
                   <div className="flex justify-between items-start">
                     {/* Contenedor del textarea y botones */}
                     <textarea
                       ref={textRef}
                       defaultValue={item.text} // Usamos defaultValue en lugar de value para evitar overwriting en cada re-render
                       className={`
-          w-full border p-2 rounded resize-none scroll-custom
-          transition-all duration-300 ease-in-out
-          ${isExpanded ? 'overflow-auto' : 'overflow-hidden'}
-          flex-grow
-        `}
+                        w-full border p-2 rounded resize-none scroll-custom
+                        transition-all duration-300 ease-in-out
+                        ${isExpanded ? 'overflow-auto' : 'overflow-hidden'}
+                        flex-grow
+                      `}
                       style={{
                         height: isExpanded ? `${textRef.current?.scrollHeight}px` : '40px',
                         maxHeight: isExpanded ? '600px' : '48px',
@@ -111,6 +109,7 @@ const OrderedList = ({
                     />
 
                     <div className="flex  gap-2 ml-2 h-[40px] justify-center items-center">
+                      bulletIndex {bulletIndex}
                       {bulletIndex < tempBullets.length - 1 ? (
                         <button
                           onClick={() => {
@@ -143,6 +142,7 @@ const OrderedList = ({
                         <button
                           onClick={() => {
                             setIsExpanded(false);
+                            console.log(servicesOrderIndex, bulletIndex);
 
                             //El item por encima es un bullet
                             if (bulletIndex > 0 && index !== servicesOrderIndex + 1) {
@@ -169,7 +169,7 @@ const OrderedList = ({
                       )}
                       <button
                         onClick={() => deleteBullet(bulletIndex)}
-                        className="bg-red-600 px-2 rounded w-[35px] h-[35px]"
+                        className="bg-red-600 px-2 rounded w-[35px] h-[35px] flex items-center justify-center"
                       >
                         🗑️
                       </button>

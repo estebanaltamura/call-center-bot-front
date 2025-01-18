@@ -1,20 +1,11 @@
 import { bulletOptions } from 'enums/systemPrompts';
 // ** 3rd party
 import { v4 as uuidv4 } from 'uuid';
+import { useEditViewContext } from '../EditViewContainer';
 
-const AddBullet = ({
-  addBulletHandler,
-  bulletOption,
-  setBulletOption,
-  bulletText,
-  setBulletText,
-}: {
-  addBulletHandler: () => void;
-  bulletOption: string;
-  setBulletOption: React.Dispatch<React.SetStateAction<string>>;
-  bulletText: string;
-  setBulletText: React.Dispatch<React.SetStateAction<string>>;
-}) => {
+const AddBullet = () => {
+  const { addBulletHandler, bulletOption, setBulletOption, bulletText, setBulletText } = useEditViewContext();
+
   return (
     <div className="border border-gray-400 p-4 bg-gray-50 rounded space-y-4">
       <h2 className="font-semibold text-center">Agregar bullet</h2>

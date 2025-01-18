@@ -4,7 +4,8 @@ import { useSystemPromptContext } from 'contexts/SystemPromptsProvider';
 import { useRef } from 'react';
 import { useState } from 'react';
 
-const ServicesList = ({ tempServices }: { tempServices: IService[] }) => {
+const ServicesList = () => {
+  const { tempServices } = useSystemPromptContext();
   const { deleteService, moveUpServices, moveDownServices } = useSystemPromptContext();
   const [isExpanded, setIsExpanded] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -14,8 +15,7 @@ const ServicesList = ({ tempServices }: { tempServices: IService[] }) => {
   };
 
   return (
-    <div className="border border-gray-400 p-4 bg-gray-50 rounded space-y-4">
-      <h2 className="font-semibold text-center">Servicios</h2>
+    <div className="p-4 bg-gray-50 rounded space-y-4">
       {tempServices.length === 0 && (
         <div className="flex w-full justify-center">No hay servicios agregados</div>
       )}
@@ -23,34 +23,40 @@ const ServicesList = ({ tempServices }: { tempServices: IService[] }) => {
       <div className="space-y-2">
         {tempServices.map((service, index) => (
           <div className="relative bg-white border rounded p-2 flex flex-col" key={index}>
-            <div className="flex justify-between items-center">
-              <span className="font-bold">{service.title}</span>
-              <div className="flex items-center space-x-1">
-                {index > 0 && (
-                  <button
-                    onClick={() => {
-                      setIsExpanded(false);
-                      moveUpServices(index);
-                    }}
-                    className="bg-gray-200 px-2 rounded w-[35px] h-[35px]"
-                  >
-                    ↑
-                  </button>
-                )}
-                {index < length - 1 && (
-                  <button
-                    onClick={() => {
-                      setIsExpanded(false);
-                      moveDownServices(index);
-                    }}
-                    className="bg-gray-200 px-2 rounded w-[35px] h-[35px]"
-                  >
-                    ↓
-                  </button>
-                )}
+            <div className="relative bg-white border rounded px-2 flex h-[45px] justify-first items-center">
+              <span className="font-bold">
+                {service.title}
+                {index}
+                {tempServices.length - 1}
+              </span>
+              <div className="absolute right-2 flex items-center justify-center gap-2">
+                <button
+                  disabled={index === tempServices.length - 1}
+                  onClick={() => {
+                    setIsExpanded(false);
+                    moveDownServices(index);
+                  }}
+                  className={`${
+                    index === tempServices.length - 1 ? 'bg-gray-400' : 'bg-gray-200'
+                  } px-2 rounded w-[35px] h-[35px]`}
+                >
+                  ↓
+                </button>
+
+                <button
+                  disabled={index === 0}
+                  onClick={() => {
+                    setIsExpanded(false);
+                    moveUpServices(index);
+                  }}
+                  className={`${index === 0 ? 'bg-gray-400' : 'bg-gray-200'} px-2 rounded w-[35px] h-[35px]`}
+                >
+                  ↑
+                </button>
+
                 <button
                   onClick={() => deleteService(index)}
-                  className="bg-red-600 text-white px-1 py-1 rounded w-[30px] h-[30px]"
+                  className="bg-red-600 px-2 rounded w-[35px] h-[35px] flex items-center justify-center"
                 >
                   🗑️
                 </button>
