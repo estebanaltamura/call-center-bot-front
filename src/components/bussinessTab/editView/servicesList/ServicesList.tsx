@@ -1,12 +1,12 @@
 import { v4 as uuidv4 } from 'uuid';
 import { IService } from 'types';
-import { useSystemPromptContext } from 'contexts/SystemPromptsProvider';
+import { useCompanyContext } from 'contexts/CompanyProvider';
 import { useRef } from 'react';
 import { useState } from 'react';
 
 const ServicesList = () => {
-  const { tempServices } = useSystemPromptContext();
-  const { deleteService, moveUpServices, moveDownServices } = useSystemPromptContext();
+  const { tempCompanyServices } = useCompanyContext();
+  const { deleteService, moveUpCompanyServices, moveDownCompanyServices } = useCompanyContext();
   const [isExpanded, setIsExpanded] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -16,28 +16,28 @@ const ServicesList = () => {
 
   return (
     <div className="p-4 bg-gray-50 rounded space-y-4">
-      {tempServices.length === 0 && (
+      {tempCompanyServices.length === 0 && (
         <div className="flex w-full justify-center">No hay servicios agregados</div>
       )}
 
       <div className="space-y-2">
-        {tempServices.map((service, index) => (
+        {tempCompanyServices.map((service, index) => (
           <div className="relative bg-white border rounded p-2 flex flex-col" key={index}>
             <div className="relative bg-white border rounded px-2 flex h-[45px] justify-first items-center">
               <span className="font-bold">
                 {service.title}
                 {index}
-                {tempServices.length - 1}
+                {tempCompanyServices.length - 1}
               </span>
               <div className="absolute right-2 flex items-center justify-center gap-2">
                 <button
-                  disabled={index === tempServices.length - 1}
+                  disabled={index === tempCompanyServices.length - 1}
                   onClick={() => {
                     setIsExpanded(false);
-                    moveDownServices(index);
+                    moveDownCompanyServices(index);
                   }}
                   className={`${
-                    index === tempServices.length - 1 ? 'bg-gray-400' : 'bg-gray-200'
+                    index === tempCompanyServices.length - 1 ? 'bg-gray-400' : 'bg-gray-200'
                   } px-2 rounded w-[35px] h-[35px]`}
                 >
                   ↓
@@ -47,7 +47,7 @@ const ServicesList = () => {
                   disabled={index === 0}
                   onClick={() => {
                     setIsExpanded(false);
-                    moveUpServices(index);
+                    moveUpCompanyServices(index);
                   }}
                   className={`${index === 0 ? 'bg-gray-400' : 'bg-gray-200'} px-2 rounded w-[35px] h-[35px]`}
                 >

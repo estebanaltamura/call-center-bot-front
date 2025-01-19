@@ -2,25 +2,32 @@
 import { useEffect, useState } from 'react';
 
 // ** Context
-import { useSystemPromptContext } from 'contexts/SystemPromptsProvider';
 
 // ** Components
 import ChatsViewer from 'views/chatsViewerTab/ChatsViewerTab';
 import Goals from 'views/goalsTab/GoalsTab'; // Asegúrate de crear este componente
 import Settings from 'views/settingsTab/SettingsTab';
-import SystemPrompt from 'views/systemPromptTab/SystemPromptTab';
+import SystemPrompt from 'views/bussinesTab/BussinesTab';
+import BussinesTab from 'views/bussinesTab/BussinesTab';
+import AssistantTab from 'views/assistantTab/Assistant';
+import RulesTab from 'views/rules/Rules';
+import { useCompanyContext } from 'contexts/CompanyProvider';
 
 const Home = () => {
   const [activeTab, setActiveTab] = useState('chats');
-  const { setMode } = useSystemPromptContext();
+  const { setMode } = useCompanyContext();
 
   // Función para renderizar el contenido según la tab activa
   const renderContent = () => {
     switch (activeTab) {
       case 'chats':
         return <ChatsViewer />;
-      case 'prompt':
-        return <SystemPrompt />;
+      case 'bussines':
+        return <BussinesTab />;
+      case 'assistant':
+        return <AssistantTab />;
+      case 'rules':
+        return <RulesTab />;
       case 'goals':
         return <Goals />;
       case 'settings':
@@ -47,12 +54,28 @@ const Home = () => {
           Chats
         </button>
         <button
-          onClick={() => setActiveTab('prompt')}
+          onClick={() => setActiveTab('bussines')}
           className={`flex-1 py-2 text-center ${
-            activeTab === 'prompt' ? 'border-b-2 border-blue-500 text-blue-500' : 'text-gray-500'
+            activeTab === 'bussines' ? 'border-b-2 border-blue-500 text-blue-500' : 'text-gray-500'
           }`}
         >
-          System prompt
+          Negocio
+        </button>
+        <button
+          onClick={() => setActiveTab('assistant')}
+          className={`flex-1 py-2 text-center ${
+            activeTab === 'assistant' ? 'border-b-2 border-blue-500 text-blue-500' : 'text-gray-500'
+          }`}
+        >
+          Asistente
+        </button>
+        <button
+          onClick={() => setActiveTab('rules')}
+          className={`flex-1 py-2 text-center ${
+            activeTab === 'rules' ? 'border-b-2 border-blue-500 text-blue-500' : 'text-gray-500'
+          }`}
+        >
+          Reglas
         </button>
         <button
           onClick={() => setActiveTab('goals')}
@@ -60,7 +83,7 @@ const Home = () => {
             activeTab === 'goals' ? 'border-b-2 border-blue-500 text-blue-500' : 'text-gray-500'
           }`}
         >
-          Goals
+          Objetivos
         </button>
         <button
           onClick={() => setActiveTab('settings')}
@@ -68,7 +91,7 @@ const Home = () => {
             activeTab === 'settings' ? 'border-b-2 border-blue-500 text-blue-500' : 'text-gray-500'
           }`}
         >
-          Settings
+          Configuración
         </button>
       </div>
 

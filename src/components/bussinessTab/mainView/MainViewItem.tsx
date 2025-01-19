@@ -1,5 +1,5 @@
 // ** Contexts
-import { useSystemPromptContext } from 'contexts/SystemPromptsProvider';
+import { useCompanyContext } from 'contexts/CompanyProvider';
 
 // ** Services
 import { SERVICES } from 'services/index';
@@ -8,10 +8,10 @@ import { SERVICES } from 'services/index';
 import UTILS from 'utils';
 
 // ** Types
-import { Entities, ISystemPromptEntity } from 'types/dynamicSevicesTypes';
+import { Entities, IcompanyEntity } from 'types/dynamicSevicesTypes';
 
-const MainViewItem = ({ docItem }: { docItem: ISystemPromptEntity }) => {
-  const { handleModifyDoc } = useSystemPromptContext();
+const MainViewItem = ({ docItem }: { docItem: IcompanyEntity }) => {
+  const { handleModifyDoc } = useCompanyContext();
 
   const handleDownloadPDF = async () => {
     UTILS.createPdfFromSystemPrompt({ docItem });
@@ -22,7 +22,7 @@ const MainViewItem = ({ docItem }: { docItem: ISystemPromptEntity }) => {
       <div>
         <strong>{docItem.title || '(Sin título)'}</strong>
         <div className="flex gap-1">
-          <span className="block text-sm text-gray-600">{docItem.bullets.length} bullets</span>
+          <span className="block text-sm text-gray-600">{docItem.features.length} bullets</span>
           <span className="block text-sm text-gray-600">{docItem.services.length} servicios</span>
         </div>
       </div>
@@ -36,7 +36,7 @@ const MainViewItem = ({ docItem }: { docItem: ISystemPromptEntity }) => {
         <button
           onClick={() => {
             if (confirm('Confirma que quieres eliminar este documento')) {
-              SERVICES.CMS.delete(Entities.systemPrompts, docItem.id);
+              SERVICES.CMS.delete(Entities.companies, docItem.id);
             } else {
               return;
             }

@@ -2,7 +2,7 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 
 // ** Context original (sigue usando la data que ya existe en SystemPromptsProvider)
-import { useSystemPromptContext } from 'contexts/SystemPromptsProvider';
+import { useCompanyContext } from 'contexts/CompanyProvider';
 
 // ** 3rd party
 import { v4 as uuidv4 } from 'uuid';
@@ -11,14 +11,14 @@ import { v4 as uuidv4 } from 'uuid';
 import { bulletOptions, serviceOptions } from 'enums/systemPrompts';
 
 // ** Types
-import { OrderedListType } from 'types';
+import { IOptionTextItem, IService, OrderedListType } from 'types';
 
 // ** Componentes hijos (que ya no reciben props, sino que consumirán contexto)
 import AddBullet from './addBullet/AddBullet';
 import AddService from './addService/AddService';
 import ServicesList from './servicesList/ServicesList';
 import OrderedList from './orderedList/OrderedList';
-import { ISystemPromptEntity } from 'types/dynamicSevicesTypes';
+import { IcompanyEntity, ISystemPromptEntity } from 'types/dynamicSevicesTypes';
 
 /* ------------------------------------------------------------------
    Creamos el nuevo contexto para encapsular todos los estados y 
@@ -42,16 +42,17 @@ interface EditViewContextType {
   serviceItems: { option: string; text: string }[];
   handleAddServiceItemSegment: () => void;
   handleFinishService: () => void;
-  tempServices: any[];
   orderedList: any[];
   setOrderedList: React.Dispatch<React.SetStateAction<any[]>>;
+
+  tempCompanyServices: IService[];
   servicesOrderIndex: number;
   setServicesOrderIndex: React.Dispatch<React.SetStateAction<number>>;
-  tempBullets: string[];
+  tempCompanyInformation: IOptionTextItem[];
   saveHandler: () => void;
   handleCancel: () => void;
-  addBulletHandler: () => void;
-  systemPromptToEdit: ISystemPromptEntity | null;
+  addCompanyInformationItemHandler: () => void;
+  companyToEdit: IcompanyEntity | null;
 }
 
 // 2) Cambiá la creación del contexto a:
@@ -65,8 +66,15 @@ const EditViewContainer = () => {
   // (SystemPromptsProvider). No se los pasamos por props a los hijos,
   // sino que los pondremos en el nuevo contexto EditViewContext.
   // ----------------------------------------------------------------
-  const { tempBullets, systemPromptToEdit, tempServices, addBullet, addService, handleSave, handleCancel } =
-    useSystemPromptContext();
+  const {
+    tempCompanyInformation,
+    companyToEdit,
+    tempCompanyServices,
+    addCompanyInformationItem,
+    addCompanyService,
+    handleSave,
+    handleCancel,
+  } = useCompanyContext();
 
   // ----------------------------------------------------------------
   // ---------------------- ESTADOS GENERALES ------------------------
@@ -75,7 +83,7 @@ const EditViewContainer = () => {
   // Ordered List
   const [orderedList, setOrderedList] = useState<OrderedListType[]>([]);
   const [servicesOrderIndex, setServicesOrderIndex] = useState<number>(
-    systemPromptToEdit?.servicesOrderIndex || 0,
+    companyToEdit?.servicesOrderIndex || 0,
   );
 
   // Bullets
@@ -92,9 +100,9 @@ const EditViewContainer = () => {
   // ----------------------------------------------------------------
   // --------------------- FUNCIONES DE BULLETS ---------------------
   // ----------------------------------------------------------------
-  const addBulletHandler = () => {
+  const addCompanyInformationItemHandler = () => {
     if (!bulletText.trim()) return;
-    addBullet(bulletOption, bulletText);
+    addCompanyInformationItem(bulletOption, bulletText);
     setBulletText('');
   };
 
@@ -120,13 +128,8 @@ const EditViewContainer = () => {
       title: serviceTitle.trim(),
       description: serviceDescription.trim(),
       items: serviceItems,
-      fullChain:
-        `Titulo del servicio: ${serviceTitle.trim()}. ` +
-        `Descripcion del servicio: ${serviceDescription.trim()}. ` +
-        'Caracteristicas del servicio: ' +
-        serviceItems.map((it) => `${it.option} ${it.text}. `).join('\n'),
     };
-    addService(newService);
+    addCompanyService(newService);
     setServiceTitle('');
     setServiceDescription('');
     setServiceItems([]);
@@ -143,7 +146,7 @@ const EditViewContainer = () => {
   // ---------- EFECTOS PARA ARMAR EL ORDEN SEGÚN BULLETS -----------
   // ----------------------------------------------------------------
   useEffect(() => {
-    if (tempBullets.length === 0 && tempServices.length === 0) {
+    if (tempCompanyInformation.length === 0 && tempCompanyServices.length === 0) {
       setOrderedList([
         {
           type: 'noData' as unknown as 'noData',
@@ -152,7 +155,7 @@ const EditViewContainer = () => {
       return;
     }
 
-    if (tempBullets.length === 0 && tempServices.length > 0) {
+    if (tempCompanyInformation.length === 0 && tempCompanyServices.length > 0) {
       setOrderedList([
         {
           type: 'service' as unknown as 'service',
@@ -161,28 +164,28 @@ const EditViewContainer = () => {
       return;
     }
 
-    if (tempBullets.length > 0 && tempServices.length === 0) {
+    if (tempCompanyInformation.length > 0 && tempCompanyServices.length === 0) {
       setOrderedList([
-        ...tempBullets.map((item) => ({
-          text: item,
+        ...tempCompanyInformation.map((item) => ({
+          text: item.text,
           type: 'bullet' as unknown as 'bullet',
         })),
       ]);
       return;
     }
 
-    if (tempBullets.length > 0 && tempServices.length > 0) {
+    if (tempCompanyInformation.length > 0 && tempCompanyServices.length > 0) {
       const orderedListToPush = [
-        ...tempBullets
+        ...tempCompanyInformation
           .map((item) => ({
-            text: item,
+            text: item.text,
             type: 'bullet' as unknown as 'bullet',
           }))
           .slice(0, servicesOrderIndex),
         { type: 'service' as unknown as 'service' },
-        ...tempBullets
+        ...tempCompanyInformation
           .map((item) => ({
-            text: item,
+            text: item.text,
             type: 'bullet' as unknown as 'bullet',
           }))
           .slice(servicesOrderIndex),
@@ -194,13 +197,13 @@ const EditViewContainer = () => {
 
     console.log(
       'tempBullets',
-      tempBullets,
+      tempCompanyInformation,
       'tempServices',
-      tempServices,
+      tempCompanyServices,
       'servicesOrderIndex',
       servicesOrderIndex,
     );
-  }, [tempBullets, tempServices, servicesOrderIndex]);
+  }, [tempCompanyInformation, tempCompanyServices, servicesOrderIndex]);
 
   useEffect(() => {
     console.log('ORDERED LIST', orderedList);
@@ -218,7 +221,7 @@ const EditViewContainer = () => {
     setBulletOption,
     bulletText,
     setBulletText,
-    addBulletHandler,
+    addCompanyInformationItemHandler,
 
     // ----------------------------------------------------------------
     // ESTADOS Y FUNCIONES PARA AddService
@@ -238,7 +241,7 @@ const EditViewContainer = () => {
     // ----------------------------------------------------------------
     // ESTADOS Y FUNCIONES PARA ServicesList
     // ----------------------------------------------------------------
-    tempServices,
+    tempCompanyServices,
 
     // ----------------------------------------------------------------
     // ESTADOS Y FUNCIONES PARA OrderedList
@@ -247,7 +250,7 @@ const EditViewContainer = () => {
     setOrderedList,
     servicesOrderIndex,
     setServicesOrderIndex,
-    tempBullets,
+    tempCompanyInformation,
 
     // ----------------------------------------------------------------
     // ESTADOS Y FUNCIONES DE BOTONES FINALES
@@ -258,7 +261,7 @@ const EditViewContainer = () => {
     // ----------------------------------------------------------------
     // Dato de referencia para título u otro que necesiten
     // ----------------------------------------------------------------
-    systemPromptToEdit,
+    companyToEdit,
   };
 
   return (
@@ -267,7 +270,7 @@ const EditViewContainer = () => {
         <h1 className="text-xl font-bold text-center">MODIFICAR SYSTEM PROMPT</h1>
         <div className="space-y-2">
           <label className="block text-xl font-semibold text-center text-gray-700">
-            Modificando: {systemPromptToEdit?.title}
+            Modificando: {companyToEdit?.title}
           </label>
         </div>
 

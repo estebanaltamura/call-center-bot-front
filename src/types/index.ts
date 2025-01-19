@@ -29,7 +29,7 @@ export interface ISystemPromptDoc {
 }
 
 // Ejemplo de interfaz para un servicio (puedes ajustarla a tus necesidades)
-export interface IServiceItem {
+export interface IOptionTextItem {
   option: string;
   text: string;
 }
@@ -37,9 +37,7 @@ export interface IServiceItem {
 export interface IService {
   title: string;
   description: string;
-  items: IServiceItem[];
-  fullChain: string;
-  // items es la "posibilidad de option, text infinitos" que mencionaste
+  items: IOptionTextItem[];
 }
 
 export type OrderedListType = { text: string; type: 'bullet' } | { type: 'service' } | { type: 'noData' };

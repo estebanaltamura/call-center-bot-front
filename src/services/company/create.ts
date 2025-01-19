@@ -1,7 +1,7 @@
 import { Entities } from 'types/dynamicSevicesTypes';
 import { SERVICES } from '..';
 
-export const createSystemPrompt = async (title: string) => {
+export const create = async (title: string) => {
   if (!title.trim()) {
     alert('Por favor, ingresa un nombre para el documento.');
     return;
@@ -9,14 +9,13 @@ export const createSystemPrompt = async (title: string) => {
 
   const payload = {
     title,
-    bullets: [],
+    features: [],
     services: [],
-    prompt: '',
     servicesOrderIndex: 0,
   };
 
   try {
-    SERVICES.CMS.create(Entities.systemPrompts, payload);
+    SERVICES.CMS.create(Entities.companies, payload);
   } catch (error) {
     console.error('Error al crear documento:', error);
     alert('Ocurrió un error al crear el documento.');

@@ -1,7 +1,7 @@
 import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
-import { ISystemPrompt } from 'types/dynamicSevicesTypes';
+import { IcompanyEntity, ISystemPrompt } from 'types/dynamicSevicesTypes';
 
-const createPdfFromSystemPrompt = async ({ docItem }: { docItem: ISystemPrompt }) => {
+const createPdfFromSystemPrompt = async ({ docItem }: { docItem: IcompanyEntity }) => {
   // Función para generar el PDF
   try {
     const pdfDoc = await PDFDocument.create();
@@ -36,7 +36,7 @@ const createPdfFromSystemPrompt = async ({ docItem }: { docItem: ISystemPrompt }
     });
     yPosition -= 20;
 
-    docItem.bullets.forEach((bullet, index) => {
+    docItem.features.forEach((bullet, index) => {
       page.drawText(`${index + 1}. ${bullet}`, {
         x: 60,
         y: yPosition,

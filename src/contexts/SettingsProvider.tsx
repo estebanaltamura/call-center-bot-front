@@ -4,22 +4,19 @@ import { createContext, useEffect, useState } from 'react';
 // ** Firebase / Firestore
 import { db } from 'firebaseConfig';
 import { collection, DocumentData, onSnapshot, QuerySnapshot } from 'firebase/firestore';
+import { ISettingsEntity } from 'types/dynamicSevicesTypes';
 
-export interface ISettings {
-  currentPromptTitle: string;
-}
-
-export const SettingsContext = createContext<ISettings | undefined>(undefined);
+export const SettingsContext = createContext<ISettingsEntity | undefined>(undefined);
 
 const SettingsProvider = ({ children }: { children: React.ReactNode }) => {
-  const [settings, setSettings] = useState<ISettings>();
+  const [settings, setSettings] = useState<ISettingsEntity>();
 
   useEffect(() => {
     const unsubscribeSettings = onSnapshot(
       collection(db, 'settings'),
       (snapshot: QuerySnapshot<DocumentData>) => {
         const settings = snapshot.docs.map((doc) => {
-          return doc.data() as ISettings;
+          return doc.data() as ISettingsEntity;
         });
         setSettings(settings[0]);
       },

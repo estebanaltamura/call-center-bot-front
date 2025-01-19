@@ -4,7 +4,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { useEditViewContext } from '../EditViewContainer';
 
 const AddBullet = () => {
-  const { addBulletHandler, bulletOption, setBulletOption, bulletText, setBulletText } = useEditViewContext();
+  const { addCompanyInformationItemHandler, bulletOption, setBulletOption, bulletText, setBulletText } =
+    useEditViewContext();
 
   return (
     <div className="border border-gray-400 p-4 bg-gray-50 rounded space-y-4">
@@ -37,7 +38,10 @@ const AddBullet = () => {
           onChange={(e) => setBulletText(e.target.value)}
         />
 
-        <button onClick={addBulletHandler} className="bg-green-500 text-white px-32 py-2 rounded">
+        <button
+          onClick={addCompanyInformationItemHandler}
+          className="bg-green-500 text-white px-32 py-2 rounded"
+        >
           Agregar
         </button>
       </div>

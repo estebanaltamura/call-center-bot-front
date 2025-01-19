@@ -1,12 +1,12 @@
 // ** Context
-import { useSystemPromptContext } from 'contexts/SystemPromptsProvider';
+import { useCompanyContext } from 'contexts/CompanyProvider';
 
 // ** components
-import PromptSystemEditViewContainer from 'components/systemPromptTab/editView/EditViewContainer';
-import SystemPromptMainViewContainer from 'components/systemPromptTab/mainView/MainViewContainer';
+import PromptSystemEditViewContainer from 'components/bussinessTab/editView/EditViewContainer';
+import SystemPromptMainViewContainer from 'components/bussinessTab/mainView/MainViewContainer';
 
-const SystemPromptTab = () => {
-  const { mode } = useSystemPromptContext();
+const BussinesTab = () => {
+  const { mode } = useCompanyContext();
 
   //Sirve para generar documentos en firestore con cadenas de texto deinidas por el usuario que tambien se indica en que orden van a ser concatenadas
   //Se pueden crear multiples documentos
@@ -20,4 +20,4 @@ const SystemPromptTab = () => {
   } else return <div>Modo no definido</div>;
 };
 
-export default SystemPromptTab;
+export default BussinesTab;

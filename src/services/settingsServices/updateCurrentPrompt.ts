@@ -1,9 +1,9 @@
 import { Entities } from 'types/dynamicSevicesTypes';
 import { SERVICES } from '..';
 
-const updateCurrentPromptTitle = async (currentPromptTitle: string) => {
+const updateCurrentPromptTitle = async (currentBussinesName: string) => {
   try {
-    const payload = { currentPromptTitle };
+    const payload = { currentBussinesName };
 
     SERVICES.CMS.update(Entities.settings, 'global', payload);
   } catch (error) {

@@ -2,14 +2,16 @@ import { OrderedListType } from 'types';
 import { v4 as uuidv4 } from 'uuid';
 import { useEffect, useRef } from 'react';
 import { useState } from 'react';
-import { useSystemPromptContext } from 'contexts/SystemPromptsProvider';
+import { useCompanyContext } from 'contexts/CompanyProvider';
 import Typo from 'components/general/Typo';
 import { useEditViewContext } from '../EditViewContainer';
 import ServicesList from '../servicesList/ServicesList';
 
 const OrderedList = () => {
-  const { orderedList, servicesOrderIndex, setServicesOrderIndex, tempBullets } = useEditViewContext();
-  const { moveUpBullets, moveDownBullets, deleteBullet, updatePrompt } = useSystemPromptContext();
+  const { orderedList, servicesOrderIndex, setServicesOrderIndex, tempCompanyInformation } =
+    useEditViewContext();
+  const { moveUpCompanyInformationItem, moveDownCompanyInformationItem, deleteCompanyInformationItem } =
+    useCompanyContext();
 
   const [isExpanded, setIsExpanded] = useState(false);
   const [isOverflowing, setIsOverflowing] = useState(false);
@@ -51,7 +53,7 @@ const OrderedList = () => {
               )}
 
               {item.type === 'service' && (
-                <div key={uuidv4()} className="flex flex-col border rounded">
+                <div key={uuidv4()} className="flex flex-col border border-black rounded-b">
                   <div className="relative bg-[#3b82f6]  flex h-[73px] justify-center items-center rounded-t">
                     <Typo type="title2Semibold">SERVICIOS</Typo>
 
@@ -109,12 +111,12 @@ const OrderedList = () => {
                     />
 
                     <div className="flex  gap-2 ml-2 h-[40px] justify-center items-center">
-                      bulletIndex {bulletIndex}
-                      {bulletIndex < tempBullets.length - 1 ? (
+                      {bulletIndex < tempCompanyInformation.length - 1 ? (
                         <button
                           onClick={() => {
                             setIsExpanded(false);
-                            bulletIndex !== servicesOrderIndex - 1 && moveDownBullets(bulletIndex);
+                            bulletIndex !== servicesOrderIndex - 1 &&
+                              moveDownCompanyInformationItem(bulletIndex);
                             bulletIndex === servicesOrderIndex - 1 &&
                               setServicesOrderIndex(servicesOrderIndex - 1);
                           }}
@@ -122,8 +124,8 @@ const OrderedList = () => {
                         >
                           ↓
                         </button>
-                      ) : bulletIndex === tempBullets.length - 1 &&
-                        servicesOrderIndex === tempBullets.length ? (
+                      ) : bulletIndex === tempCompanyInformation.length - 1 &&
+                        servicesOrderIndex === tempCompanyInformation.length ? (
                         <button
                           onClick={() => {
                             setIsExpanded(false);
@@ -146,7 +148,7 @@ const OrderedList = () => {
 
                             //El item por encima es un bullet
                             if (bulletIndex > 0 && index !== servicesOrderIndex + 1) {
-                              moveUpBullets(bulletIndex);
+                              moveUpCompanyInformationItem(bulletIndex);
                             }
                             //El item por encima es un servicio aunque hay mas bullets
                             else if (bulletIndex > 0 && index === servicesOrderIndex + 1) {
@@ -168,7 +170,7 @@ const OrderedList = () => {
                         </button>
                       )}
                       <button
-                        onClick={() => deleteBullet(bulletIndex)}
+                        onClick={() => deleteCompanyInformationItem(bulletIndex)}
                         className="bg-red-600 px-2 rounded w-[35px] h-[35px] flex items-center justify-center"
                       >
                         🗑️

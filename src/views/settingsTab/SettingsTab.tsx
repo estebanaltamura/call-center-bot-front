@@ -2,19 +2,20 @@
 import React, { useContext } from 'react';
 
 // ** Contexts
-import { ISettings, SettingsContext } from 'contexts/SettingsProvider';
-import { useSystemPromptContext } from 'contexts/SystemPromptsProvider';
+import { SettingsContext } from 'contexts/SettingsProvider';
+import { useCompanyContext } from 'contexts/CompanyProvider';
 
 // ** Services
 import { SERVICES } from 'services/index';
+import { ISettings } from 'types/dynamicSevicesTypes';
 
 const SettingsTab = () => {
   const settings = useContext(SettingsContext);
 
   // Titulo del currentPrompt desde el contexto
-  const { currentPromptTitle } = settings as ISettings;
+  const { currentBussinesName } = settings as ISettings;
   // Data de todos los sistemPrompts en db
-  const { allSystemPromptList } = useSystemPromptContext();
+  const { allBussinesesList } = useCompanyContext();
 
   // Manejador de cambio en el dropdown
   const handleChangePromptTitle = async (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -29,7 +30,7 @@ const SettingsTab = () => {
       <div className="flex items-center space-x-2">
         <span className="font-semibold">currentPrompt:</span>
         <select
-          value={currentPromptTitle || 'null'}
+          value={currentBussinesName || 'null'}
           onChange={handleChangePromptTitle}
           className="border rounded px-2 py-1"
         >
@@ -38,11 +39,11 @@ const SettingsTab = () => {
             Selecciona un prompt
           </option>
 
-          {allSystemPromptList.map((doc) => (
+          {allBussinesesList.map((doc) => (
             <option
               key={doc.title}
               value={doc.title}
-              className={currentPromptTitle === doc.title ? 'text-blue-500 font-bold' : ''}
+              className={currentBussinesName === doc.title ? 'text-blue-500 font-bold' : ''}
             >
               {doc.title}
             </option>
