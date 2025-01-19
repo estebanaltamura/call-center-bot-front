@@ -46,8 +46,7 @@ interface EditViewContextType {
   setOrderedList: React.Dispatch<React.SetStateAction<any[]>>;
 
   tempCompanyServices: IService[];
-  servicesOrderIndex: number;
-  setServicesOrderIndex: React.Dispatch<React.SetStateAction<number>>;
+
   tempCompanyInformation: IOptionTextItem[];
   saveHandler: () => void;
   handleCancel: () => void;
@@ -82,9 +81,6 @@ const EditViewContainer = () => {
 
   // Ordered List
   const [orderedList, setOrderedList] = useState<OrderedListType[]>([]);
-  const [servicesOrderIndex, setServicesOrderIndex] = useState<number>(
-    companyToEdit?.servicesOrderIndex || 0,
-  );
 
   // Bullets
   const [bulletOption, setBulletOption] = useState(bulletOptions[0].options[0]);
@@ -139,71 +135,12 @@ const EditViewContainer = () => {
   // --------------------- GUARDAR / CANCELAR -----------------------
   // ----------------------------------------------------------------
   const saveHandler = () => {
-    handleSave(servicesOrderIndex);
+    handleSave();
   };
 
   // ----------------------------------------------------------------
   // ---------- EFECTOS PARA ARMAR EL ORDEN SEGÚN BULLETS -----------
   // ----------------------------------------------------------------
-  useEffect(() => {
-    if (tempCompanyInformation.length === 0 && tempCompanyServices.length === 0) {
-      setOrderedList([
-        {
-          type: 'noData' as unknown as 'noData',
-        },
-      ]);
-      return;
-    }
-
-    if (tempCompanyInformation.length === 0 && tempCompanyServices.length > 0) {
-      setOrderedList([
-        {
-          type: 'service' as unknown as 'service',
-        },
-      ]);
-      return;
-    }
-
-    if (tempCompanyInformation.length > 0 && tempCompanyServices.length === 0) {
-      setOrderedList([
-        ...tempCompanyInformation.map((item) => ({
-          text: item.text,
-          type: 'bullet' as unknown as 'bullet',
-        })),
-      ]);
-      return;
-    }
-
-    if (tempCompanyInformation.length > 0 && tempCompanyServices.length > 0) {
-      const orderedListToPush = [
-        ...tempCompanyInformation
-          .map((item) => ({
-            text: item.text,
-            type: 'bullet' as unknown as 'bullet',
-          }))
-          .slice(0, servicesOrderIndex),
-        { type: 'service' as unknown as 'service' },
-        ...tempCompanyInformation
-          .map((item) => ({
-            text: item.text,
-            type: 'bullet' as unknown as 'bullet',
-          }))
-          .slice(servicesOrderIndex),
-      ];
-
-      setOrderedList(orderedListToPush);
-      return;
-    }
-
-    console.log(
-      'tempBullets',
-      tempCompanyInformation,
-      'tempServices',
-      tempCompanyServices,
-      'servicesOrderIndex',
-      servicesOrderIndex,
-    );
-  }, [tempCompanyInformation, tempCompanyServices, servicesOrderIndex]);
 
   useEffect(() => {
     console.log('ORDERED LIST', orderedList);
@@ -248,8 +185,7 @@ const EditViewContainer = () => {
     // ----------------------------------------------------------------
     orderedList,
     setOrderedList,
-    servicesOrderIndex,
-    setServicesOrderIndex,
+
     tempCompanyInformation,
 
     // ----------------------------------------------------------------

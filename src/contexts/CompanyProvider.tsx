@@ -38,7 +38,7 @@ interface SystemContextType {
   addCompanyInformationItem: (option: string, text: string) => void;
   moveUpCompanyInformationItem: (index: number) => void;
   moveDownCompanyInformationItem: (index: number) => void;
-  handleSave: (servicesOrderIndex: number) => Promise<void>;
+  handleSave: () => Promise<void>;
   handleCancel: () => void;
 
   addCompanyService: (service: IService) => void;
@@ -146,7 +146,7 @@ export const CompanyProvider = ({ children }: { children: React.ReactNode }) => 
     setTempCompanyServices(updated);
   };
 
-  const handleSave = async (servicesOrderIndex: number) => {
+  const handleSave = async () => {
     if (!companyToEdit) return;
 
     const payload = {

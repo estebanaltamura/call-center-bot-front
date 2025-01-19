@@ -1,18 +1,10 @@
 import { v4 as uuidv4 } from 'uuid';
 import { IService } from 'types';
 import { useCompanyContext } from 'contexts/CompanyProvider';
-import { useRef } from 'react';
-import { useState } from 'react';
+import ServiceListItem from './ServiceListItem';
 
 const ServicesList = () => {
   const { tempCompanyServices } = useCompanyContext();
-  const { deleteService, moveUpCompanyServices, moveDownCompanyServices } = useCompanyContext();
-  const [isExpanded, setIsExpanded] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  const toggleExpand = () => {
-    setIsExpanded((prev) => !prev);
-  };
 
   return (
     <div className="p-4 bg-gray-50 rounded space-y-4">
@@ -22,74 +14,12 @@ const ServicesList = () => {
 
       <div className="space-y-2">
         {tempCompanyServices.map((service, index) => (
-          <div className="relative bg-white border rounded p-2 flex flex-col" key={index}>
-            <div className="relative bg-white border rounded px-2 flex h-[45px] justify-first items-center">
-              <span className="font-bold">
-                {service.title}
-                {index}
-                {tempCompanyServices.length - 1}
-              </span>
-              <div className="absolute right-2 flex items-center justify-center gap-2">
-                <button
-                  disabled={index === tempCompanyServices.length - 1}
-                  onClick={() => {
-                    setIsExpanded(false);
-                    moveDownCompanyServices(index);
-                  }}
-                  className={`${
-                    index === tempCompanyServices.length - 1 ? 'bg-gray-400' : 'bg-gray-200'
-                  } px-2 rounded w-[35px] h-[35px]`}
-                >
-                  ↓
-                </button>
-
-                <button
-                  disabled={index === 0}
-                  onClick={() => {
-                    setIsExpanded(false);
-                    moveUpCompanyServices(index);
-                  }}
-                  className={`${index === 0 ? 'bg-gray-400' : 'bg-gray-200'} px-2 rounded w-[35px] h-[35px]`}
-                >
-                  ↑
-                </button>
-
-                <button
-                  onClick={() => deleteService(index)}
-                  className="bg-red-600 px-2 rounded w-[35px] h-[35px] flex items-center justify-center"
-                >
-                  🗑️
-                </button>
-              </div>
-            </div>
-
-            {isExpanded && (
-              <div
-                ref={containerRef}
-                className={`
-           transition-all duration-300 ease-in-out
-           ${isExpanded ? 'max-h-[600px] overflow-auto' : 'max-h-[40px] overflow-hidden'}
-         `}
-              >
-                <p className="mt-2">{service.description}</p>
-                {service.items && service.items.length > 0 && (
-                  <ul className="list-disc ml-5 mt-2">
-                    {service.items.map((item, idx) => (
-                      <li key={idx}>
-                        {item.option}: {item.text}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-            )}
-
-            <div className="flex justify-center">
-              <button onClick={toggleExpand} className="text-gray-500 hover:text-black flex items-center">
-                {isExpanded ? '▲' : '▼'}
-              </button>
-            </div>
-          </div>
+          <ServiceListItem
+            key={uuidv4()}
+            service={service}
+            index={index}
+            tempCompanyServicesLength={tempCompanyServices.length}
+          />
         ))}
       </div>
     </div>
