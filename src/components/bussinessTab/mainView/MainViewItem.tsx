@@ -94,7 +94,7 @@ const MainViewItem = ({ docItem }: { docItem: IcompanyEntity }) => {
         ) : (
           <button
             onClick={reactivateCompanyHandler}
-            className="bg-red-600 text-white px-1 py-1 rounded flex items-center w-[40px] h-[40px] justify-center"
+            className="bg-violet-600 text-white px-1 py-1 rounded flex items-center w-[40px] h-[40px] justify-center"
             title="Reactivar"
           >
             R

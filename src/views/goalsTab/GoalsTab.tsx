@@ -98,7 +98,7 @@ const GoalsTab: React.FC = () => {
       <div className="p-4 w-full mx-auto space-y-6">
         <h1 className="text-xl font-bold">Goals</h1>
 
-        <button onClick={handleGoToCreate} className="bg-blue-500 text-white px-4 py-2 rounded">
+        <button onClick={handleGoToCreate} className="bg-blue-600 text-white px-4 py-2 rounded">
           Agregar Goal
         </button>
 
@@ -214,7 +214,7 @@ const GoalsTab: React.FC = () => {
         <button
           onClick={handleCreateGoal}
           className={`px-4 py-2 rounded text-white ${
-            isCreateGoalDisabled ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-500'
+            isCreateGoalDisabled ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600'
           }`}
           disabled={isCreateGoalDisabled}
         >

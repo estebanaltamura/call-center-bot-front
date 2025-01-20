@@ -1,23 +1,49 @@
+// ** React
+import { useState } from 'react';
+
+// ** Enums
 import { serviceOptions } from 'enums/systemPrompts';
+
+// ** Custom hooks
+import useServices from 'customHooks/company/services';
 
 // ** 3rd party
 import { v4 as uuidv4 } from 'uuid';
-import { useEditViewContext } from '../EditViewContainer';
 
 const AddService = () => {
-  const {
-    handleAddServiceItemSegment,
-    handleFinishService,
-    serviceItems,
-    serviceOption,
-    setServiceOption,
-    serviceText,
-    setServiceText,
-    serviceTitle,
-    setServiceTitle,
-    serviceDescription,
-    setServiceDescription,
-  } = useEditViewContext();
+  const { addCompanyService } = useServices();
+  const [serviceTitle, setServiceTitle] = useState('');
+  const [serviceDescription, setServiceDescription] = useState('');
+  const [serviceOption, setServiceOption] = useState(serviceOptions[0].options[0]);
+  const [serviceText, setServiceText] = useState('');
+  const [serviceItems, setServiceItems] = useState<{ option: string; text: string }[]>([]);
+
+  const handleAddServiceItemSegment = () => {
+    if (!serviceText.trim()) return;
+    setServiceItems((prev) => [
+      ...prev,
+      {
+        option: serviceOption.trim(),
+        text: serviceText.trim(),
+      },
+    ]);
+    setServiceOption(serviceOptions[0].options[0]);
+    setServiceText('');
+  };
+
+  const handleFinishService = () => {
+    if (!serviceTitle.trim() || !serviceDescription.trim() || serviceItems.length === 0) return;
+    const newService = {
+      title: serviceTitle.trim(),
+      description: serviceDescription.trim(),
+      items: serviceItems,
+    };
+    addCompanyService(newService);
+    setServiceTitle('');
+    setServiceDescription('');
+    setServiceItems([]);
+  };
+
   return (
     <div className="border border-gray-400 p-4 bg-gray-50 rounded space-y-4">
       <h2 className="font-semibold text-center">Agregar servicio</h2>
@@ -87,7 +113,7 @@ const AddService = () => {
 
       {/* Botón para crear el servicio */}
       <div className="flex justify-center">
-        <button onClick={handleFinishService} className="bg-blue-500 text-white px-6 py-2 rounded">
+        <button onClick={handleFinishService} className="bg-blue-600 text-white px-6 py-2 rounded">
           Finalizar Servicio
         </button>
       </div>

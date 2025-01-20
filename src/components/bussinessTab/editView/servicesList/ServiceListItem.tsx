@@ -22,7 +22,7 @@ const ServiceListItem = ({
   return (
     <div
       className={`relative bg-white  ${
-        isEditing ? 'border-gray-500 border-[2px]' : 'border-[1px]'
+        isEditing ? 'border-gray-600 border-[2px]' : 'border-[1px]'
       }  rounded p-4 flex flex-col`}
     >
       {isEditing && (

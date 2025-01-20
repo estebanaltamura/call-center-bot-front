@@ -1,11 +1,25 @@
+// ** React
+import { useState } from 'react';
+
+// ** Custom hooks
+import useCompanyInformation from 'customHooks/company/companyInformation';
+
+// ** Enums
 import { bulletOptions } from 'enums/systemPrompts';
+
 // ** 3rd party
 import { v4 as uuidv4 } from 'uuid';
-import { useEditViewContext } from '../EditViewContainer';
 
 const AddBullet = () => {
-  const { addCompanyInformationItemHandler, bulletOption, setBulletOption, bulletText, setBulletText } =
-    useEditViewContext();
+  const [bulletOption, setBulletOption] = useState(bulletOptions[0].options[0]);
+  const [bulletText, setBulletText] = useState('');
+  const { addCompanyInformationItem } = useCompanyInformation();
+
+  const addCompanyInformationItemHandler = () => {
+    if (!bulletText.trim()) return;
+    addCompanyInformationItem(bulletOption, bulletText);
+    setBulletText('');
+  };
 
   return (
     <div className="border border-gray-400 p-4 bg-gray-50 rounded space-y-4">

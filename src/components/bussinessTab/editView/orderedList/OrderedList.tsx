@@ -20,8 +20,10 @@ const OrderedList = () => {
         <>
           {tempCompanyInformation && tempCompanyInformation.length > 0 && (
             <div key={uuidv4()} className="flex flex-col border border-black rounded-b">
-              <div className="relative bg-[#3b82f6]  flex h-[73px] justify-center items-center rounded-t">
-                <Typo type="title2Semibold">INFORMACION DE LA EMPRESA</Typo>
+              <div className="relative bg-blue-600  flex h-[73px] justify-center items-center rounded-t">
+                <Typo type="title2Semibold" style={{ color: 'white' }}>
+                  INFORMACION DE LA EMPRESA
+                </Typo>
               </div>
               <CompanyInformationList />
             </div>
@@ -29,8 +31,10 @@ const OrderedList = () => {
 
           {tempCompanyServices && tempCompanyServices.length > 0 && (
             <div key={uuidv4()} className="flex flex-col border border-black rounded">
-              <div className="relative bg-[#3b82f6]  flex h-[73px] justify-center items-center rounded-t">
-                <Typo type="title2Semibold">SERVICIOS</Typo>
+              <div className="relative bg-blue-600  flex h-[73px] justify-center items-center rounded-t">
+                <Typo type="title2Semibold" style={{ color: 'white' }}>
+                  SERVICIOS
+                </Typo>
               </div>
               <ServicesList />
             </div>

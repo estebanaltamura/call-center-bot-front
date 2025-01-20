@@ -66,7 +66,7 @@ const MainViewContainer = () => {
             SERVICES.COMPANY.create(newPromptTitle);
             setNewPromptTitle('');
           }}
-          className="bg-blue-500 text-white px-4 py-1 rounded"
+          className="bg-blue-600 text-white px-4 py-1 rounded"
         >
           Crear negocio
         </button>
@@ -79,7 +79,7 @@ const MainViewContainer = () => {
             onChange={() => setIncludeInactive((prev) => !prev)}
             className="w-4 h-4 cursor-pointer"
           />
-          <span>Incluir borrados</span>
+          <span>Incluir eliminados</span>
         </div>
       </div>
       {allBussinesesList.length === 0 && <p className="text-gray-500">No hay documentos aún.</p>}
