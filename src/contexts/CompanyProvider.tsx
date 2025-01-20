@@ -10,20 +10,20 @@ import { collection, onSnapshot, query } from 'firebase/firestore';
 
 // ** Services
 import { SERVICES } from 'services/index';
-import { Entities, IcompanyEntity, ISystemPromptEntity } from 'types/dynamicSevicesTypes';
+import { Entities, IcompanyEntity } from 'types/dynamicSevicesTypes';
 
 // ** Types
 import { IOptionTextItem, IService } from 'types';
 
 interface SystemContextType {
+  mode: 'main' | 'edit';
+  setMode: React.Dispatch<React.SetStateAction<'main' | 'edit'>>;
+
   currentBussines: IcompanyEntity | null;
   setCurrentBussines: React.Dispatch<React.SetStateAction<IcompanyEntity | null>>;
 
   allBussinesesList: IcompanyEntity[];
   setAllBussinesesList: React.Dispatch<React.SetStateAction<IcompanyEntity[]>>;
-
-  mode: 'main' | 'edit';
-  setMode: React.Dispatch<React.SetStateAction<'main' | 'edit'>>;
 
   companyToEdit: IcompanyEntity | null;
   setCompanyToEdit: React.Dispatch<React.SetStateAction<IcompanyEntity | null>>;
@@ -35,17 +35,8 @@ interface SystemContextType {
   setTempCompanyServices: React.Dispatch<React.SetStateAction<IService[]>>;
 
   handleModifyDoc: (docId: string) => Promise<void>;
-  addCompanyInformationItem: (option: string, text: string) => void;
-  moveUpCompanyInformationItem: (index: number) => void;
-  moveDownCompanyInformationItem: (index: number) => void;
   handleSave: () => Promise<void>;
   handleCancel: () => void;
-
-  addCompanyService: (service: IService) => void;
-  moveUpCompanyServices: (index: number) => void;
-  moveDownCompanyServices: (index: number) => void;
-  deleteCompanyInformationItem: (index: number) => void;
-  deleteService: (index: number) => void;
 }
 
 const CompanyContext = createContext<SystemContextType | undefined>(undefined);
@@ -60,12 +51,12 @@ export const useCompanyContext = () => {
 
 export const CompanyProvider = ({ children }: { children: React.ReactNode }) => {
   const settings = useContext(SettingsContext);
+
+  // States
+  const [mode, setMode] = useState<'main' | 'edit'>('main');
   const [currentBussines, setCurrentBussines] = useState<IcompanyEntity | null>(null);
   const [allBussinesesList, setAllBussinesesList] = useState<IcompanyEntity[]>([]);
-  const [mode, setMode] = useState<'main' | 'edit'>('main');
-
   const [companyToEdit, setCompanyToEdit] = useState<IcompanyEntity | null>(null);
-
   const [tempCompanyInformation, setTempCompanyInformation] = useState<IOptionTextItem[]>([]);
   const [tempCompanyServices, setTempCompanyServices] = useState<IService[]>([]);
 
@@ -90,62 +81,6 @@ export const CompanyProvider = ({ children }: { children: React.ReactNode }) => 
     }
   };
 
-  const addCompanyInformationItem = (option: string, text: string) => {
-    const newItem = { option, text };
-    setTempCompanyInformation([...tempCompanyInformation, newItem]);
-  };
-
-  const deleteCompanyInformationItem = (index: number) => {
-    const updated = [...tempCompanyInformation];
-    updated.splice(index, 1);
-    setTempCompanyInformation(updated);
-  };
-
-  const deleteService = (index: number) => {
-    const updated = [...tempCompanyServices];
-    updated.splice(index, 1);
-    setTempCompanyServices(updated);
-  };
-
-  const moveUpCompanyInformationItem = (index: number) => {
-    console.log(index);
-    if (index === 0) return;
-    const updated = [...tempCompanyInformation];
-    [updated[index - 1], updated[index]] = [updated[index], updated[index - 1]];
-    setTempCompanyInformation(updated);
-  };
-
-  const moveDownCompanyInformationItem = (index: number) => {
-    if (index === tempCompanyInformation.length - 1) return;
-    const updated = [...tempCompanyInformation];
-    [updated[index + 1], updated[index]] = [updated[index], updated[index + 1]];
-    setTempCompanyInformation(updated);
-  };
-
-  const addCompanyService = (service: IService) => {
-    setTempCompanyServices((prev) => [...prev, service]);
-  };
-
-  /**
-   * Mueve hacia arriba el servicio en el array tempServices.
-   */
-  const moveUpCompanyServices = (index: number) => {
-    if (index === 0) return;
-    const updated = [...tempCompanyServices];
-    [updated[index - 1], updated[index]] = [updated[index], updated[index - 1]];
-    setTempCompanyServices(updated);
-  };
-
-  /**
-   * Mueve hacia abajo el servicio en el array tempServices.
-   */
-  const moveDownCompanyServices = (index: number) => {
-    if (index === tempCompanyServices.length - 1) return;
-    const updated = [...tempCompanyServices];
-    [updated[index + 1], updated[index]] = [updated[index], updated[index + 1]];
-    setTempCompanyServices(updated);
-  };
-
   const handleSave = async () => {
     if (!companyToEdit) return;
 
@@ -160,6 +95,8 @@ export const CompanyProvider = ({ children }: { children: React.ReactNode }) => 
 
       alert('Documento guardado correctamente');
       setMode('main');
+      setTempCompanyServices([]);
+      setTempCompanyInformation([]);
       setCompanyToEdit(null);
     } catch (error) {
       console.error('Error al guardar documento:', error);
@@ -169,6 +106,8 @@ export const CompanyProvider = ({ children }: { children: React.ReactNode }) => 
 
   const handleCancel = () => {
     setMode('main');
+    setTempCompanyServices([]);
+    setTempCompanyInformation([]);
     setCompanyToEdit(null);
   };
 
@@ -179,6 +118,7 @@ export const CompanyProvider = ({ children }: { children: React.ReactNode }) => 
         (item) => item.title === settings?.currentBussinesName,
       );
 
+      console.log(allBussinesesList, settings?.currentBussinesName);
       setCurrentBussines(currentBussinesData[0]);
     }
   }, [settings?.currentBussinesName, allBussinesesList]);
@@ -203,37 +143,27 @@ export const CompanyProvider = ({ children }: { children: React.ReactNode }) => 
   }, []);
 
   useEffect(() => {
-    console.log('COMPANY INFORMATION', tempCompanyInformation, 'SERVICES', tempCompanyServices);
-  }, [tempCompanyInformation, tempCompanyServices]);
+    console.log(currentBussines);
+  }, [currentBussines]);
 
   return (
     <CompanyContext.Provider
       value={{
+        mode,
+        setMode,
         currentBussines,
         setCurrentBussines,
         allBussinesesList,
         setAllBussinesesList,
-        mode,
-        setMode,
         companyToEdit,
         setCompanyToEdit,
-
-        tempCompanyInformation,
-        setTempCompanyInformation,
-
         handleModifyDoc,
-        addCompanyInformationItem,
-        moveUpCompanyInformationItem,
-        moveDownCompanyInformationItem,
         handleSave,
         handleCancel,
-        deleteCompanyInformationItem,
+        tempCompanyInformation,
+        setTempCompanyInformation,
         tempCompanyServices,
         setTempCompanyServices,
-        addCompanyService,
-        moveUpCompanyServices,
-        moveDownCompanyServices,
-        deleteService,
       }}
     >
       {children}

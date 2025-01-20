@@ -29,7 +29,7 @@ export const bulletOptions = [
 
 export const serviceOptions = [
   {
-    label: 'Requerido',
+    label: 'Características del servicio',
     options: ['Tiempo de entrega:', 'Metodo de pago:'],
   },
 ];

@@ -1,7 +1,7 @@
 import { Entities } from 'types/dynamicSevicesTypes';
 import { SERVICES } from '..';
 
-const updateCurrentPromptTitle = async (currentBussinesName: string) => {
+const updateCurrentBussinesTitle = async (currentBussinesName: string) => {
   try {
     const payload = { currentBussinesName };
 
@@ -12,4 +12,4 @@ const updateCurrentPromptTitle = async (currentBussinesName: string) => {
   }
 };
 
-export default updateCurrentPromptTitle;
+export default updateCurrentBussinesTitle;

@@ -1,6 +1,10 @@
-import { v4 as uuidv4 } from 'uuid';
-import { IService } from 'types';
+// ** Context
 import { useCompanyContext } from 'contexts/CompanyProvider';
+
+// ** 3rd library
+import { v4 as uuidv4 } from 'uuid';
+
+// ** Components
 import ServiceListItem from './ServiceListItem';
 
 const ServicesList = () => {

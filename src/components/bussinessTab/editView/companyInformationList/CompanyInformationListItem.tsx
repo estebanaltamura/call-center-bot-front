@@ -1,4 +1,5 @@
 import { useCompanyContext } from 'contexts/CompanyProvider';
+import useCompanyInformation from 'customHooks/company/companyInformation';
 import { bulletOptions } from 'enums/systemPrompts'; // Ajusta la ruta si tus opciones están en otro lugar
 import { useState, useRef } from 'react';
 import { IOptionTextItem } from 'types';
@@ -13,12 +14,10 @@ const CompanyInformationListItem = ({
   index: number;
   tempCompanyInformationLength: number;
 }) => {
-  const {
-    deleteCompanyInformationItem,
-    moveUpCompanyInformationItem,
-    moveDownCompanyInformationItem,
-    setTempCompanyInformation,
-  } = useCompanyContext();
+  const { setTempCompanyInformation } = useCompanyContext();
+
+  const { deleteCompanyInformationItem, moveUpCompanyInformationItem, moveDownCompanyInformationItem } =
+    useCompanyInformation();
 
   const [isExpanded, setIsExpanded] = useState(false);
   const [isEditing, setIsEditing] = useState(false);

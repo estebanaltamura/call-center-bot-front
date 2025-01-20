@@ -24,6 +24,7 @@ export interface ISystemPromptEntity extends ISystemPrompt {
   state: StateTypes;
   createdAt: Date;
   updatedAt: Date;
+  deletedAt: Date;
 }
 
 export interface ISettingsEntity extends ISettings {
@@ -31,6 +32,7 @@ export interface ISettingsEntity extends ISettings {
   state: StateTypes;
   createdAt: Date;
   updatedAt: Date;
+  deletedAt: Date;
 }
 
 export interface IcompanyEntity extends Icompany {
@@ -38,6 +40,7 @@ export interface IcompanyEntity extends Icompany {
   state: StateTypes;
   createdAt: Date;
   updatedAt: Date;
+  deletedAt: Date;
 }
 
 export interface ISystemPrompt {

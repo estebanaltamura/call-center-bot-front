@@ -1,7 +1,7 @@
-import { Entities } from 'types/dynamicSevicesTypes';
+import { Entities, StateTypes } from 'types/dynamicSevicesTypes';
 import { SERVICES } from '..';
 
-export const create = async (title: string) => {
+export const createCompany = async (title: string) => {
   if (!title.trim()) {
     alert('Por favor, ingresa un nombre para el documento.');
     return;

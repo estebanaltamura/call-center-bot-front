@@ -19,6 +19,8 @@ import AddService from './addService/AddService';
 import ServicesList from './servicesList/ServicesList';
 import OrderedList from './orderedList/OrderedList';
 import { IcompanyEntity, ISystemPromptEntity } from 'types/dynamicSevicesTypes';
+import useServices from 'customHooks/company/services';
+import useCompanyInformation from 'customHooks/company/companyInformation';
 
 /* ------------------------------------------------------------------
    Creamos el nuevo contexto para encapsular todos los estados y 
@@ -69,11 +71,13 @@ const EditViewContainer = () => {
     tempCompanyInformation,
     companyToEdit,
     tempCompanyServices,
-    addCompanyInformationItem,
-    addCompanyService,
+
     handleSave,
     handleCancel,
   } = useCompanyContext();
+
+  const { addCompanyService } = useServices();
+  const { addCompanyInformationItem } = useCompanyInformation();
 
   // ----------------------------------------------------------------
   // ---------------------- ESTADOS GENERALES ------------------------

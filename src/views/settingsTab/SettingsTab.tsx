@@ -20,7 +20,7 @@ const SettingsTab = () => {
   // Manejador de cambio en el dropdown
   const handleChangePromptTitle = async (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedCurrentPromptTitle = e.target.value;
-    await SERVICES.SETTINGS.updateCurrentPromptTitle(selectedCurrentPromptTitle);
+    await SERVICES.SETTINGS.updateCurrentBussinesTitle(selectedCurrentPromptTitle);
   };
 
   return (
@@ -28,7 +28,7 @@ const SettingsTab = () => {
       <h1 className="text-xl font-bold">Settings</h1>
 
       <div className="flex items-center space-x-2">
-        <span className="font-semibold">currentPrompt:</span>
+        <span className="font-semibold">Negocio seleccionado:</span>
         <select
           value={currentBussinesName || 'null'}
           onChange={handleChangePromptTitle}
@@ -36,7 +36,7 @@ const SettingsTab = () => {
         >
           {/* Opción inicial */}
           <option value="null" disabled>
-            Selecciona un prompt
+            Selecciona un negocio
           </option>
 
           {allBussinesesList.map((doc) => (
