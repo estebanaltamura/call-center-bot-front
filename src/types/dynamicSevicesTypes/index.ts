@@ -5,18 +5,21 @@ export enum Entities {
   'systemPrompts' = 'systemPrompts',
   'settings' = 'settings',
   'companies' = 'companies',
+  'assistant' = 'assistant',
 }
 
 export type EntityTypesMapReturnedValues = {
   [Entities.systemPrompts]: ISystemPromptEntity;
   [Entities.settings]: ISettingsEntity;
   [Entities.companies]: IcompanyEntity;
+  [Entities.assistant]: IAssistantEntity;
 };
 
 export type EntityTypesMapPayloadValues = {
   [Entities.systemPrompts]: ISystemPrompt;
   [Entities.settings]: ISettings;
   [Entities.companies]: Icompany;
+  [Entities.assistant]: IAssistant;
 };
 
 export interface ISystemPromptEntity extends ISystemPrompt {
@@ -43,6 +46,13 @@ export interface IcompanyEntity extends Icompany {
   deletedAt: Date;
 }
 
+export interface IAssistantEntity extends IAssistant {
+  id: string;
+  state: StateTypes;
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt: Date;
+}
 export interface ISystemPrompt {
   title: string;
   bullets: string[];
@@ -53,6 +63,7 @@ export interface ISystemPrompt {
 
 export interface ISettings {
   currentBussinesName: string;
+  currentAssistantName: string;
 }
 
 export interface Icompany {
@@ -60,6 +71,11 @@ export interface Icompany {
   features: IOptionTextItem[];
   services: IService[];
   servicesOrderIndex: number;
+}
+
+export interface IAssistant {
+  title: string;
+  features: IOptionTextItem[];
 }
 
 export enum StateTypes {

@@ -8,7 +8,9 @@ import { dynamicUpdate } from './dynamicServices/dynamicUpdate';
 
 // ** CustomServices
 import updateCurrentBussinesTitle from './settingsServices/updateCurrentPrompt';
-import { createCompany } from './company/create';
+import { createCompany } from './company/createCompany';
+import { createAssistant } from './assistant/createAssistant';
+import updateCurrentAssistantTitle from './settingsServices/updateCurrentAssistantTitle';
 
 export const SERVICES = {
   CMS: {
@@ -22,7 +24,11 @@ export const SERVICES = {
   COMPANY: {
     create: createCompany,
   },
+  ASSISTANT: {
+    create: createAssistant,
+  },
   SETTINGS: {
     updateCurrentBussinesTitle: updateCurrentBussinesTitle,
+    updateCurrentAssistantTitle: updateCurrentAssistantTitle,
   },
 };

@@ -39,6 +39,7 @@ const ServiceListEditItem = ({
   const { deleteService } = useServices();
   const { setTempCompanyServices } = useCompanyContext();
 
+  // ** Editing states
   const [isThereAnEditingItem, setIsThereAnEditingItem] = useState(false);
   const [isTitleChanging, setIsTitleChanging] = useState(false);
   const [isDescriptionChanging, setIsDescriptionChanging] = useState(false);
@@ -143,7 +144,6 @@ const ServiceListEditItem = ({
 
   useEffect(() => {
     setIsThereAnEditingItem(tempItems.some((item) => item.isEditing));
-    console.log(tempItems);
   }, [tempItems]);
 
   useEffect(() => {
@@ -152,7 +152,7 @@ const ServiceListEditItem = ({
 
     setIsTitleChanging(titleIsChanging);
     setIsDescriptionChanging(descriptionIsChanging);
-  }, [tempTitle, tempDescription, service]);
+  }, [tempTitle, tempDescription]);
 
   return (
     <div className="transition-all duration-300 ease-in-out max-h-[600px] overflow-auto">

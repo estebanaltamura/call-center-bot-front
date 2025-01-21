@@ -1,5 +1,5 @@
 // ** Contexts
-import { useCompanyContext } from 'contexts/CompanyProvider';
+import { useAssistantContext } from 'contexts/AssistantProvider';
 
 // ** Services
 import { SERVICES } from 'services/index';
@@ -8,40 +8,35 @@ import { SERVICES } from 'services/index';
 import UTILS from 'utils';
 
 // ** Types
-import { Entities, IcompanyEntity, StateTypes } from 'types/dynamicSevicesTypes';
+import { Entities, IAssistantEntity, StateTypes } from 'types/dynamicSevicesTypes';
 
 // ** 3rd party library
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 // ** icons
 import { faFileArrowDown } from '@fortawesome/free-solid-svg-icons';
-import { useAssistantContext } from 'contexts/AssistantProvider';
 
-const MainViewItem = ({ docItem }: { docItem: IcompanyEntity }) => {
+const MainViewItem = ({ docItem }: { docItem: IAssistantEntity }) => {
   const { handleModifyDoc, currentAssistant } = useAssistantContext();
-
-  const handleDownloadPDF = async () => {
-    UTILS.createPdfFromSystemPrompt({ docItem });
-  };
 
   const isActive = currentAssistant?.title === docItem.title;
 
-  const deleteCompanyHandler = () => {
+  const deleteAssistantHandler = () => {
     if (isActive) {
       alert('No puede eliminarse una empresa activa. Asignar otra como activa primero');
       return;
     }
 
     if (confirm('Confirma que quieres eliminar este documento')) {
-      SERVICES.CMS.softDelete(Entities.companies, docItem.id);
+      SERVICES.CMS.softDelete(Entities.assistant, docItem.id);
     } else {
       return;
     }
   };
 
-  const reactivateCompanyHandler = () => {
+  const reactivateAssistantHandler = () => {
     if (confirm('Confirma que quieres reactivar este documento')) {
-      SERVICES.CMS.reactivateSoftDeleted(Entities.companies, docItem.id);
+      SERVICES.CMS.reactivateSoftDeleted(Entities.assistant, docItem.id);
     } else {
       return;
     }
@@ -60,10 +55,6 @@ const MainViewItem = ({ docItem }: { docItem: IcompanyEntity }) => {
         <p className="truncate">
           <strong>{docItem.title || '(Sin título)'}</strong>
         </p>
-        <div className="flex gap-1">
-          <span className="block text-sm text-gray-600">{docItem.features.length} bullets</span>
-          <span className="block text-sm text-gray-600">{docItem.services.length} servicios</span>
-        </div>
       </div>
       <p className="absolute right-1/2 flex justify-end items-center mr-3 font-bold text-blue-600">
         {isActive && 'ACTIVO'}
@@ -78,7 +69,6 @@ const MainViewItem = ({ docItem }: { docItem: IcompanyEntity }) => {
         </button>
 
         <button
-          onClick={handleDownloadPDF}
           className="bg-blue-600 text-white px-1 py-1 rounded flex items-center w-[40px] h-[40px] justify-center text-[18px] font-bold"
           title="Descargar PDF"
         >
@@ -86,7 +76,7 @@ const MainViewItem = ({ docItem }: { docItem: IcompanyEntity }) => {
         </button>
         {docItem.state === StateTypes.active ? (
           <button
-            onClick={deleteCompanyHandler}
+            onClick={deleteAssistantHandler}
             className="bg-red-600 text-white px-1 py-1 rounded flex items-center w-[40px] h-[40px] justify-center"
             title="Eliminar"
           >
@@ -94,7 +84,7 @@ const MainViewItem = ({ docItem }: { docItem: IcompanyEntity }) => {
           </button>
         ) : (
           <button
-            onClick={reactivateCompanyHandler}
+            onClick={reactivateAssistantHandler}
             className="bg-violet-600 text-white px-1 py-1 rounded flex items-center w-[40px] h-[40px] justify-center"
             title="Reactivar"
           >
