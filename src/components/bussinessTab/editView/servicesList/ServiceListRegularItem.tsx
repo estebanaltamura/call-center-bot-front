@@ -15,10 +15,12 @@ const ServiceListRegularItem = ({
   service,
   setIsEditing,
   index,
+  setServiceToEdit,
   tempCompanyServicesLength,
 }: {
   service: IService;
   setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
+  setServiceToEdit: React.Dispatch<React.SetStateAction<IService | undefined>>;
   index: number;
   tempCompanyServicesLength: number;
 }) => {
@@ -62,6 +64,7 @@ const ServiceListRegularItem = ({
           <button
             onClick={() => {
               setIsEditing(true);
+              setServiceToEdit(service);
               setIsExpanded(true);
             }}
             className="bg-gray-200 px-2 w-[40px] h-[40px] rounded text-xl"
