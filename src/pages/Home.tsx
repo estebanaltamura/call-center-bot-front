@@ -10,8 +10,9 @@ import Settings from 'views/settingsTab/SettingsTab';
 import SystemPrompt from 'views/bussinesTab/BussinesTab';
 import BussinesTab from 'views/bussinesTab/BussinesTab';
 import AssistantTab from 'views/assistantTab/Assistant';
-import RulesTab from 'views/rules/Rules';
+import RulesTab from 'views/rules/RulesTab';
 import { useCompanyContext } from 'contexts/CompanyProvider';
+import KnowledgeContextTab from 'views/knowledgeContextTab/KnowledgeContextTab';
 
 const Home = () => {
   const [activeTab, setActiveTab] = useState('chats');
@@ -28,6 +29,8 @@ const Home = () => {
         return <AssistantTab />;
       case 'rules':
         return <RulesTab />;
+      case 'rules':
+        return <KnowledgeContextTab />;
       case 'goals':
         return <Goals />;
       case 'settings':
@@ -76,6 +79,14 @@ const Home = () => {
           }`}
         >
           Reglas
+        </button>
+        <button
+          onClick={() => setActiveTab('knowledgeContext')}
+          className={`flex-1 py-2 text-center ${
+            activeTab === 'knowledgeContext' ? 'border-b-2 border-blue-500 text-blue-500' : 'text-gray-500'
+          }`}
+        >
+          Contexto
         </button>
         <button
           onClick={() => setActiveTab('goals')}

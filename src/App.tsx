@@ -7,6 +7,8 @@ import SettingsProvider from 'contexts/SettingsProvider';
 import SystemPromptProvider from 'contexts/CompanyProvider';
 import GoalsProvider from 'contexts/GoalsProvider';
 import AssistantProvider from 'contexts/AssistantProvider';
+import RulesProvider from 'contexts/RulesProvider';
+import KnowledgeContextProvider from 'contexts/KnoledgeProvider';
 
 function App() {
   return (
@@ -14,20 +16,24 @@ function App() {
       <SystemPromptProvider>
         <AssistantProvider>
           <GoalsProvider>
-            <main className="pt-[48px]">
-              {/* Ajuste del padding top para compensar la altura del AppBar */}
-              <Routes>
-                <Route path="/" element={<Navigate to="/home" />} />
-                <Route
-                  path="/home"
-                  element={
-                    // <AuthGuard>
-                    <Home />
-                    // </AuthGuard>
-                  }
-                />
-              </Routes>
-            </main>
+            <RulesProvider>
+              <KnowledgeContextProvider>
+                <main className="pt-[48px]">
+                  {/* Ajuste del padding top para compensar la altura del AppBar */}
+                  <Routes>
+                    <Route path="/" element={<Navigate to="/home" />} />
+                    <Route
+                      path="/home"
+                      element={
+                        // <AuthGuard>
+                        <Home />
+                        // </AuthGuard>
+                      }
+                    />
+                  </Routes>
+                </main>
+              </KnowledgeContextProvider>
+            </RulesProvider>
           </GoalsProvider>
         </AssistantProvider>
       </SystemPromptProvider>

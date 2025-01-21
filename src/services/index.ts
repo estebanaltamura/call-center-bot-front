@@ -11,6 +11,10 @@ import updateCurrentBussinesTitle from './settingsServices/updateCurrentPrompt';
 import { createCompany } from './company/createCompany';
 import { createAssistant } from './assistant/createAssistant';
 import updateCurrentAssistantTitle from './settingsServices/updateCurrentAssistantTitle';
+import updateCurrentRulesTitle from './settingsServices/updateCurrentRulesTitle';
+import { createRule } from './rules/createRule';
+import updateCurrentKnowledgeContextTitle from './settingsServices/updateCurrentKnowledgeContextTitle';
+import { createKnowledgeContext } from './knowledgeContext/createKnowledgeContext';
 
 export const SERVICES = {
   CMS: {
@@ -27,8 +31,16 @@ export const SERVICES = {
   ASSISTANT: {
     create: createAssistant,
   },
+  RULES: {
+    create: createRule,
+  },
+  KNOWLEDGE_CONTEXT: {
+    create: createKnowledgeContext,
+  },
   SETTINGS: {
     updateCurrentBussinesTitle: updateCurrentBussinesTitle,
     updateCurrentAssistantTitle: updateCurrentAssistantTitle,
+    updateCurrentRulesTitle: updateCurrentRulesTitle,
+    updateCurrentKnowledgeContextTitle: updateCurrentKnowledgeContextTitle,
   },
 };

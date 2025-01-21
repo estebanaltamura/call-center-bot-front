@@ -6,6 +6,8 @@ export enum Entities {
   'settings' = 'settings',
   'companies' = 'companies',
   'assistant' = 'assistant',
+  'rules' = 'rules',
+  'knowledgeContext' = 'knowledgeContext',
 }
 
 export type EntityTypesMapReturnedValues = {
@@ -13,6 +15,8 @@ export type EntityTypesMapReturnedValues = {
   [Entities.settings]: ISettingsEntity;
   [Entities.companies]: IcompanyEntity;
   [Entities.assistant]: IAssistantEntity;
+  [Entities.rules]: IRulesEntity;
+  [Entities.knowledgeContext]: IKnowledgeContextEntity;
 };
 
 export type EntityTypesMapPayloadValues = {
@@ -20,6 +24,8 @@ export type EntityTypesMapPayloadValues = {
   [Entities.settings]: ISettings;
   [Entities.companies]: Icompany;
   [Entities.assistant]: IAssistant;
+  [Entities.rules]: IRules;
+  [Entities.knowledgeContext]: IKnowledgeContext;
 };
 
 export interface ISystemPromptEntity extends ISystemPrompt {
@@ -53,6 +59,23 @@ export interface IAssistantEntity extends IAssistant {
   updatedAt: Date;
   deletedAt: Date;
 }
+
+export interface IRulesEntity extends IRules {
+  id: string;
+  state: StateTypes;
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt: Date;
+}
+
+export interface IKnowledgeContextEntity extends IKnowledgeContext {
+  id: string;
+  state: StateTypes;
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt: Date;
+}
+
 export interface ISystemPrompt {
   title: string;
   bullets: string[];
@@ -64,6 +87,8 @@ export interface ISystemPrompt {
 export interface ISettings {
   currentBussinesName: string;
   currentAssistantName: string;
+  currentRulesName: string;
+  currentKnowledgeContextName: string;
 }
 
 export interface Icompany {
@@ -74,6 +99,16 @@ export interface Icompany {
 }
 
 export interface IAssistant {
+  title: string;
+  features: IOptionTextItem[];
+}
+
+export interface IRules {
+  title: string;
+  features: IOptionTextItem[];
+}
+
+export interface IKnowledgeContext {
   title: string;
   features: IOptionTextItem[];
 }
