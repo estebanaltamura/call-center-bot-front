@@ -1,6 +1,13 @@
-import { useEffect, useState } from 'react';
+// ** React
+import { useEffect } from 'react';
+
+// ** Third Party Components
 import { v4 as uuidv4 } from 'uuid';
+
+// ** Enums
 import { serviceOptions } from 'enums/systemPrompts';
+
+// ** Types
 import { IOptionTextItem } from 'types';
 
 interface ILocalItem extends IOptionTextItem {
@@ -142,17 +149,19 @@ export default function FormSelectFieldList({
     ]);
   };
 
+  useEffect(() => {
+    console.log('ORIGINAL ITEMS', originalItems);
+  }, [originalItems]);
+
   return (
     <div>
       {originalItems.map((item) => {
-        const otherIsEditingExistingItem = !item.isEditing && !item.isNew && isThereAnEditingItem;
-        const otherIsEditingNewItem = !item.isEditing && item.isNew && isThereAnEditingItem;
+        const otherIsCreatingNewItem = !item.isNew && originalItems.some((i) => i.isNew);
+        const otherIsEditing = !item.isEditing && isThereAnEditingItem;
 
-        const otherIsEditing = otherIsEditingExistingItem || otherIsEditingNewItem;
+        const isDisabled = otherIsCreatingNewItem || otherIsEditing;
 
         const cambio = itemCambiado(item);
-
-        if (!cambio) item.isEditing = false;
 
         return (
           <div className="mb-4" key={item.id}>
@@ -197,7 +206,7 @@ export default function FormSelectFieldList({
                   cambiarTexto(item.id, e.target.value);
                 }}
                 // Deshabilitado si hay otro item en edición y este no es el que se está editando
-                disabled={otherIsEditing}
+                disabled={isDisabled}
               />
 
               {item.isNew ? (
@@ -233,7 +242,7 @@ export default function FormSelectFieldList({
                 </div>
               ) : (
                 <button
-                  disabled={isThereAnEditingItem}
+                  disabled={isDisabled}
                   onClick={() => eliminarItem(item.id)}
                   className={`bg-red-600 px-2 w-[40px] h-[40px] flex items-center justify-center rounded text-white ${
                     isThereAnEditingItem && 'bg-[#E5E7EB] text-[#4b5563] opacity-70 cursor-not-allowed'

@@ -38,7 +38,7 @@ const ServiceListEditItem = ({
 }) => {
   const { deleteService } = useServices();
   const { setTempCompanyServices } = useCompanyContext();
-  // Verifica si hay algún item en edición
+
   const [isThereAnEditingItem, setIsThereAnEditingItem] = useState(false);
   const [isTitleChanging, setIsTitleChanging] = useState(false);
   const [isDescriptionChanging, setIsDescriptionChanging] = useState(false);
@@ -143,6 +143,7 @@ const ServiceListEditItem = ({
 
   useEffect(() => {
     setIsThereAnEditingItem(tempItems.some((item) => item.isEditing));
+    console.log(tempItems);
   }, [tempItems]);
 
   useEffect(() => {

@@ -15,16 +15,11 @@ const FormInputField = ({
 }) => {
   const [hasChanges, setHasChanges] = useState(false);
 
-  useEffect(() => {
-    const isChanging = originalValue.originalText !== originalValue.text;
-    setHasChanges(isChanging);
-  }, [originalValue]);
-
   const handleCancelValueChange = () => {
     setOriginialValue((prev) => {
       const payload = {
         ...prev,
-        originatextlText: originalValue.originalText,
+        text: originalValue.originalText,
       };
 
       return payload;
@@ -41,6 +36,10 @@ const FormInputField = ({
       return payload;
     });
   };
+
+  useEffect(() => {
+    setHasChanges(originalValue.originalText !== originalValue.text);
+  }, [originalValue]);
 
   return (
     <div className="mb-3">
