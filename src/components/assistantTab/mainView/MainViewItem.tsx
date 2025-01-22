@@ -1,46 +1,85 @@
+// React
+import { useEffect, useState } from 'react';
+
 // ** Contexts
 import { useAssistantContext } from 'contexts/AssistantProvider';
 
 // ** Services
 import { SERVICES } from 'services/index';
 
-// ** Utils
-import UTILS from 'utils';
-
 // ** Types
 import { Entities, IAssistantEntity, StateTypes } from 'types/dynamicSevicesTypes';
 
-// ** 3rd party library
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
-// ** icons
-import { faFileArrowDown } from '@fortawesome/free-solid-svg-icons';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
 
 const MainViewItem = ({ docItem }: { docItem: IAssistantEntity }) => {
+  const MySwal = withReactContent(Swal);
+
   const { handleModifyDoc, currentAssistant } = useAssistantContext();
+  const [isActive, setIsActive] = useState(false);
 
-  const isActive = currentAssistant?.title === docItem.title;
-
-  const deleteAssistantHandler = () => {
+  const softDeleteAssistantHandler = async () => {
     if (isActive) {
-      alert('No puede eliminarse una empresa activa. Asignar otra como activa primero');
+      await MySwal.fire({
+        title: 'No puede eliminarse un asistente activo. Asignar otro como activo primero',
+        icon: 'warning',
+        confirmButtonText: 'OK',
+        customClass: {
+          title: 'custom-swal-title', // Clase personalizada para el título
+        },
+      });
       return;
     }
 
-    if (confirm('Confirma que quieres eliminar este documento')) {
+    const response = await MySwal.fire({
+      title: 'Confirma que quieres eliminar este asistente',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Aceptar',
+      cancelButtonText: 'Cancelar',
+      reverseButtons: true,
+      customClass: {
+        title: 'custom-swal-title',
+      },
+    });
+
+    if (response.isConfirmed) {
       SERVICES.CMS.softDelete(Entities.assistant, docItem.id);
-    } else {
-      return;
+      await MySwal.fire('¡Borrado!', 'El asistente ha sido eliminado.', 'success');
+    }
+  };
+
+  const hardDeleteAssistantHandler = async () => {
+    const response = await MySwal.fire({
+      title: 'Confirma que quieres eliminar definitivamente este asistente. No se podrá recuperar',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Aceptar',
+      cancelButtonText: 'Cancelar',
+      reverseButtons: true,
+      customClass: {
+        title: 'custom-swal-title',
+      },
+    });
+
+    if (response.isConfirmed) {
+      SERVICES.CMS.delete(Entities.assistant, docItem.id);
+      await MySwal.fire('¡Borrado!', 'El elemento ha sido eliminado.', 'success');
     }
   };
 
   const reactivateAssistantHandler = () => {
-    if (confirm('Confirma que quieres reactivar este documento')) {
+    if (confirm('Confirma que quieres reactivar este asistente')) {
       SERVICES.CMS.reactivateSoftDeleted(Entities.assistant, docItem.id);
     } else {
       return;
     }
   };
+
+  useEffect(() => {
+    setIsActive(currentAssistant?.title === docItem.title);
+  }, [currentAssistant?.title, docItem.title]);
 
   return (
     <li
@@ -68,15 +107,9 @@ const MainViewItem = ({ docItem }: { docItem: IAssistantEntity }) => {
           Editar
         </button>
 
-        <button
-          className="bg-blue-600 text-white px-1 py-1 rounded flex items-center w-[40px] h-[40px] justify-center text-[18px] font-bold"
-          title="Descargar PDF"
-        >
-          <FontAwesomeIcon icon={faFileArrowDown} className="text-[22px]" />
-        </button>
         {docItem.state === StateTypes.active ? (
           <button
-            onClick={deleteAssistantHandler}
+            onClick={softDeleteAssistantHandler}
             className="bg-red-600 text-white px-1 py-1 rounded flex items-center w-[40px] h-[40px] justify-center"
             title="Eliminar"
           >
@@ -89,6 +122,15 @@ const MainViewItem = ({ docItem }: { docItem: IAssistantEntity }) => {
             title="Reactivar"
           >
             R
+          </button>
+        )}
+        {docItem.state === StateTypes.inactive && (
+          <button
+            onClick={hardDeleteAssistantHandler}
+            className="bg-red-600 text-white px-1 py-1 rounded flex items-center w-[40px] h-[40px] justify-center"
+            title="Eliminar"
+          >
+            🗑️
           </button>
         )}
       </div>

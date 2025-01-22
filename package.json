@@ -5,6 +5,7 @@
   "dependencies": {
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "@fortawesome/react-fontawesome": "^0.2.2",
+    "@sweetalert2/theme-dark": "^5.0.26",
     "axios": "^1.7.9",
     "file-saver": "^2.0.5",
     "firebase": "^10.13.0",
@@ -15,6 +16,8 @@
     "react-quill": "^2.0.0",
     "react-router-dom": "^6.26.1",
     "react-scripts": "5.0.1",
+    "sweetalert2": "^11.15.10",
+    "sweetalert2-react-content": "^5.1.0",
     "uuid": "^10.0.0"
   },
   "scripts": {

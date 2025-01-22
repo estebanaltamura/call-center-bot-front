@@ -13,10 +13,13 @@ import AssistantTab from 'views/assistantTab/Assistant';
 import RulesTab from 'views/rules/RulesTab';
 import { useCompanyContext } from 'contexts/CompanyProvider';
 import KnowledgeContextTab from 'views/knowledgeContextTab/KnowledgeContextTab';
+import { useLoadingContext } from 'contexts/LoadingProvider';
+import Loader from 'components/general/Loader';
 
 const Home = () => {
   const [activeTab, setActiveTab] = useState('chats');
   const { setMode } = useCompanyContext();
+  const { isLoading } = useLoadingContext();
 
   // Función para renderizar el contenido según la tab activa
   const renderContent = () => {
@@ -107,7 +110,7 @@ const Home = () => {
       </div>
 
       {/* Contenido */}
-      <div className="flex-1 overflow-auto p-4">{renderContent()}</div>
+      {isLoading ? <Loader /> : <div className="flex-1 overflow-auto p-4">{renderContent()}</div>}
     </div>
   );
 };

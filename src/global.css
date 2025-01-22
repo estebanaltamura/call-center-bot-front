@@ -27,3 +27,18 @@ code {
   background-color: #cdcdce; /* Gris oscuro */
   border-radius: 9999px; /* Redondeado */
 }
+
+.disabled {
+  background: #e5e7eb;
+  color: #4b5563;
+  opacity: 0.7;
+  cursor: auto;
+}
+
+.custom-swal-title {
+  font-size: 20px !important;
+  color: #333; /* Color del texto */
+  font-weight: bold; /* Opcional: negrita */
+  font-family: Arial, sans-serif; /* Fuente personalizada */
+  line-height: 24px;
+}

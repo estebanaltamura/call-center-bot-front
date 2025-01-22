@@ -2,9 +2,24 @@
 import { v4 as uuidv4 } from 'uuid';
 import AssistantInformationListItem from './AssistantInformationListItem';
 import { useAssistantContext } from 'contexts/AssistantProvider';
+import { useEffect, useState } from 'react';
 
-const AssistantInformationList = () => {
+const AssistantInformationList = ({
+  isEditing,
+  setIsEditing,
+  itemEditingIndex,
+  setitemEditingIndex,
+}: {
+  isEditing: boolean;
+  setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
+  itemEditingIndex: number | null;
+  setitemEditingIndex: React.Dispatch<React.SetStateAction<number | null>>;
+}) => {
   const { tempAssistantInformation } = useAssistantContext();
+
+  useEffect(() => {
+    typeof itemEditingIndex === 'number' ? setIsEditing(true) : setIsEditing(false);
+  }, [itemEditingIndex]);
 
   return (
     <div className="p-4 bg-gray-50 rounded space-y-4">
@@ -19,6 +34,10 @@ const AssistantInformationList = () => {
             infoItem={infoItem}
             index={index}
             tempAssistantInformationLength={tempAssistantInformation.length}
+            isEditing={isEditing}
+            setIsEditing={setIsEditing}
+            itemEditingIndex={itemEditingIndex}
+            setitemEditingIndex={setitemEditingIndex}
           />
         ))}
       </div>

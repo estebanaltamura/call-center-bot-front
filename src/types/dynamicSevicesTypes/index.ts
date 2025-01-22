@@ -85,10 +85,10 @@ export interface ISystemPrompt {
 }
 
 export interface ISettings {
-  currentBussinesName: string;
-  currentAssistantName: string;
-  currentRulesName: string;
-  currentKnowledgeContextName: string;
+  currentBussinesName: string | null;
+  currentAssistantName: string | null;
+  currentRulesName: string | null;
+  currentKnowledgeContextName: string | null;
 }
 
 export interface Icompany {

@@ -87,7 +87,6 @@ export const AssistantProvider = ({ children }: { children: React.ReactNode }) =
     try {
       SERVICES.CMS.update(Entities.assistant, assistantToEdit.id, payload);
 
-      alert('Documento guardado correctamente');
       setMode('main');
       setTempAssistantInformation([]);
       setAssistantToEdit(null);

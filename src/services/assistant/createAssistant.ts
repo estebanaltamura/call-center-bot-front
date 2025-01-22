@@ -13,7 +13,8 @@ export const createAssistant = async (title: string) => {
   };
 
   try {
-    SERVICES.CMS.create(Entities.assistant, payload);
+    const newDoc = await SERVICES.CMS.create(Entities.assistant, payload);
+    return newDoc;
   } catch (error) {
     console.error('Error al crear documento:', error);
     alert('Ocurrió un error al crear el documento.');
