@@ -72,10 +72,7 @@ const MainViewItem = ({ docItem }: { docItem: IAssistantEntity }) => {
       </p>
 
       <div className="flex space-x-2">
-        <button
-          onClick={() => handleModifyDoc(docItem.id)}
-          className="bg-green-600 text-white px-4 py-1 rounded h-[40px]"
-        >
+        <button onClick={() => handleModifyDoc(docItem.id)} className="button button1 green">
           Editar
         </button>
 

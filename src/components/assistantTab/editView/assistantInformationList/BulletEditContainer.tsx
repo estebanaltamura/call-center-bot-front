@@ -1,10 +1,10 @@
 // ** InformationList.tsx
 import { v4 as uuidv4 } from 'uuid';
-import AssistantInformationListItem from './AssistantInformationListItem';
+import AssistantInformationListItem from './BulletEditItem';
 import { useAssistantContext } from 'contexts/AssistantProvider';
 import { useEffect, useState } from 'react';
 
-const AssistantInformationList = ({
+const BulletEditContainer = ({
   isEditing,
   setIsEditing,
   itemEditingIndex,
@@ -45,4 +45,4 @@ const AssistantInformationList = ({
   );
 };
 
-export default AssistantInformationList;
+export default BulletEditContainer;

@@ -86,12 +86,12 @@ const MainViewContainer = () => {
       <div className="flex space-x-2 items-center">
         <input
           type="text"
-          className="border rounded px-2 py-1 w-72"
+          className="border rounded px-2 h-[40px] w-72"
           placeholder="Nombre del nuevo asistente"
           value={newAssistantTitle}
           onChange={(e) => setNewAssistantTitle(e.target.value)}
         />
-        <button onClick={createAssistantHandler} className="bg-blue-600 text-white px-4 py-1 rounded">
+        <button onClick={createAssistantHandler} className="button button1">
           Crear asistente
         </button>
         <div className="flex-grow"></div>
@@ -109,7 +109,7 @@ const MainViewContainer = () => {
         )}
       </div>
       {allAssistantList.filter((item) => item.state === StateTypes.active).length === 0 && (
-        <p className="text-gray-500">No hay asistentes aún.</p>
+        <p className="text-gray-500 ml-[10px]">No hay asistentes aún.</p>
       )}
       {renderedItems()}
     </div>

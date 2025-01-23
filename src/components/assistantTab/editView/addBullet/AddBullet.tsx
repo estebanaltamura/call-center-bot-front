@@ -107,9 +107,7 @@ const AddBulletSection = ({ isEditing }: { isEditing: boolean }) => {
         <button
           disabled={!bulletText.trim() || isEditing}
           onClick={addAssistantInformationItemHandler}
-          className={` px-32 py-2 rounded ${
-            !bulletText.trim() || !bulletOption ? 'disabled' : 'bg-blue-600 text-white'
-          }`}
+          className={`button button2 ${(!bulletText.trim() || !bulletOption || isEditing) && 'disabled'}`}
         >
           AGREGAR
         </button>

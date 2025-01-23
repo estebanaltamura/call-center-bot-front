@@ -28,6 +28,40 @@ code {
   border-radius: 9999px; /* Redondeado */
 }
 
+.button {
+  border-radius: 4px;
+  background-color: #2563eb;
+  color: white;
+  font-weight: 400;
+}
+
+.button1 {
+  padding: 8px 24px 8px 24px;
+}
+
+.button2 {
+  width: 327px;
+  height: 40px;
+}
+
+.button3 {
+  width: 50%;
+  height: 40px;
+}
+
+.buttonSecondary {
+  background-color: #bfdbfe;
+  color: black;
+}
+
+.red {
+  background-color: red;
+}
+
+.green {
+  background-color: green;
+}
+
 .disabled {
   background: #e5e7eb;
   color: #4b5563 !important;

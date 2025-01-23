@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 // ** Components
 import Typo from 'components/general/Typo';
 import { useAssistantContext } from 'contexts/AssistantProvider';
-import AssistantInformationList from '../assistantInformationList/AssistantInformationList';
+import BulletEditContainer from '../assistantInformationList/BulletEditContainer';
 
 const BulletList = ({
   isEditing,
@@ -32,7 +32,7 @@ const BulletList = ({
                   BULLETS
                 </Typo>
               </div>
-              <AssistantInformationList
+              <BulletEditContainer
                 itemEditingIndex={itemEditingIndex}
                 setitemEditingIndex={setitemEditingIndex}
                 isEditing={isEditing}

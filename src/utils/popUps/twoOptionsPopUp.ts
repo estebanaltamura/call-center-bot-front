@@ -22,6 +22,6 @@ export const twoOptionsPopUp = async (
 
   if (response.isConfirmed) {
     await callback();
-    await MySwal.fire(messageAfterCallback, 'success');
+    await MySwal.fire(messageAfterCallback);
   }
 };

@@ -35,11 +35,12 @@ const EditViewContainer = () => {
     const isNewAssistant = assistantToEdit?.features.length === 0;
 
     if (isNewAssistant) {
-      UTILS.POPUPS.twoOptionsPopUp(
-        'Si cancelas la edición de un asistente nuevo se borrará',
+      await UTILS.POPUPS.twoOptionsPopUp(
+        'Si cancelas la edición de un asistente nuevo este borrará',
         () => SERVICES.CMS.delete(Entities.assistant, assistantToEdit.id),
         '¡Borrado!, El asistente ha sido borrado.',
       );
+      handleCancel();
     } else handleCancel();
   };
 
@@ -64,13 +65,13 @@ const EditViewContainer = () => {
 
       {/* Botones de cancelar y guardar */}
       <div className="flex justify-end gap-4 mr-[50px]">
-        <button onClick={handleCancelHandler} className="bg-blue-200 text-black px-6 py-2 rounded">
+        <button onClick={handleCancelHandler} className="button button1 buttonSecondary">
           Cancelar
         </button>
         <button
           disabled={isEditing}
           onClick={saveHandler}
-          className={`${isEditing ? 'disabled' : 'bg-blue-600 text-white'} px-6 py-2 rounded`}
+          className={`button button1 ${isEditing && 'disabled'}`}
         >
           Guardar
         </button>

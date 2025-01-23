@@ -5,7 +5,7 @@ import { useState, useRef, useEffect } from 'react';
 import { IOptionTextItem } from 'types';
 import { v4 as uuidv4 } from 'uuid';
 
-const AssistantInformationListItem = ({
+const BulletEditItem = ({
   infoItem,
   index,
   tempAssistantInformationLength,
@@ -88,7 +88,7 @@ const AssistantInformationListItem = ({
 
             {/* Botones para guardar y cancelar */}
             <div className="flex justify-between gap-2 w-full mt-2">
-              <button onClick={handleCancelEdit} className="bg-red-600 px-4 py-2 rounded text-white w-1/2">
+              <button onClick={handleCancelEdit} className="button button3 red">
                 Cancelar
               </button>
               <button
@@ -178,4 +178,4 @@ const AssistantInformationListItem = ({
   );
 };
 
-export default AssistantInformationListItem;
+export default BulletEditItem;
