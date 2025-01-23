@@ -1,34 +1,31 @@
+// ** React
+import { useState } from 'react';
+
 // ** Context
 import { useAssistantContext } from 'contexts/AssistantProvider';
 
 // ** Components
 import AddBullet from './addBullet/AddBullet';
-import OrderedList from './orderedList/BulletList';
-
-import Swal from 'sweetalert2';
-import withReactContent from 'sweetalert2-react-content';
-import { SERVICES } from 'services/index';
-import { Entities } from 'types/dynamicSevicesTypes';
 import BulletList from './orderedList/BulletList';
-import { useState } from 'react';
+
+// ** Services
+import { SERVICES } from 'services/index';
+
+// ** Types
+import { Entities } from 'types/dynamicSevicesTypes';
+
+// ** Utils
+import UTILS from 'utils';
 
 const EditViewContainer = () => {
   const { assistantToEdit, tempAssistantInformation, handleSave, handleCancel } = useAssistantContext();
   const [itemEditingIndex, setitemEditingIndex] = useState<number | null>(null);
   const [isEditing, setIsEditing] = useState<boolean>(false);
 
-  const MySwal = withReactContent(Swal);
-
   const saveHandler = async () => {
     if (tempAssistantInformation.length === 0) {
-      await MySwal.fire({
-        title: 'Tenés que ingresar al menos un bullet',
-        icon: 'warning',
-        confirmButtonText: 'OK',
-        customClass: {
-          title: 'custom-swal-title', // Clase personalizada para el título
-        },
-      });
+      await UTILS.POPUPS.simplePopUp('Tenés que ingresar al menos un bullet');
+
       return;
     }
     handleSave();
@@ -38,23 +35,11 @@ const EditViewContainer = () => {
     const isNewAssistant = assistantToEdit?.features.length === 0;
 
     if (isNewAssistant) {
-      const response = await MySwal.fire({
-        title: 'Si cancelas la edición de un asistente nuevo se borrará',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Borrar',
-        cancelButtonText: 'Cancelar',
-        reverseButtons: true,
-        customClass: {
-          title: 'custom-swal-title', // Clase personalizada para el título
-        },
-      });
-
-      if (response.isConfirmed) {
-        await SERVICES.CMS.delete(Entities.assistant, assistantToEdit.id);
-        await MySwal.fire('¡Borrado!', 'El asistente ha sido borrado.', 'success');
-        handleCancel();
-      }
+      UTILS.POPUPS.twoOptionsPopUp(
+        'Si cancelas la edición de un asistente nuevo se borrará',
+        () => SERVICES.CMS.delete(Entities.assistant, assistantToEdit.id),
+        '¡Borrado!, El asistente ha sido borrado.',
+      );
     } else handleCancel();
   };
 
@@ -79,7 +64,11 @@ const EditViewContainer = () => {
         <button onClick={handleCancelHandler} className="bg-blue-200 text-black px-6 py-2 rounded">
           Cancelar
         </button>
-        <button onClick={saveHandler} className="bg-blue-600 text-white px-6 py-2 rounded">
+        <button
+          disabled={isEditing}
+          onClick={saveHandler}
+          className={`${isEditing ? 'disabled' : 'bg-blue-600 text-white'} px-6 py-2 rounded`}
+        >
           Guardar
         </button>
       </div>

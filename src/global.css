@@ -30,9 +30,14 @@ code {
 
 .disabled {
   background: #e5e7eb;
-  color: #4b5563;
-  opacity: 0.7;
+  color: #4b5563 !important;
+  opacity: 0.6 !important;
   cursor: auto;
+  text-shadow: none !important;
+}
+
+.disabled::placeholder {
+  color: #4b5563 !important;
 }
 
 .custom-swal-title {

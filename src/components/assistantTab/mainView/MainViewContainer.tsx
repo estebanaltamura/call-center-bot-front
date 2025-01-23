@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 
 // ** Context
 import { useAssistantContext } from 'contexts/AssistantProvider';
+import { useLoadingContext } from 'contexts/LoadingProvider';
 
 // ** Services
 import { SERVICES } from 'services/index';
@@ -12,9 +13,9 @@ import { IAssistantEntity, StateTypes } from 'types/dynamicSevicesTypes';
 
 // ** Components
 import MainViewItem from './MainViewItem';
-import { useLoadingContext } from 'contexts/LoadingProvider';
-import Swal from 'sweetalert2';
-import withReactContent from 'sweetalert2-react-content';
+
+// ** Utils
+import UTILS from 'utils';
 
 const MainViewContainer = () => {
   // ** States
@@ -25,7 +26,6 @@ const MainViewContainer = () => {
   const { allAssistantList, currentAssistant, setMode } = useAssistantContext();
   const { handleModifyDoc } = useAssistantContext();
   const { setIsLoading } = useLoadingContext();
-  const MySwal = withReactContent(Swal);
 
   const sortedAndReorderedList = allAssistantList
     .sort((a, b) => a.title.localeCompare(b.title)) // Ordenar alfabéticamente por título
@@ -58,28 +58,14 @@ const MainViewContainer = () => {
 
   const createAssistantHandler = async () => {
     if (!newAssistantTitle) {
-      await MySwal.fire({
-        title: 'Ingresá un titulo para el nuevo asistente',
-        icon: 'warning',
-        confirmButtonText: 'OK',
-        customClass: {
-          title: 'custom-swal-title', // Clase personalizada para el título
-        },
-      });
+      UTILS.POPUPS.simplePopUp('Ingresá un titulo para el nuevo asistente');
       return;
     }
 
     setIsLoading(true);
     const newDoc = await SERVICES.ASSISTANT.create(newAssistantTitle);
     if (!newDoc) {
-      await MySwal.fire({
-        title: 'Ocurrio un error creando el nuevo asistente',
-        icon: 'warning',
-        confirmButtonText: 'OK',
-        customClass: {
-          title: 'custom-swal-title', // Clase personalizada para el título
-        },
-      });
+      UTILS.POPUPS.simplePopUp('Ocurrio un error creando el nuevo asistente');
       return;
     }
 

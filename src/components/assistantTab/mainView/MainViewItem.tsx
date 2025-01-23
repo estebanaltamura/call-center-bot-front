@@ -10,71 +10,43 @@ import { SERVICES } from 'services/index';
 // ** Types
 import { Entities, IAssistantEntity, StateTypes } from 'types/dynamicSevicesTypes';
 
-import Swal from 'sweetalert2';
-import withReactContent from 'sweetalert2-react-content';
+// ** Utils
+import UTILS from 'utils';
 
 const MainViewItem = ({ docItem }: { docItem: IAssistantEntity }) => {
-  const MySwal = withReactContent(Swal);
-
   const { handleModifyDoc, currentAssistant } = useAssistantContext();
   const [isActive, setIsActive] = useState(false);
 
   const softDeleteAssistantHandler = async () => {
     if (isActive) {
-      await MySwal.fire({
-        title: 'No puede eliminarse un asistente activo. Asignar otro como activo primero',
-        icon: 'warning',
-        confirmButtonText: 'OK',
-        customClass: {
-          title: 'custom-swal-title', // Clase personalizada para el título
-        },
-      });
+      await UTILS.POPUPS.simplePopUp(
+        'No puede eliminarse un asistente activo. Asignar otro como activo primero',
+      );
+
       return;
     }
 
-    const response = await MySwal.fire({
-      title: 'Confirma que quieres eliminar este asistente',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Aceptar',
-      cancelButtonText: 'Cancelar',
-      reverseButtons: true,
-      customClass: {
-        title: 'custom-swal-title',
-      },
-    });
-
-    if (response.isConfirmed) {
-      SERVICES.CMS.softDelete(Entities.assistant, docItem.id);
-      await MySwal.fire('¡Borrado!', 'El asistente ha sido eliminado.', 'success');
-    }
+    await UTILS.POPUPS.twoOptionsPopUp(
+      'Confirma que quieres eliminar este asistente',
+      () => SERVICES.CMS.softDelete(Entities.assistant, docItem.id),
+      '¡Borrado!, El asistente ha sido eliminado.',
+    );
   };
 
   const hardDeleteAssistantHandler = async () => {
-    const response = await MySwal.fire({
-      title: 'Confirma que quieres eliminar definitivamente este asistente. No se podrá recuperar',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Aceptar',
-      cancelButtonText: 'Cancelar',
-      reverseButtons: true,
-      customClass: {
-        title: 'custom-swal-title',
-      },
-    });
-
-    if (response.isConfirmed) {
-      SERVICES.CMS.delete(Entities.assistant, docItem.id);
-      await MySwal.fire('¡Borrado!', 'El elemento ha sido eliminado.', 'success');
-    }
+    await UTILS.POPUPS.twoOptionsPopUp(
+      'Confirma que quieres eliminar definitivamente este asistente. No se podrá recuperar',
+      () => SERVICES.CMS.delete(Entities.assistant, docItem.id),
+      '¡Borrado!, El asistente ha sido eliminado.',
+    );
   };
 
-  const reactivateAssistantHandler = () => {
-    if (confirm('Confirma que quieres reactivar este asistente')) {
-      SERVICES.CMS.reactivateSoftDeleted(Entities.assistant, docItem.id);
-    } else {
-      return;
-    }
+  const reactivateAssistantHandler = async () => {
+    await UTILS.POPUPS.twoOptionsPopUp(
+      'Confirma que quieres reactivar este asistente',
+      () => SERVICES.CMS.reactivateSoftDeleted(Entities.assistant, docItem.id),
+      'Reactivado!, El asistente ha sido reactivado.',
+    );
   };
 
   useEffect(() => {
