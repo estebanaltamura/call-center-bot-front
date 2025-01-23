@@ -1,7 +1,7 @@
 // ** Context
+
 import EditViewContainer from 'components/rulesTab/editView/EditViewContainer';
 import MainViewContainer from 'components/rulesTab/mainView/MainViewContainer';
-import { useCompanyContext } from 'contexts/CompanyProvider';
 import { useRulesContext } from 'contexts/RulesProvider';
 
 // ** components

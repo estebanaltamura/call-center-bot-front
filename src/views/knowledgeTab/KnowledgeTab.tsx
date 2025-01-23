@@ -2,11 +2,11 @@
 
 // ** components
 
+import EditViewContainer from 'components/knowledgeTab/editView/EditViewContainer';
+import MainViewContainer from 'components/knowledgeTab/mainView/MainViewContainer';
 import { useKnowledgeContextContext } from 'contexts/KnoledgeProvider';
-import MainViewContainer from 'components/knowledgeContextTab/mainView/MainViewContainer';
-import EditViewContainer from 'components/knowledgeContextTab/editView/EditViewContainer';
 
-const KnowledgeContextTab = () => {
+const KnowledgeTab = () => {
   const { mode } = useKnowledgeContextContext();
 
   //Sirve para generar documentos en firestore con cadenas de texto deinidas por el usuario que tambien se indica en que orden van a ser concatenadas
@@ -21,4 +21,4 @@ const KnowledgeContextTab = () => {
   } else return <div>Modo no definido</div>;
 };
 
-export default KnowledgeContextTab;
+export default KnowledgeTab;

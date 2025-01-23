@@ -1,11 +1,7 @@
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 
-export const twoOptionsPopUp = async (
-  title: string,
-  callback: () => Promise<any>,
-  messageAfterCallback: string,
-) => {
+export const twoOptionsPopUp = async (title: string, callback: () => any, messageAfterCallback?: string) => {
   const MySwal = withReactContent(Swal);
 
   const response = await MySwal.fire({
@@ -22,6 +18,8 @@ export const twoOptionsPopUp = async (
 
   if (response.isConfirmed) {
     await callback();
-    await MySwal.fire(messageAfterCallback);
+    if (messageAfterCallback) {
+      await MySwal.fire(messageAfterCallback);
+    }
   }
 };

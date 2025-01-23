@@ -1,34 +1,86 @@
+// ** React
+import { useState } from 'react';
+
 // ** Context
-import { useRulesContext } from 'contexts/RulesProvider';
+import { useAssistantContext } from 'contexts/AssistantProvider';
 
 // ** Components
-import AddBullet from './addBullet/AddBullet';
-import OrderedList from './orderedList/OrderedList';
+import AddBulletSection from './addBullet/AddBullet';
+import BulletList from './bulletList/BulletList';
+
+// ** Services
+import { SERVICES } from 'services/index';
+
+// ** Types
+import { Entities } from 'types/dynamicSevicesTypes';
+
+// ** Utils
+import UTILS from 'utils';
 
 const EditViewContainer = () => {
-  const { rulesToEdit, handleSave, handleCancel } = useRulesContext();
+  // Contexts
+  const { assistantToEdit, tempAssistantData, handleSave, handleCancel } = useAssistantContext();
 
-  const saveHandler = () => {
+  // States
+  const [itemEditingIndex, setitemEditingIndex] = useState<number | null>(null);
+  const [isEditing, setIsEditing] = useState<boolean>(false);
+
+  const saveHandler = async () => {
+    if (tempAssistantData.length === 0) {
+      await UTILS.POPUPS.simplePopUp('Tenés que ingresar al menos un bullet');
+
+      return;
+    }
     handleSave();
+  };
+
+  const handleCancelHandler = async () => {
+    const isNewAssistant = assistantToEdit?.features.length === 0;
+
+    if (isNewAssistant) {
+      await UTILS.POPUPS.twoOptionsPopUp(
+        'Si cancelas la edición de un asistente nuevo este borrará',
+        () => SERVICES.CMS.delete(Entities.assistant, assistantToEdit.id),
+        'El asistente ha sido borrado.',
+      );
+      handleCancel();
+    } else {
+      await UTILS.POPUPS.twoOptionsPopUp(
+        'Si cancelás la edición del asistente perderás los cambios. ¿Estás seguro?',
+        () => handleCancel(),
+      );
+    }
   };
 
   return (
     <div className="p-4 space-y-4">
-      <h1 className="text-xl font-bold text-center">MODIFICAR REGLA</h1>
+      {/*Header*/}
+      <h1 className="text-xl font-bold text-center">EDICION</h1>
       <div className="space-y-2">
         <label className="block text-xl font-semibold text-center text-gray-700">
-          Modificando: {rulesToEdit?.title}
+          {assistantToEdit?.title.toUpperCase()}
         </label>
       </div>
 
-      <AddBullet />
-      <OrderedList />
+      {/*Main */}
+      <AddBulletSection isEditing={isEditing} />
+      <BulletList
+        itemEditingIndex={itemEditingIndex}
+        setitemEditingIndex={setitemEditingIndex}
+        isEditing={isEditing}
+        setIsEditing={setIsEditing}
+      />
 
+      {/* Botones de cancelar y guardar */}
       <div className="flex justify-end gap-4 mr-[50px]">
-        <button onClick={handleCancel} className="bg-gray-300 text-black px-6 py-2 rounded">
+        <button onClick={handleCancelHandler} className="button button1 buttonSecondary">
           Cancelar
         </button>
-        <button onClick={saveHandler} className="bg-blue-600 text-white px-6 py-2 rounded">
+        <button
+          disabled={isEditing}
+          onClick={saveHandler}
+          className={`button button1 ${isEditing && 'disabled'}`}
+        >
           Guardar
         </button>
       </div>

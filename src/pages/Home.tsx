@@ -10,7 +10,7 @@ import BussinesTab from 'views/bussinesTab/BussinesTab';
 import AssistantTab from 'views/assistantTab/Assistant';
 import RulesTab from 'views/rules/RulesTab';
 import { useCompanyContext } from 'contexts/CompanyProvider';
-import KnowledgeContextTab from 'views/knowledgeContextTab/KnowledgeContextTab';
+import KnowledgeContextTab from 'views/knowledgeTab/KnowledgeTab';
 import { useLoadingContext } from 'contexts/LoadingProvider';
 import Loader from 'components/general/Loader';
 import { useAssistantContext } from 'contexts/AssistantProvider';
@@ -80,6 +80,15 @@ const Home = () => {
         >
           Asistente
         </button>
+
+        <button
+          onClick={() => setActiveTab('knowledgeContext')}
+          className={`flex-1 py-2 text-center ${
+            activeTab === 'knowledgeContext' ? 'border-b-2 border-blue-500 text-blue-500' : 'text-gray-500'
+          }`}
+        >
+          Conocimiento
+        </button>
         <button
           onClick={() => setActiveTab('rules')}
           className={`flex-1 py-2 text-center ${
@@ -87,14 +96,6 @@ const Home = () => {
           }`}
         >
           Reglas
-        </button>
-        <button
-          onClick={() => setActiveTab('knowledgeContext')}
-          className={`flex-1 py-2 text-center ${
-            activeTab === 'knowledgeContext' ? 'border-b-2 border-blue-500 text-blue-500' : 'text-gray-500'
-          }`}
-        >
-          Contexto
         </button>
         <button
           onClick={() => setActiveTab('goals')}
