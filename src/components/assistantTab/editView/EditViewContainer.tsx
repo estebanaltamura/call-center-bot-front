@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { useAssistantContext } from 'contexts/AssistantProvider';
 
 // ** Components
+import AddBulletSection from './addBullet/AddBullet';
 import BulletList from './bulletList/BulletList';
 
 // ** Services
@@ -15,15 +16,17 @@ import { Entities } from 'types/dynamicSevicesTypes';
 
 // ** Utils
 import UTILS from 'utils';
-import AddBulletSection from './addBullet/AddBullet';
 
 const EditViewContainer = () => {
-  const { assistantToEdit, tempAssistantInformation, handleSave, handleCancel } = useAssistantContext();
+  // Contexts
+  const { assistantToEdit, tempAssistantData, handleSave, handleCancel } = useAssistantContext();
+
+  // States
   const [itemEditingIndex, setitemEditingIndex] = useState<number | null>(null);
   const [isEditing, setIsEditing] = useState<boolean>(false);
 
   const saveHandler = async () => {
-    if (tempAssistantInformation.length === 0) {
+    if (tempAssistantData.length === 0) {
       await UTILS.POPUPS.simplePopUp('Tenés que ingresar al menos un bullet');
 
       return;
@@ -38,7 +41,7 @@ const EditViewContainer = () => {
       await UTILS.POPUPS.twoOptionsPopUp(
         'Si cancelas la edición de un asistente nuevo este borrará',
         () => SERVICES.CMS.delete(Entities.assistant, assistantToEdit.id),
-        '¡Borrado!, El asistente ha sido borrado.',
+        'El asistente ha sido borrado.',
       );
       handleCancel();
     } else handleCancel();

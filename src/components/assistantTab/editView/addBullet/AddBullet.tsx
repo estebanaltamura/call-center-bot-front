@@ -1,53 +1,38 @@
 // ** React
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 // ** Custom hooks
-import useAssistantInformation from 'customHooks/assistant/assistantInformation';
+import useAssistantInformation from 'customHooks/assistant/bulletFunctions';
+
+// ** Contexts
+import { useAssistantContext } from 'contexts/AssistantProvider';
 
 // ** Enums
 import { bulletOptions } from 'enums/systemPrompts';
 
 // ** 3rd party
 import { v4 as uuidv4 } from 'uuid';
-import { useAssistantContext } from 'contexts/AssistantProvider';
+import useAssistantBulletFunctions from 'customHooks/assistant/bulletFunctions';
 
 const AddBulletSection = ({ isEditing }: { isEditing: boolean }) => {
+  // ** States
   const [bulletOption, setBulletOption] = useState(bulletOptions[0].options[0]);
   const [bulletText, setBulletText] = useState('');
+  const [usedOptions, setUsedOptions] = useState<string[]>([]);
 
-  const { addAssistantInformationItem } = useAssistantInformation();
-  const { tempAssistantInformation } = useAssistantContext();
+  // Contexts
+  const { addAssistantBullet } = useAssistantBulletFunctions();
+  const { tempAssistantData } = useAssistantContext();
 
   // Guarda la última opción válida para revertir en caso de selección inválida
   const lastValidOption = useRef(bulletOption);
-
-  // Opciones ya usadas (deshabilitadas)
-  const usedOptions = Array.from(new Set(tempAssistantInformation.map((item) => item.option)));
 
   // Agregar bullet
   const addAssistantInformationItemHandler = () => {
     if (!bulletText.trim()) return;
 
-    addAssistantInformationItem(bulletOption, bulletText);
+    addAssistantBullet(bulletOption, bulletText);
     setBulletText('');
-
-    // Actualizamos "usedOptions" localmente agregando la opción recién usada
-    const updatedUsed = [...usedOptions, bulletOption];
-
-    // Buscamos la primera opción disponible
-    let nextAvailable = '';
-    outer: for (const section of bulletOptions) {
-      for (const opt of section.options) {
-        if (!updatedUsed.includes(opt)) {
-          nextAvailable = opt;
-          break outer;
-        }
-      }
-    }
-
-    // Ajustamos bulletOption al primer no usado
-    setBulletOption(nextAvailable);
-    lastValidOption.current = nextAvailable; // actualizamos la última opción válida
   };
 
   // Verificamos si la opción seleccionada es válida;
@@ -62,6 +47,25 @@ const AddBulletSection = ({ isEditing }: { isEditing: boolean }) => {
     setBulletOption(newValue);
     lastValidOption.current = newValue;
   };
+
+  useEffect(() => {
+    const updatedUsed = tempAssistantData.map((item) => item.option);
+
+    // Buscamos la primera opción disponible
+    let nextAvailable = '';
+    outer: for (const section of bulletOptions) {
+      for (const opt of section.options) {
+        if (!updatedUsed.includes(opt)) {
+          nextAvailable = opt;
+          break outer;
+        }
+      }
+    }
+
+    setUsedOptions(updatedUsed);
+    setBulletOption(nextAvailable);
+    lastValidOption.current = nextAvailable;
+  }, [tempAssistantData]);
 
   return (
     <div className="border border-gray-400 p-4 bg-gray-50 rounded space-y-4">

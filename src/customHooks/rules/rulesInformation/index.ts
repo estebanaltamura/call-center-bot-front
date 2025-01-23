@@ -14,7 +14,6 @@ const useRulesInformation = () => {
   };
 
   const moveUpRulesInformationItem = (index: number) => {
-    console.log(index);
     if (index === 0) return;
     const updated = [...tempRulesInformation];
     [updated[index - 1], updated[index]] = [updated[index], updated[index - 1]];

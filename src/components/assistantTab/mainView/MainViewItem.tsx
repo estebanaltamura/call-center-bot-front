@@ -14,7 +14,10 @@ import { Entities, IAssistantEntity, StateTypes } from 'types/dynamicSevicesType
 import UTILS from 'utils';
 
 const MainViewItem = ({ docItem }: { docItem: IAssistantEntity }) => {
+  // Contexts
   const { handleModifyDoc, currentAssistant } = useAssistantContext();
+
+  // States
   const [isActive, setIsActive] = useState(false);
 
   const softDeleteAssistantHandler = async () => {
@@ -29,7 +32,7 @@ const MainViewItem = ({ docItem }: { docItem: IAssistantEntity }) => {
     await UTILS.POPUPS.twoOptionsPopUp(
       'Confirma que quieres eliminar este asistente',
       () => SERVICES.CMS.softDelete(Entities.assistant, docItem.id),
-      '¡Borrado!, El asistente ha sido eliminado.',
+      'El asistente ha sido eliminado.',
     );
   };
 
@@ -37,7 +40,7 @@ const MainViewItem = ({ docItem }: { docItem: IAssistantEntity }) => {
     await UTILS.POPUPS.twoOptionsPopUp(
       'Confirma que quieres eliminar definitivamente este asistente. No se podrá recuperar',
       () => SERVICES.CMS.delete(Entities.assistant, docItem.id),
-      '¡Borrado!, El asistente ha sido eliminado.',
+      'El asistente ha sido eliminado.',
     );
   };
 
@@ -45,7 +48,7 @@ const MainViewItem = ({ docItem }: { docItem: IAssistantEntity }) => {
     await UTILS.POPUPS.twoOptionsPopUp(
       'Confirma que quieres reactivar este asistente',
       () => SERVICES.CMS.reactivateSoftDeleted(Entities.assistant, docItem.id),
-      'Reactivado!, El asistente ha sido reactivado.',
+      'El asistente ha sido reactivado.',
     );
   };
 
@@ -79,7 +82,7 @@ const MainViewItem = ({ docItem }: { docItem: IAssistantEntity }) => {
         {docItem.state === StateTypes.active ? (
           <button
             onClick={softDeleteAssistantHandler}
-            className="bg-red-600 text-white px-1 py-1 rounded flex items-center w-[40px] h-[40px] justify-center"
+            className="red text-white px-1 py-1 rounded flex items-center w-[40px] h-[40px] justify-center"
             title="Eliminar"
           >
             🗑️
@@ -87,7 +90,7 @@ const MainViewItem = ({ docItem }: { docItem: IAssistantEntity }) => {
         ) : (
           <button
             onClick={reactivateAssistantHandler}
-            className="bg-violet-600 text-white px-1 py-1 rounded flex items-center w-[40px] h-[40px] justify-center"
+            className="violet text-white px-1 py-1 rounded flex items-center w-[40px] h-[40px] justify-center"
             title="Reactivar"
           >
             R
@@ -96,7 +99,7 @@ const MainViewItem = ({ docItem }: { docItem: IAssistantEntity }) => {
         {docItem.state === StateTypes.inactive && (
           <button
             onClick={hardDeleteAssistantHandler}
-            className="bg-red-600 text-white px-1 py-1 rounded flex items-center w-[40px] h-[40px] justify-center"
+            className="red text-white px-1 py-1 rounded flex items-center w-[40px] h-[40px] justify-center"
             title="Eliminar"
           >
             🗑️

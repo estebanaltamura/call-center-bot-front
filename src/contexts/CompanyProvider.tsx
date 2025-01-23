@@ -118,7 +118,6 @@ export const CompanyProvider = ({ children }: { children: React.ReactNode }) => 
         (item) => item.title === settings?.currentBussinesName,
       );
 
-      console.log(allBussinesesList, settings?.currentBussinesName);
       setCurrentBussines(currentBussinesData[0]);
     }
   }, [settings?.currentBussinesName, allBussinesesList]);
@@ -141,10 +140,6 @@ export const CompanyProvider = ({ children }: { children: React.ReactNode }) => 
 
     return () => unsubscribe();
   }, []);
-
-  useEffect(() => {
-    console.log(currentBussines);
-  }, [currentBussines]);
 
   return (
     <CompanyContext.Provider

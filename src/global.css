@@ -62,6 +62,10 @@ code {
   background-color: green;
 }
 
+.violet {
+  background-color: violet;
+}
+
 .disabled {
   background: #e5e7eb;
   color: #4b5563 !important;

@@ -1,5 +1,6 @@
 import { useAssistantContext } from 'contexts/AssistantProvider';
-import useAssistantInformation from 'customHooks/assistant/assistantInformation';
+import useAssistantBulletFunctions from 'customHooks/assistant/bulletFunctions';
+import useAssistantInformation from 'customHooks/assistant/bulletFunctions';
 import { bulletOptions } from 'enums/systemPrompts'; // Ajusta la ruta si tus opciones están en otro lugar
 import { useState, useRef } from 'react';
 import { IOptionTextItem } from 'types';
@@ -8,16 +9,16 @@ import { v4 as uuidv4 } from 'uuid';
 const KnowledgeContextInformationListItem = ({
   infoItem,
   index,
-  tempAssistantInformationLength,
+  tempAssistantDataLength,
 }: {
   infoItem: IOptionTextItem;
   index: number;
-  tempAssistantInformationLength: number;
+  tempAssistantDataLength: number;
 }) => {
-  const { setTempAssistantInformation } = useAssistantContext();
+  const { setTempAssistantData } = useAssistantContext();
 
-  const { deleteAssistantInformationItem, moveUpAssistantInformationItem, moveDownAssistantInformationItem } =
-    useAssistantInformation();
+  const { deleteAssistantBullet, moveUpAssistantBullet, moveDownAssistantBullet } =
+    useAssistantBulletFunctions();
 
   const [isExpanded, setIsExpanded] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -39,7 +40,7 @@ const KnowledgeContextInformationListItem = ({
   };
 
   const handleConfirmEdit = () => {
-    setTempAssistantInformation((prev) => {
+    setTempAssistantData((prev) => {
       const updated = [...prev];
       updated[index] = {
         ...updated[index],
@@ -78,13 +79,13 @@ const KnowledgeContextInformationListItem = ({
           ) : (
             <>
               <button
-                disabled={index === tempAssistantInformationLength - 1}
+                disabled={index === tempAssistantDataLength - 1}
                 onClick={() => {
                   setIsExpanded(false);
-                  moveDownAssistantInformationItem(index);
+                  moveDownAssistantBullet(index);
                 }}
                 className={`${
-                  index === tempAssistantInformationLength - 1 ? 'bg-gray-400' : 'bg-gray-200'
+                  index === tempAssistantDataLength - 1 ? 'bg-gray-400' : 'bg-gray-200'
                 } px-2 rounded w-[35px] h-[35px]`}
               >
                 ↓
@@ -94,7 +95,7 @@ const KnowledgeContextInformationListItem = ({
                 disabled={index === 0}
                 onClick={() => {
                   setIsExpanded(false);
-                  moveUpAssistantInformationItem(index);
+                  moveUpAssistantBullet(index);
                 }}
                 className={`${index === 0 ? 'bg-gray-400' : 'bg-gray-200'} px-2 rounded w-[35px] h-[35px]`}
               >
@@ -102,7 +103,7 @@ const KnowledgeContextInformationListItem = ({
               </button>
 
               <button
-                onClick={() => deleteAssistantInformationItem(index)}
+                onClick={() => deleteAssistantBullet(index)}
                 className="bg-red-600 px-2 rounded w-[35px] h-[35px] flex items-center justify-center"
               >
                 🗑️

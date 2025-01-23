@@ -76,8 +76,6 @@ const ChatHistoryProvider = ({ children }: { children: React.ReactNode }) => {
     return merged;
   }, [conversations, messages]);
 
-  console.log('combinedData', combinedData);
-
   return <ChatHistoryContext.Provider value={combinedData}>{children}</ChatHistoryContext.Provider>;
 };
 

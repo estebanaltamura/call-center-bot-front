@@ -108,7 +108,6 @@ export const RulesProvider = ({ children }: { children: React.ReactNode }) => {
     if (allRulesList && settings?.currentRulesName) {
       const currentRulesData = allRulesList.filter((item) => item.title === settings?.currentRulesName);
 
-      console.log(allRulesList, settings?.currentRulesName);
       setCurrentRules(currentRulesData[0]);
     }
   }, [settings?.currentRulesName, allRulesList]);

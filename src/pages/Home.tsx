@@ -5,9 +5,7 @@ import { useEffect, useState } from 'react';
 
 // ** Components
 import ChatsViewer from 'views/chatsViewerTab/ChatsViewerTab';
-import Goals from 'views/goalsTab/GoalsTab'; // Asegúrate de crear este componente
 import Settings from 'views/settingsTab/SettingsTab';
-import SystemPrompt from 'views/bussinesTab/BussinesTab';
 import BussinesTab from 'views/bussinesTab/BussinesTab';
 import AssistantTab from 'views/assistantTab/Assistant';
 import RulesTab from 'views/rules/RulesTab';
@@ -15,10 +13,16 @@ import { useCompanyContext } from 'contexts/CompanyProvider';
 import KnowledgeContextTab from 'views/knowledgeContextTab/KnowledgeContextTab';
 import { useLoadingContext } from 'contexts/LoadingProvider';
 import Loader from 'components/general/Loader';
+import { useAssistantContext } from 'contexts/AssistantProvider';
+import { useRulesContext } from 'contexts/RulesProvider';
+import { useKnowledgeContextContext } from 'contexts/KnoledgeProvider';
 
 const Home = () => {
   const [activeTab, setActiveTab] = useState('chats');
-  const { setMode } = useCompanyContext();
+  const { setMode: setCompanyMode } = useCompanyContext();
+  const { setMode: setAssistantMode } = useAssistantContext();
+  const { setMode: setRulesMode } = useRulesContext();
+  const { setMode: setKnowledgeContextMode } = useKnowledgeContextContext();
   const { isLoading } = useLoadingContext();
 
   // Función para renderizar el contenido según la tab activa
@@ -34,8 +38,6 @@ const Home = () => {
         return <RulesTab />;
       case 'rules':
         return <KnowledgeContextTab />;
-      case 'goals':
-        return <Goals />;
       case 'settings':
         return <Settings />;
       default:
@@ -44,7 +46,10 @@ const Home = () => {
   };
 
   useEffect(() => {
-    setMode('main');
+    setCompanyMode('main');
+    setAssistantMode('main');
+    setRulesMode('main');
+    setKnowledgeContextMode('main');
   }, [activeTab]);
 
   return (

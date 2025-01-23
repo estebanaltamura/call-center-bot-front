@@ -1,9 +1,10 @@
 import { Entities } from 'types/dynamicSevicesTypes';
+import UTILS from 'utils';
 import { SERVICES } from '..';
 
 export const createAssistant = async (title: string) => {
   if (!title.trim()) {
-    alert('Por favor, ingresa un nombre para el documento.');
+    UTILS.POPUPS.simplePopUp('Por favor ingresá un nombre para el asistente');
     return;
   }
 

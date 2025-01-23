@@ -1,10 +1,9 @@
 // ** Context
-import { useCompanyContext } from 'contexts/CompanyProvider';
+import { useAssistantContext } from 'contexts/AssistantProvider';
 
 // ** components
 import MainViewContainer from 'components/assistantTab/mainView/MainViewContainer';
 import EditViewContainer from 'components/assistantTab/editView/EditViewContainer';
-import { useAssistantContext } from 'contexts/AssistantProvider';
 
 const AssistantTab = () => {
   const { mode } = useAssistantContext();

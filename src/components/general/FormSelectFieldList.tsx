@@ -149,10 +149,6 @@ export default function FormSelectFieldList({
     ]);
   };
 
-  useEffect(() => {
-    console.log('ORIGINAL ITEMS', originalItems);
-  }, [originalItems]);
-
   return (
     <div>
       {originalItems.map((item) => {

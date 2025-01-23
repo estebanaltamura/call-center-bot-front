@@ -27,29 +27,30 @@ const MainViewContainer = () => {
   const { handleModifyDoc } = useAssistantContext();
   const { setIsLoading } = useLoadingContext();
 
-  const sortedAndReorderedList = allAssistantList
-    .sort((a, b) => a.title.localeCompare(b.title)) // Ordenar alfabéticamente por título
+  const activesSortedWithActiveFirst = allAssistantList
+    .filter((item) => item.state === StateTypes.active)
+    .sort((a, b) => a.title.localeCompare(b.title))
     .reduce((acc: IAssistantEntity[], docItem) => {
-      // Mover el elemento actual al principio si coincide con `currentBussines`
       if (docItem.title === currentAssistant?.title) {
         acc.unshift(docItem);
       } else {
         acc.push(docItem);
       }
       return acc;
-    }, [])
-    .filter((docItem: IAssistantEntity) => {
-      if (includeInactive) {
-        return true;
-      } else {
-        return docItem.state === StateTypes.active;
-      }
-    }); // Filtrar solo los activos
+    }, []);
+
+  const inactivesSorted = allAssistantList
+    .filter((item) => item.state === StateTypes.inactive)
+    .sort((a, b) => a.title.localeCompare(b.title));
+
+  const orderedList = !includeInactive
+    ? activesSortedWithActiveFirst
+    : activesSortedWithActiveFirst.concat(inactivesSorted);
 
   const renderedItems = () => {
     return (
       <ul className="space-y-2">
-        {sortedAndReorderedList.map((docItem: IAssistantEntity, index: number) => (
+        {orderedList.map((docItem: IAssistantEntity, index: number) => (
           <MainViewItem key={index} docItem={docItem} />
         ))}
       </ul>
@@ -58,14 +59,14 @@ const MainViewContainer = () => {
 
   const createAssistantHandler = async () => {
     if (!newAssistantTitle) {
-      UTILS.POPUPS.simplePopUp('Ingresá un titulo para el nuevo asistente');
+      await UTILS.POPUPS.simplePopUp('Ingresá un titulo para el nuevo asistente');
       return;
     }
 
     setIsLoading(true);
     const newDoc = await SERVICES.ASSISTANT.create(newAssistantTitle);
     if (!newDoc) {
-      UTILS.POPUPS.simplePopUp('Ocurrio un error creando el nuevo asistente');
+      await UTILS.POPUPS.simplePopUp('Ocurrio un error creando el nuevo asistente');
       return;
     }
 
@@ -109,7 +110,7 @@ const MainViewContainer = () => {
         )}
       </div>
       {allAssistantList.filter((item) => item.state === StateTypes.active).length === 0 && (
-        <p className="text-gray-500 ml-[10px]">No hay asistentes aún.</p>
+        <p className="text-gray-500 ml-[10px]">No hay asistentes activos</p>
       )}
       {renderedItems()}
     </div>

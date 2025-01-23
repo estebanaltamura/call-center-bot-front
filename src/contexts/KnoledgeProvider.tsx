@@ -114,7 +114,6 @@ export const KnowledgeContextProvider = ({ children }: { children: React.ReactNo
         (item) => item.title === settings?.currentKnowledgeContextName,
       );
 
-      console.log(allKnowledgeContextList, settings?.currentKnowledgeContextName);
       setCurrentKnowledgeContext(currentKnowledgeContextData[0]);
     }
   }, [settings?.currentKnowledgeContextName, allKnowledgeContextList]);

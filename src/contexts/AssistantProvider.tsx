@@ -13,7 +13,7 @@ import { SERVICES } from 'services/index';
 import { Entities, IAssistantEntity } from 'types/dynamicSevicesTypes';
 
 // ** Types
-import { IOptionTextItem, IService } from 'types';
+import { IOptionTextItem } from 'types';
 
 interface SystemContextType {
   mode: 'main' | 'edit';
@@ -28,8 +28,8 @@ interface SystemContextType {
   assistantToEdit: IAssistantEntity | null;
   setAssistantToEdit: React.Dispatch<React.SetStateAction<IAssistantEntity | null>>;
 
-  tempAssistantInformation: IOptionTextItem[];
-  setTempAssistantInformation: React.Dispatch<React.SetStateAction<IOptionTextItem[]>>;
+  tempAssistantData: IOptionTextItem[];
+  setTempAssistantData: React.Dispatch<React.SetStateAction<IOptionTextItem[]>>;
 
   handleModifyDoc: (docId: string) => Promise<void>;
   handleSave: () => Promise<void>;
@@ -54,7 +54,7 @@ export const AssistantProvider = ({ children }: { children: React.ReactNode }) =
   const [currentAssistant, setCurrentAssistant] = useState<IAssistantEntity | null>(null);
   const [allAssistantList, setAssistantList] = useState<IAssistantEntity[]>([]);
   const [assistantToEdit, setAssistantToEdit] = useState<IAssistantEntity | null>(null);
-  const [tempAssistantInformation, setTempAssistantInformation] = useState<IOptionTextItem[]>([]);
+  const [tempAssistantData, setTempAssistantData] = useState<IOptionTextItem[]>([]);
 
   const handleModifyDoc = async (docId: string) => {
     try {
@@ -68,7 +68,7 @@ export const AssistantProvider = ({ children }: { children: React.ReactNode }) =
 
       // Setea los bullets del systemPrompt puntual que se quiere modificar
       // Setea el modo de la tab systemPrompt en edit. Oculta el componente con el listado de systemPrompts y muestra el componente para editar un systemPrompt puntual
-      setTempAssistantInformation(res.features);
+      setTempAssistantData(res.features);
       setMode('edit');
     } catch (error) {
       console.error('Error al cargar documento:', error);
@@ -81,14 +81,14 @@ export const AssistantProvider = ({ children }: { children: React.ReactNode }) =
 
     const payload = {
       title: assistantToEdit.title,
-      features: tempAssistantInformation,
+      features: tempAssistantData,
     };
 
     try {
       SERVICES.CMS.update(Entities.assistant, assistantToEdit.id, payload);
 
       setMode('main');
-      setTempAssistantInformation([]);
+      setTempAssistantData([]);
       setAssistantToEdit(null);
     } catch (error) {
       console.error('Error al guardar documento:', error);
@@ -98,7 +98,7 @@ export const AssistantProvider = ({ children }: { children: React.ReactNode }) =
 
   const handleCancel = () => {
     setMode('main');
-    setTempAssistantInformation([]);
+    setTempAssistantData([]);
     setAssistantToEdit(null);
   };
 
@@ -109,7 +109,6 @@ export const AssistantProvider = ({ children }: { children: React.ReactNode }) =
         (item) => item.title === settings?.currentAssistantName,
       );
 
-      console.log(allAssistantList, settings?.currentAssistantName);
       setCurrentAssistant(currentAssistantData[0]);
     }
   }, [settings?.currentAssistantName, allAssistantList]);
@@ -147,8 +146,8 @@ export const AssistantProvider = ({ children }: { children: React.ReactNode }) =
         handleModifyDoc,
         handleSave,
         handleCancel,
-        tempAssistantInformation,
-        setTempAssistantInformation,
+        tempAssistantData,
+        setTempAssistantData,
       }}
     >
       {children}

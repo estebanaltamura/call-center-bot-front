@@ -15,7 +15,6 @@ const useKnowledgeContextInformation = () => {
   };
 
   const moveUpKnowledgeContextInformationItem = (index: number) => {
-    console.log(index);
     if (index === 0) return;
     const updated = [...tempKnowledgeContextInformation];
     [updated[index - 1], updated[index]] = [updated[index], updated[index - 1]];
