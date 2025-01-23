@@ -5,8 +5,7 @@ import { useState } from 'react';
 import { useAssistantContext } from 'contexts/AssistantProvider';
 
 // ** Components
-import AddBullet from './addBullet/AddBullet';
-import BulletList from './orderedList/BulletList';
+import BulletList from './bulletList/BulletList';
 
 // ** Services
 import { SERVICES } from 'services/index';
@@ -16,6 +15,7 @@ import { Entities } from 'types/dynamicSevicesTypes';
 
 // ** Utils
 import UTILS from 'utils';
+import AddBulletSection from './addBullet/AddBullet';
 
 const EditViewContainer = () => {
   const { assistantToEdit, tempAssistantInformation, handleSave, handleCancel } = useAssistantContext();
@@ -45,6 +45,7 @@ const EditViewContainer = () => {
 
   return (
     <div className="p-4 space-y-4">
+      {/*Header*/}
       <h1 className="text-xl font-bold text-center">EDICION</h1>
       <div className="space-y-2">
         <label className="block text-xl font-semibold text-center text-gray-700">
@@ -52,7 +53,8 @@ const EditViewContainer = () => {
         </label>
       </div>
 
-      <AddBullet isEditing={isEditing} />
+      {/*Main */}
+      <AddBulletSection isEditing={isEditing} />
       <BulletList
         itemEditingIndex={itemEditingIndex}
         setitemEditingIndex={setitemEditingIndex}
@@ -60,6 +62,7 @@ const EditViewContainer = () => {
         setIsEditing={setIsEditing}
       />
 
+      {/* Botones de cancelar y guardar */}
       <div className="flex justify-end gap-4 mr-[50px]">
         <button onClick={handleCancelHandler} className="bg-blue-200 text-black px-6 py-2 rounded">
           Cancelar

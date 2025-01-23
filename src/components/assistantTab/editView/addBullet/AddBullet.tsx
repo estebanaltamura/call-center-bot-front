@@ -1,5 +1,5 @@
 // ** React
-import { useEffect, useState, useRef } from 'react';
+import { useState, useRef } from 'react';
 
 // ** Custom hooks
 import useAssistantInformation from 'customHooks/assistant/assistantInformation';
@@ -11,7 +11,7 @@ import { bulletOptions } from 'enums/systemPrompts';
 import { v4 as uuidv4 } from 'uuid';
 import { useAssistantContext } from 'contexts/AssistantProvider';
 
-const AddBullet = ({ isEditing }: { isEditing: boolean }) => {
+const AddBulletSection = ({ isEditing }: { isEditing: boolean }) => {
   const [bulletOption, setBulletOption] = useState(bulletOptions[0].options[0]);
   const [bulletText, setBulletText] = useState('');
 
@@ -62,11 +62,6 @@ const AddBullet = ({ isEditing }: { isEditing: boolean }) => {
     setBulletOption(newValue);
     lastValidOption.current = newValue;
   };
-
-  useEffect(() => {
-    // Para debug, si quieres ver qué pasa con bulletOption en cada cambio:
-    // console.log('Opción actual:', bulletOption);
-  }, [bulletOption]);
 
   return (
     <div className="border border-gray-400 p-4 bg-gray-50 rounded space-y-4">
@@ -123,4 +118,4 @@ const AddBullet = ({ isEditing }: { isEditing: boolean }) => {
   );
 };
 
-export default AddBullet;
+export default AddBulletSection;
