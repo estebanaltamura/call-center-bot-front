@@ -10,7 +10,7 @@ import { collection, onSnapshot, query } from 'firebase/firestore';
 
 // ** Services
 import { SERVICES } from 'services/index';
-import { Entities, IKnowledgeContextEntity } from 'types/dynamicSevicesTypes';
+import { Entities, IKnowledgeEntity } from 'types/dynamicSevicesTypes';
 
 // ** Types
 import { IOptionTextItem } from 'types';
@@ -19,14 +19,14 @@ interface SystemContextType {
   mode: 'main' | 'edit';
   setMode: React.Dispatch<React.SetStateAction<'main' | 'edit'>>;
 
-  currentKnowledgeContext: IKnowledgeContextEntity | null;
-  setCurrentKnowledgeContext: React.Dispatch<React.SetStateAction<IKnowledgeContextEntity | null>>;
+  currentKnowledgeContext: IKnowledgeEntity | null;
+  setCurrentKnowledgeContext: React.Dispatch<React.SetStateAction<IKnowledgeEntity | null>>;
 
-  allKnowledgeContextList: IKnowledgeContextEntity[];
-  setKnowledgeContextList: React.Dispatch<React.SetStateAction<IKnowledgeContextEntity[]>>;
+  allKnowledgeContextList: IKnowledgeEntity[];
+  setKnowledgeContextList: React.Dispatch<React.SetStateAction<IKnowledgeEntity[]>>;
 
-  KnowledgeContextToEdit: IKnowledgeContextEntity | null;
-  setKnowledgeContextToEdit: React.Dispatch<React.SetStateAction<IKnowledgeContextEntity | null>>;
+  KnowledgeContextToEdit: IKnowledgeEntity | null;
+  setKnowledgeContextToEdit: React.Dispatch<React.SetStateAction<IKnowledgeEntity | null>>;
 
   tempKnowledgeContextInformation: IOptionTextItem[];
   setTempKnowledgeContextInformation: React.Dispatch<React.SetStateAction<IOptionTextItem[]>>;
@@ -51,18 +51,16 @@ export const KnowledgeContextProvider = ({ children }: { children: React.ReactNo
 
   // States
   const [mode, setMode] = useState<'main' | 'edit'>('main');
-  const [currentKnowledgeContext, setCurrentKnowledgeContext] = useState<IKnowledgeContextEntity | null>(
-    null,
-  );
-  const [allKnowledgeContextList, setKnowledgeContextList] = useState<IKnowledgeContextEntity[]>([]);
-  const [KnowledgeContextToEdit, setKnowledgeContextToEdit] = useState<IKnowledgeContextEntity | null>(null);
+  const [currentKnowledgeContext, setCurrentKnowledgeContext] = useState<IKnowledgeEntity | null>(null);
+  const [allKnowledgeContextList, setKnowledgeContextList] = useState<IKnowledgeEntity[]>([]);
+  const [KnowledgeContextToEdit, setKnowledgeContextToEdit] = useState<IKnowledgeEntity | null>(null);
   const [tempKnowledgeContextInformation, setTempKnowledgeContextInformation] = useState<IOptionTextItem[]>(
     [],
   );
 
   const handleModifyDoc = async (docId: string) => {
     try {
-      const res = await SERVICES.CMS.get(Entities.knowledgeContext, 'id', '==', docId);
+      const res = await SERVICES.CMS.get(Entities.knowledge, 'id', '==', docId);
 
       if (!res) return;
 
@@ -89,7 +87,7 @@ export const KnowledgeContextProvider = ({ children }: { children: React.ReactNo
     };
 
     try {
-      SERVICES.CMS.update(Entities.knowledgeContext, KnowledgeContextToEdit.id, payload);
+      SERVICES.CMS.update(Entities.knowledge, KnowledgeContextToEdit.id, payload);
 
       alert('Documento guardado correctamente');
       setMode('main');
@@ -120,13 +118,13 @@ export const KnowledgeContextProvider = ({ children }: { children: React.ReactNo
 
   // Se cargan todos los systemPropmpts
   useEffect(() => {
-    const colRef = collection(db, Entities.knowledgeContext);
+    const colRef = collection(db, Entities.knowledge);
     const q = query(colRef);
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const data: IKnowledgeContextEntity[] = [];
+      const data: IKnowledgeEntity[] = [];
       snapshot.forEach((docSnap) => {
-        const docData = docSnap.data() as IKnowledgeContextEntity;
+        const docData = docSnap.data() as IKnowledgeEntity;
         data.push({
           ...docData,
         });

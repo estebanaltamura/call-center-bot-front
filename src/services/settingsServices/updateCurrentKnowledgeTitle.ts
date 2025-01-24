@@ -1,7 +1,7 @@
 import { Entities } from 'types/dynamicSevicesTypes';
 import { SERVICES } from '..';
 
-const updateCurrentKnowledgeContextTitle = async (currentKnowledgeContextName: string) => {
+const updateCurrentKnowledgeTitle = async (currentKnowledgeContextName: string) => {
   try {
     const payload = { currentKnowledgeContextName };
 
@@ -12,4 +12,4 @@ const updateCurrentKnowledgeContextTitle = async (currentKnowledgeContextName: s
   }
 };
 
-export default updateCurrentKnowledgeContextTitle;
+export default updateCurrentKnowledgeTitle;

@@ -7,7 +7,7 @@ export enum Entities {
   'companies' = 'companies',
   'assistant' = 'assistant',
   'rules' = 'rules',
-  'knowledgeContext' = 'knowledgeContext',
+  'knowledge' = 'knowledge',
 }
 
 export type EntityTypesMapReturnedValues = {
@@ -16,7 +16,7 @@ export type EntityTypesMapReturnedValues = {
   [Entities.companies]: IcompanyEntity;
   [Entities.assistant]: IAssistantEntity;
   [Entities.rules]: IRulesEntity;
-  [Entities.knowledgeContext]: IKnowledgeContextEntity;
+  [Entities.knowledge]: IKnowledgeEntity;
 };
 
 export type EntityTypesMapPayloadValues = {
@@ -25,7 +25,7 @@ export type EntityTypesMapPayloadValues = {
   [Entities.companies]: Icompany;
   [Entities.assistant]: IAssistant;
   [Entities.rules]: IRules;
-  [Entities.knowledgeContext]: IKnowledgeContext;
+  [Entities.knowledge]: IKnowledge;
 };
 
 export interface ISystemPromptEntity extends ISystemPrompt {
@@ -68,7 +68,7 @@ export interface IRulesEntity extends IRules {
   deletedAt: Date;
 }
 
-export interface IKnowledgeContextEntity extends IKnowledgeContext {
+export interface IKnowledgeEntity extends IKnowledge {
   id: string;
   state: StateTypes;
   createdAt: Date;
@@ -108,7 +108,7 @@ export interface IRules {
   features: IOptionTextItem[];
 }
 
-export interface IKnowledgeContext {
+export interface IKnowledge {
   title: string;
   features: IOptionTextItem[];
 }

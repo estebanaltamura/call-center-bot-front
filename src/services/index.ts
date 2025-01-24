@@ -13,8 +13,8 @@ import { createAssistant } from './assistant/createAssistant';
 import updateCurrentAssistantTitle from './settingsServices/updateCurrentAssistantTitle';
 import updateCurrentRulesTitle from './settingsServices/updateCurrentRulesTitle';
 import { createRule } from './rules/createRule';
-import updateCurrentKnowledgeContextTitle from './settingsServices/updateCurrentKnowledgeContextTitle';
-import { createKnowledgeContext } from './knowledgeContext/createKnowledgeContext';
+import { createKnowledge } from './knowledge/createKnowledge';
+import updateCurrentKnowledgeTitle from './settingsServices/updateCurrentKnowledgeTitle';
 
 export const SERVICES = {
   CMS: {
@@ -35,12 +35,12 @@ export const SERVICES = {
     create: createRule,
   },
   KNOWLEDGE_CONTEXT: {
-    create: createKnowledgeContext,
+    create: createKnowledge,
   },
   SETTINGS: {
     updateCurrentBussinesTitle: updateCurrentBussinesTitle,
     updateCurrentAssistantTitle: updateCurrentAssistantTitle,
     updateCurrentRulesTitle: updateCurrentRulesTitle,
-    updateCurrentKnowledgeContextTitle: updateCurrentKnowledgeContextTitle,
+    updateCurrentKnowledgeContextTitle: updateCurrentKnowledgeTitle,
   },
 };

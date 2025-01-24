@@ -1,5 +1,5 @@
 import { useCompanyContext } from 'contexts/CompanyProvider';
-import useCompanyInformation from 'customHooks/company/companyInformation';
+import useCompanyInformation from 'customHooks/company/bullets';
 import { bulletOptions } from 'enums/systemPrompts'; // Ajusta la ruta si tus opciones están en otro lugar
 import { useState, useRef } from 'react';
 import { IOptionTextItem } from 'types';

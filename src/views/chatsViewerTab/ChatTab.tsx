@@ -3,7 +3,7 @@ import { useContext, useEffect, useState } from 'react';
 import ChatDetail from '../../components/chatTab/ChatDetail';
 import SideBar from '../../components/chatTab/SideBar';
 
-const ChatsViewerTab = () => {
+const ChatTab = () => {
   const [activeChat, setActiveChat] = useState<string | null>(null);
 
   return (
@@ -16,4 +16,4 @@ const ChatsViewerTab = () => {
   );
 };
 
-export default ChatsViewerTab;
+export default ChatTab;

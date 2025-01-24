@@ -8,8 +8,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { useAssistantContext } from 'contexts/AssistantProvider';
 
 // ** Hooks
-import useAssistantInformation from 'customHooks/assistant/bulletFunctions';
-import useAssistantBulletFunctions from 'customHooks/assistant/bulletFunctions';
+import useAssistantInformation from 'customHooks/assistant/bullets';
+import useAssistantBulletFunctions from 'customHooks/assistant/bullets';
 
 interface IBulletListItemProps {
   index: number;

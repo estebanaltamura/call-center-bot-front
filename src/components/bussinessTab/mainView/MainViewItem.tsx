@@ -21,7 +21,7 @@ const MainViewItem = ({ docItem }: { docItem: IcompanyEntity }) => {
   const { handleModifyDoc, currentAssistant } = useAssistantContext();
 
   const handleDownloadPDF = async () => {
-    UTILS.createPdfFromSystemPrompt({ docItem });
+    UTILS.PDF.createPdfFromSystemPrompt({ docItem });
   };
 
   const isActive = currentAssistant?.title === docItem.title;

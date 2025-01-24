@@ -1,4 +1,5 @@
-import createPdfFromSystemPrompt from './createPdfFromSystemPrompt.ts/createPdfFromSystemPrompt';
+import { timestampToDate } from './date/timestampToDate';
+import createPdf from './pdf/createPdf';
 import { simplePopUp } from './popUps/simplePopUp';
 import { twoOptionsPopUp } from './popUps/twoOptionsPopUp';
 
@@ -7,7 +8,12 @@ const UTILS = {
     simplePopUp: simplePopUp,
     twoOptionsPopUp: twoOptionsPopUp,
   },
-  createPdfFromSystemPrompt: createPdfFromSystemPrompt,
+  PDF: {
+    createPdfFromSystemPrompt: createPdf,
+  },
+  DATES: {
+    timestampToDate: timestampToDate,
+  },
 };
 
 export default UTILS;

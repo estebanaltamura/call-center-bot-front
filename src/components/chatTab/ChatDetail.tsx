@@ -1,7 +1,7 @@
 import ChatHistoryContext from 'contexts/ChatHistoryProvider';
-import { timestampToDate } from 'helpers';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { sendMessage } from 'services/whatspAppServices/sendMessage';
+import UTILS from 'utils';
 import Loader from '../general/Loader';
 
 const ChatDetail = ({ conversationId }: { conversationId: string | null }) => {
@@ -36,7 +36,7 @@ const ChatDetail = ({ conversationId }: { conversationId: string | null }) => {
       {/* Chat Body */}
       <div ref={chatDetailRef} className="flex flex-col overflow-y-auto px-4 py-2 h-[calc(100%-60px)]">
         {[...selectedConversation.messages].reverse().map((message, index) => {
-          const timestampAdapted = timestampToDate(message.timestamp.seconds);
+          const timestampAdapted = UTILS.DATES.timestampToDate(message.timestamp.seconds);
 
           return (
             <div

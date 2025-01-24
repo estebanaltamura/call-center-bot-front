@@ -40,7 +40,7 @@ const EditViewContainer = () => {
     if (isNewAssistant) {
       await UTILS.POPUPS.twoOptionsPopUp(
         'Si cancelas la edición de un asistente nuevo este borrará',
-        () => SERVICES.CMS.delete(Entities.assistant, assistantToEdit.id),
+        () => SERVICES.CMS.delete(Entities.knowledge, assistantToEdit.id),
         'El asistente ha sido borrado.',
       );
       handleCancel();

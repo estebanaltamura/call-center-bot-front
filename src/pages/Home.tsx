@@ -1,35 +1,38 @@
 // ** React
 import { useEffect, useState } from 'react';
 
-// ** Context
-
 // ** Components
-import ChatsViewer from 'views/chatsViewerTab/ChatsViewerTab';
-import Settings from 'views/settingsTab/SettingsTab';
+import ChatTab from 'views/chatsViewerTab/ChatTab';
 import BussinesTab from 'views/bussinesTab/BussinesTab';
-import AssistantTab from 'views/assistantTab/Assistant';
+import AssistantTab from 'views/assistantTab/AssistantTab';
 import RulesTab from 'views/rules/RulesTab';
-import { useCompanyContext } from 'contexts/CompanyProvider';
-import KnowledgeContextTab from 'views/knowledgeTab/KnowledgeTab';
-import { useLoadingContext } from 'contexts/LoadingProvider';
+import KnowledgeTab from 'views/knowledgeTab/KnowledgeTab';
+import SettingsTab from 'views/settingsTab/SettingsTab';
 import Loader from 'components/general/Loader';
+
+// ** Context
+import { useCompanyContext } from 'contexts/CompanyProvider';
+import { useLoadingContext } from 'contexts/LoadingProvider';
 import { useAssistantContext } from 'contexts/AssistantProvider';
 import { useRulesContext } from 'contexts/RulesProvider';
 import { useKnowledgeContextContext } from 'contexts/KnoledgeProvider';
 
 const Home = () => {
+  // States
   const [activeTab, setActiveTab] = useState('chats');
+
+  // Contexts
   const { setMode: setCompanyMode } = useCompanyContext();
   const { setMode: setAssistantMode } = useAssistantContext();
   const { setMode: setRulesMode } = useRulesContext();
-  const { setMode: setKnowledgeContextMode } = useKnowledgeContextContext();
+  const { setMode: setKnowledgeMode } = useKnowledgeContextContext();
   const { isLoading } = useLoadingContext();
 
   // Función para renderizar el contenido según la tab activa
   const renderContent = () => {
     switch (activeTab) {
       case 'chats':
-        return <ChatsViewer />;
+        return <ChatTab />;
       case 'bussines':
         return <BussinesTab />;
       case 'assistant':
@@ -37,9 +40,9 @@ const Home = () => {
       case 'rules':
         return <RulesTab />;
       case 'rules':
-        return <KnowledgeContextTab />;
+        return <KnowledgeTab />;
       case 'settings':
-        return <Settings />;
+        return <SettingsTab />;
       default:
         return null;
     }
@@ -49,7 +52,7 @@ const Home = () => {
     setCompanyMode('main');
     setAssistantMode('main');
     setRulesMode('main');
-    setKnowledgeContextMode('main');
+    setKnowledgeMode('main');
   }, [activeTab]);
 
   return (
@@ -82,9 +85,9 @@ const Home = () => {
         </button>
 
         <button
-          onClick={() => setActiveTab('knowledgeContext')}
+          onClick={() => setActiveTab('knowledge')}
           className={`flex-1 py-2 text-center ${
-            activeTab === 'knowledgeContext' ? 'border-b-2 border-blue-500 text-blue-500' : 'text-gray-500'
+            activeTab === 'knowledge' ? 'border-b-2 border-blue-500 text-blue-500' : 'text-gray-500'
           }`}
         >
           Conocimiento
@@ -96,14 +99,6 @@ const Home = () => {
           }`}
         >
           Reglas
-        </button>
-        <button
-          onClick={() => setActiveTab('goals')}
-          className={`flex-1 py-2 text-center ${
-            activeTab === 'goals' ? 'border-b-2 border-blue-500 text-blue-500' : 'text-gray-500'
-          }`}
-        >
-          Objetivos
         </button>
         <button
           onClick={() => setActiveTab('settings')}

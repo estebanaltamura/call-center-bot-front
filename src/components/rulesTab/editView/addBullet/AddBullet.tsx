@@ -2,7 +2,7 @@
 import { useState, useRef, useEffect } from 'react';
 
 // ** Custom hooks
-import useAssistantInformation from 'customHooks/assistant/bulletFunctions';
+import useAssistantInformation from 'customHooks/assistant/bullets';
 
 // ** Contexts
 import { useAssistantContext } from 'contexts/AssistantProvider';
@@ -12,7 +12,7 @@ import { bulletOptions } from 'enums/systemPrompts';
 
 // ** 3rd party
 import { v4 as uuidv4 } from 'uuid';
-import useAssistantBulletFunctions from 'customHooks/assistant/bulletFunctions';
+import useAssistantBulletFunctions from 'customHooks/assistant/bullets';
 
 const AddBulletSection = ({ isEditing }: { isEditing: boolean }) => {
   // ** States

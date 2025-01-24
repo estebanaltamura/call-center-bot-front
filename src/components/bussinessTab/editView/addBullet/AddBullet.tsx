@@ -2,7 +2,7 @@
 import { useState } from 'react';
 
 // ** Custom hooks
-import useCompanyInformation from 'customHooks/company/companyInformation';
+import useCompanyInformation from 'customHooks/company/bullets';
 
 // ** Enums
 import { bulletOptions } from 'enums/systemPrompts';

@@ -1,8 +1,8 @@
 import { doc, updateDoc } from 'firebase/firestore';
 import { db } from 'firebaseConfig';
 import ChatHistoryContext from 'contexts/ChatHistoryProvider';
-import { timestampToDate } from 'helpers';
 import React, { useContext } from 'react';
+import UTILS from 'utils';
 
 const SideBar = ({
   activeChat,
@@ -49,7 +49,7 @@ const SideBar = ({
                 <div className="flex flex-col">
                   <div className="text-gray-800 text-sm">{conversation.phoneNumber}</div>
                   <div className="text-xs text-gray-500">
-                    {timestampToDate(conversation.messages[0]?.timestamp.seconds)}
+                    {UTILS.DATES.timestampToDate(conversation.messages[0]?.timestamp.seconds)}
                   </div>
                 </div>
 

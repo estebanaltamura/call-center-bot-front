@@ -1,16 +1,12 @@
-// ** Context
-
+// ** components
 import EditViewContainer from 'components/rulesTab/editView/EditViewContainer';
 import MainViewContainer from 'components/rulesTab/mainView/MainViewContainer';
-import { useRulesContext } from 'contexts/RulesProvider';
 
-// ** components
+// ** Context
+import { useRulesContext } from 'contexts/RulesProvider';
 
 const RulesTab = () => {
   const { mode } = useRulesContext();
-
-  //Sirve para generar documentos en firestore con cadenas de texto deinidas por el usuario que tambien se indica en que orden van a ser concatenadas
-  //Se pueden crear multiples documentos
 
   if (mode === 'main') {
     return <MainViewContainer />;
