@@ -28,8 +28,8 @@ interface SystemContextType {
   rulesToEdit: IRulesEntity | null;
   setRulesToEdit: React.Dispatch<React.SetStateAction<IRulesEntity | null>>;
 
-  tempRulesInformation: IOptionTextItem[];
-  setTempRulesInformation: React.Dispatch<React.SetStateAction<IOptionTextItem[]>>;
+  tempRulesData: IOptionTextItem[];
+  setTempRulesData: React.Dispatch<React.SetStateAction<IOptionTextItem[]>>;
 
   handleModifyDoc: (docId: string) => Promise<void>;
   handleSave: () => Promise<void>;
@@ -41,7 +41,7 @@ const RulesContext = createContext<SystemContextType | undefined>(undefined);
 export const useRulesContext = () => {
   const context = useContext(RulesContext);
   if (!context) {
-    throw new Error('useRulesContext debe usarse dentro de un RulesProvider');
+    throw new Error('useSystemContext debe usarse dentro de un SystemPromptProvider');
   }
   return context;
 };
@@ -54,7 +54,7 @@ export const RulesProvider = ({ children }: { children: React.ReactNode }) => {
   const [currentRules, setCurrentRules] = useState<IRulesEntity | null>(null);
   const [allRulesList, setRulesList] = useState<IRulesEntity[]>([]);
   const [rulesToEdit, setRulesToEdit] = useState<IRulesEntity | null>(null);
-  const [tempRulesInformation, setTempRulesInformation] = useState<IOptionTextItem[]>([]);
+  const [tempRulesData, setTempRulesData] = useState<IOptionTextItem[]>([]);
 
   const handleModifyDoc = async (docId: string) => {
     try {
@@ -68,7 +68,7 @@ export const RulesProvider = ({ children }: { children: React.ReactNode }) => {
 
       // Setea los bullets del systemPrompt puntual que se quiere modificar
       // Setea el modo de la tab systemPrompt en edit. Oculta el componente con el listado de systemPrompts y muestra el componente para editar un systemPrompt puntual
-      setTempRulesInformation(res.features);
+      setTempRulesData(res.features);
       setMode('edit');
     } catch (error) {
       console.error('Error al cargar documento:', error);
@@ -81,15 +81,14 @@ export const RulesProvider = ({ children }: { children: React.ReactNode }) => {
 
     const payload = {
       title: rulesToEdit.title,
-      features: tempRulesInformation,
+      features: tempRulesData,
     };
 
     try {
       SERVICES.CMS.update(Entities.rules, rulesToEdit.id, payload);
 
-      alert('Documento guardado correctamente');
       setMode('main');
-      setTempRulesInformation([]);
+      setTempRulesData([]);
       setRulesToEdit(null);
     } catch (error) {
       console.error('Error al guardar documento:', error);
@@ -99,11 +98,11 @@ export const RulesProvider = ({ children }: { children: React.ReactNode }) => {
 
   const handleCancel = () => {
     setMode('main');
-    setTempRulesInformation([]);
+    setTempRulesData([]);
     setRulesToEdit(null);
   };
 
-  // Cuando cargo todos los system prompts y cargo el string del titulo del system prompt en uso, se setea el estado que contiene todos los datos del prompt en uso
+  // Cuando cargo todos los system prompts y cargo el string del título del system prompt en uso, se setea el estado que contiene todos los datos del prompt en uso
   useEffect(() => {
     if (allRulesList && settings?.currentRulesName) {
       const currentRulesData = allRulesList.filter((item) => item.title === settings?.currentRulesName);
@@ -145,8 +144,8 @@ export const RulesProvider = ({ children }: { children: React.ReactNode }) => {
         handleModifyDoc,
         handleSave,
         handleCancel,
-        tempRulesInformation,
-        setTempRulesInformation,
+        tempRulesData,
+        setTempRulesData,
       }}
     >
       {children}

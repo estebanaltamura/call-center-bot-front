@@ -1,3 +1,7 @@
+// ** React
+import React from 'react';
+
+// ** Css config
 import {
   layoutMaxWidth,
   menuBarHeight,
@@ -8,6 +12,9 @@ import {
   paddingLayoutTopDesktop,
   paddingLayoutTopMobile,
 } from 'globalConfig';
+
+// ** Components
+import Sidebar from './SideBar';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -22,13 +29,21 @@ const Layout = ({ children }: LayoutProps) => {
 
   return (
     <div
-      className="mx-auto w-full min-h-screen"
+      className="mx-auto w-full h-screen max-h-screen flex"
       style={{
         maxWidth: `${layoutMaxWidth}px`,
         padding: `${paddingTop}px ${paddingLeftRight}px ${paddingBottom}px`,
       }}
     >
-      {children}
+      <div className="flex border-2 border-gray rounded w-full min-w-full">
+        {/* Barra lateral */}
+        <Sidebar />
+
+        {/* Contenido principal */}
+        <div className="w-full h-full max-h-full">
+          <main className="h-full">{children}</main>
+        </div>
+      </div>
     </div>
   );
 };

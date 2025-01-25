@@ -1,9 +1,9 @@
 import { Entities } from 'types/dynamicSevicesTypes';
 import { SERVICES } from '..';
 
-const updateCurrentKnowledgeTitle = async (currentKnowledgeContextName: string) => {
+const updateCurrentKnowledgeTitle = async (currentKnowledgeName: string) => {
   try {
-    const payload = { currentKnowledgeContextName };
+    const payload = { currentKnowledgeName };
 
     SERVICES.CMS.update(Entities.settings, 'global', payload);
   } catch (error) {

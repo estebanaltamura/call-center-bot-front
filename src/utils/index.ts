@@ -1,3 +1,4 @@
+// ** Functions
 import { timestampToDate } from './date/timestampToDate';
 import createPdf from './pdf/createPdf';
 import { simplePopUp } from './popUps/simplePopUp';

@@ -1,9 +1,15 @@
+// ** Types
 import { Entities } from 'types/dynamicSevicesTypes';
+
+// ** Utils
+import UTILS from 'utils';
+
+// ** Services
 import { SERVICES } from '..';
 
 export const createRule = async (title: string) => {
   if (!title.trim()) {
-    alert('Por favor, ingresa un nombre para el documento.');
+    UTILS.POPUPS.simplePopUp('Por favor, ingresa un nombre para la regla.');
     return;
   }
 
@@ -13,9 +19,10 @@ export const createRule = async (title: string) => {
   };
 
   try {
-    SERVICES.CMS.create(Entities.rules, payload);
+    const newDoc = SERVICES.CMS.create(Entities.rules, payload);
+    return newDoc;
   } catch (error) {
     console.error('Error al crear documento:', error);
-    alert('Ocurrió un error al crear el documento.');
+    UTILS.POPUPS.simplePopUp('Ocurrió un error al crear la regla.');
   }
 };

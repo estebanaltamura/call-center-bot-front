@@ -1,14 +1,20 @@
-import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+// ** React Router
+import { Navigate, Route, Routes } from 'react-router-dom';
 
-import Home from 'pages/Home';
-import { useEffect } from 'react';
-import { menuBarHeight } from 'globalConfig';
+// ** Contexts
 import SettingsProvider from 'contexts/SettingsProvider';
 import SystemPromptProvider from 'contexts/CompanyProvider';
 import AssistantProvider from 'contexts/AssistantProvider';
 import RulesProvider from 'contexts/RulesProvider';
-import KnowledgeContextProvider from 'contexts/KnoledgeProvider';
 import LoadingProvider from 'contexts/LoadingProvider';
+import KnowledgeProvider from 'contexts/KnowledgeProvider';
+import { ChatHistoryProvider } from 'contexts/ChatHistoryProvider';
+
+// ** Pages
+import SystemPromptPage from 'pages/SystemPromptPage';
+import ChatPage from 'pages/ChatPage';
+import DashboardPage from 'pages/DashboardPage';
+import StatusPage from 'pages/StatusPage';
 
 function App() {
   return (
@@ -17,22 +23,47 @@ function App() {
         <SystemPromptProvider>
           <AssistantProvider>
             <RulesProvider>
-              <KnowledgeContextProvider>
-                <main className="pt-[48px]">
-                  {/* Ajuste del padding top para compensar la altura del AppBar */}
+              <KnowledgeProvider>
+                <ChatHistoryProvider>
                   <Routes>
-                    <Route path="/" element={<Navigate to="/home" />} />
                     <Route
-                      path="/home"
+                      path="/dashboard"
                       element={
                         // <AuthGuard>
-                        <Home />
+                        <DashboardPage />
                         // </AuthGuard>
                       }
                     />
+                    <Route
+                      path="/systemPrompt"
+                      element={
+                        // <AuthGuard>
+                        <SystemPromptPage />
+                        // </AuthGuard>
+                      }
+                    />
+
+                    <Route
+                      path="/status"
+                      element={
+                        // <AuthGuard>
+                        <StatusPage />
+                        // </AuthGuard>
+                      }
+                    />
+                    <Route
+                      path="/chat"
+                      element={
+                        // <AuthGuard>
+                        <ChatPage />
+                        // </AuthGuard>
+                      }
+                    />
+                    <Route path="/" element={<Navigate to="/dashboard" />} />
+                    <Route path="*" element={<Navigate to="/dashboard" />} />
                   </Routes>
-                </main>
-              </KnowledgeContextProvider>
+                </ChatHistoryProvider>
+              </KnowledgeProvider>
             </RulesProvider>
           </AssistantProvider>
         </SystemPromptProvider>

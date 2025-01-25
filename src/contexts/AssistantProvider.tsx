@@ -102,7 +102,7 @@ export const AssistantProvider = ({ children }: { children: React.ReactNode }) =
     setAssistantToEdit(null);
   };
 
-  // Cuando cargo todos los system prompts y cargo el string del titulo del system prompt en uso, se setea el estado que contiene todos los datos del prompt en uso
+  // Cuando cargo todos los system prompts y cargo el string del título del system prompt en uso, se setea el estado que contiene todos los datos del prompt en uso
   useEffect(() => {
     if (allAssistantList && settings?.currentAssistantName) {
       const currentAssistantData = allAssistantList.filter(

@@ -7,13 +7,13 @@ import { dynamicSoftDelete } from './dynamicServices/dynamicSoftDelete';
 import { dynamicUpdate } from './dynamicServices/dynamicUpdate';
 
 // ** CustomServices
-import updateCurrentBussinesTitle from './settingsServices/updateCurrentPrompt';
 import { createCompany } from './company/createCompany';
 import { createAssistant } from './assistant/createAssistant';
-import updateCurrentAssistantTitle from './settingsServices/updateCurrentAssistantTitle';
-import updateCurrentRulesTitle from './settingsServices/updateCurrentRulesTitle';
 import { createRule } from './rules/createRule';
 import { createKnowledge } from './knowledge/createKnowledge';
+import updateCurrentBussinesTitle from './settingsServices/updateCurrentPrompt';
+import updateCurrentAssistantTitle from './settingsServices/updateCurrentAssistantTitle';
+import updateCurrentRulesTitle from './settingsServices/updateCurrentRulesTitle';
 import updateCurrentKnowledgeTitle from './settingsServices/updateCurrentKnowledgeTitle';
 
 export const SERVICES = {
@@ -34,7 +34,7 @@ export const SERVICES = {
   RULES: {
     create: createRule,
   },
-  KNOWLEDGE_CONTEXT: {
+  KNOWLEDGE: {
     create: createKnowledge,
   },
   SETTINGS: {

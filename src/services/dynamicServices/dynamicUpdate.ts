@@ -1,5 +1,8 @@
+// ** Firebase | Firestore imports
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { db } from 'firebaseConfig';
+
+// ** Types imports
 import { EntityTypesMapPayloadValues, EntityTypesMapReturnedValues } from 'types/dynamicSevicesTypes';
 
 export const dynamicUpdate = async <T extends keyof EntityTypesMapReturnedValues>(

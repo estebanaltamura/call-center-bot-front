@@ -28,54 +28,6 @@ export type EntityTypesMapPayloadValues = {
   [Entities.knowledge]: IKnowledge;
 };
 
-export interface ISystemPromptEntity extends ISystemPrompt {
-  id: string;
-  state: StateTypes;
-  createdAt: Date;
-  updatedAt: Date;
-  deletedAt: Date;
-}
-
-export interface ISettingsEntity extends ISettings {
-  id: string;
-  state: StateTypes;
-  createdAt: Date;
-  updatedAt: Date;
-  deletedAt: Date;
-}
-
-export interface IcompanyEntity extends Icompany {
-  id: string;
-  state: StateTypes;
-  createdAt: Date;
-  updatedAt: Date;
-  deletedAt: Date;
-}
-
-export interface IAssistantEntity extends IAssistant {
-  id: string;
-  state: StateTypes;
-  createdAt: Date;
-  updatedAt: Date;
-  deletedAt: Date;
-}
-
-export interface IRulesEntity extends IRules {
-  id: string;
-  state: StateTypes;
-  createdAt: Date;
-  updatedAt: Date;
-  deletedAt: Date;
-}
-
-export interface IKnowledgeEntity extends IKnowledge {
-  id: string;
-  state: StateTypes;
-  createdAt: Date;
-  updatedAt: Date;
-  deletedAt: Date;
-}
-
 export interface ISystemPrompt {
   title: string;
   bullets: string[];
@@ -88,7 +40,7 @@ export interface ISettings {
   currentBussinesName: string | null;
   currentAssistantName: string | null;
   currentRulesName: string | null;
-  currentKnowledgeContextName: string | null;
+  currentKnowledgeName: string | null;
 }
 
 export interface Icompany {
@@ -112,6 +64,27 @@ export interface IKnowledge {
   title: string;
   features: IOptionTextItem[];
 }
+
+interface IEntity {
+  id: string;
+  state: StateTypes;
+  createdAt: Date;
+  updatedAt: Date;
+  softDeletedAt: Date;
+  reactivatedAt: Date;
+}
+
+export interface IKnowledgeEntity extends IKnowledge, IEntity {}
+
+export interface ISystemPromptEntity extends ISystemPrompt, IEntity {}
+
+export interface ISettingsEntity extends ISettings, IEntity {}
+
+export interface IcompanyEntity extends Icompany, IEntity {}
+
+export interface IAssistantEntity extends IAssistant, IEntity {}
+
+export interface IRulesEntity extends IRules, IEntity {}
 
 export enum StateTypes {
   'active' = 'active',
