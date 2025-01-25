@@ -2,7 +2,7 @@
 import { IOptionTextItem, IService } from 'types';
 
 export enum Entities {
-  'systemPrompts' = 'systemPrompts',
+  'systemPrompt' = 'systemPrompt',
   'settings' = 'settings',
   'companies' = 'companies',
   'assistant' = 'assistant',
@@ -11,7 +11,7 @@ export enum Entities {
 }
 
 export type EntityTypesMapReturnedValues = {
-  [Entities.systemPrompts]: ISystemPromptEntity;
+  [Entities.systemPrompt]: ISystemPromptEntity;
   [Entities.settings]: ISettingsEntity;
   [Entities.companies]: IcompanyEntity;
   [Entities.assistant]: IAssistantEntity;
@@ -20,7 +20,7 @@ export type EntityTypesMapReturnedValues = {
 };
 
 export type EntityTypesMapPayloadValues = {
-  [Entities.systemPrompts]: ISystemPrompt;
+  [Entities.systemPrompt]: ISystemPrompt;
   [Entities.settings]: ISettings;
   [Entities.companies]: Icompany;
   [Entities.assistant]: IAssistant;
@@ -29,11 +29,7 @@ export type EntityTypesMapPayloadValues = {
 };
 
 export interface ISystemPrompt {
-  title: string;
-  bullets: string[];
-  services: IService[];
-  prompt: string;
-  servicesOrderIndex: number;
+  currentSystemPrompt: string;
 }
 
 export interface ISettings {
