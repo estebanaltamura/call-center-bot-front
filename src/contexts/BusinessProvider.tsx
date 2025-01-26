@@ -34,8 +34,8 @@ interface BusinessContextType {
   tempBusinessData: IOptionTextItem[];
   setTempBusinessData: React.Dispatch<React.SetStateAction<IOptionTextItem[]>>;
 
-  tempCompanyServices: IService[];
-  setTempCompanyServices: React.Dispatch<React.SetStateAction<IService[]>>;
+  tempBusinessServices: IService[];
+  setTempBusinessServices: React.Dispatch<React.SetStateAction<IService[]>>;
 
   handleModifyDoc: (docId: string) => Promise<void>;
   handleSave: () => Promise<void>;
@@ -61,7 +61,7 @@ export const BusinessProvider = ({ children }: { children: React.ReactNode }) =>
   const [allBusinessesList, setAllBusinessesList] = useState<IBusinessEntity[]>([]);
   const [businessToEdit, setBusinessToEdit] = useState<IBusinessEntity | null>(null);
   const [tempBusinessData, setTempBusinessData] = useState<IOptionTextItem[]>([]);
-  const [tempCompanyServices, setTempCompanyServices] = useState<IService[]>([]);
+  const [tempBusinessServices, setTempBusinessServices] = useState<IService[]>([]);
 
   const handleModifyDoc = async (docId: string) => {
     try {
@@ -73,7 +73,7 @@ export const BusinessProvider = ({ children }: { children: React.ReactNode }) =>
         ...res,
       });
 
-      setTempCompanyServices(res.services);
+      setTempBusinessServices(res.services);
       setTempBusinessData(res.features);
       setMode('edit');
     } catch (error) {
@@ -88,14 +88,14 @@ export const BusinessProvider = ({ children }: { children: React.ReactNode }) =>
     const payload = {
       title: businessToEdit.title,
       features: tempBusinessData,
-      services: tempCompanyServices,
+      services: tempBusinessServices,
     };
 
     try {
       SERVICES.CMS.update(Entities.business, businessToEdit.id, payload);
 
       setMode('main');
-      setTempCompanyServices([]);
+      setTempBusinessServices([]);
       setTempBusinessData([]);
       setBusinessToEdit(null);
     } catch (error) {
@@ -106,7 +106,7 @@ export const BusinessProvider = ({ children }: { children: React.ReactNode }) =>
 
   const handleCancel = () => {
     setMode('main');
-    setTempCompanyServices([]);
+    setTempBusinessServices([]);
     setTempBusinessData([]);
     setBusinessToEdit(null);
   };
@@ -141,6 +141,10 @@ export const BusinessProvider = ({ children }: { children: React.ReactNode }) =>
     return () => unsubscribe();
   }, []);
 
+  useEffect(() => {
+    console.log('tempBusinessData', tempBusinessData);
+  }, [tempBusinessData]);
+
   return (
     <CompanyContext.Provider
       value={{
@@ -157,8 +161,8 @@ export const BusinessProvider = ({ children }: { children: React.ReactNode }) =>
         handleCancel,
         tempBusinessData,
         setTempBusinessData,
-        tempCompanyServices,
-        setTempCompanyServices,
+        tempBusinessServices,
+        setTempBusinessServices,
       }}
     >
       {children}

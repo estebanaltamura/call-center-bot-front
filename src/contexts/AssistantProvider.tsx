@@ -133,6 +133,10 @@ export const AssistantProvider = ({ children }: { children: React.ReactNode }) =
     return () => unsubscribe();
   }, []);
 
+  useEffect(() => {
+    console.log('tempAssistantData', tempAssistantData);
+  }, [tempAssistantData]);
+
   return (
     <AssistantContext.Provider
       value={{

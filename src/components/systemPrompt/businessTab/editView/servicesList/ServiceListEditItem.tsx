@@ -37,7 +37,7 @@ const ServiceListEditItem = ({
   setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const { deleteService } = useServices();
-  const { setTempCompanyServices } = useBusinessContext();
+  const { setTempBusinessServices } = useBusinessContext();
 
   // ** Editing states
   const [isThereAnEditingItem, setIsThereAnEditingItem] = useState(false);
@@ -96,7 +96,7 @@ const ServiceListEditItem = ({
     }
 
     // Actualizamos en el contexto global
-    setTempCompanyServices((prev) => {
+    setTempBusinessServices((prev) => {
       const updated = [...prev];
       updated[index] = {
         ...updated[index],

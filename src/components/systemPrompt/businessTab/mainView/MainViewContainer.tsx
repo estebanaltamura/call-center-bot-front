@@ -87,7 +87,7 @@ const MainViewContainer = () => {
         <input
           type="text"
           className="border rounded px-2 h-[40px] w-96"
-          placeholder="Nombre del nuevo asistente"
+          placeholder="Nombre del nuevo negocio"
           value={newBusinessTitle}
           onChange={(e) => setNewBusinessTitle(e.target.value)}
         />
