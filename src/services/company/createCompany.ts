@@ -17,7 +17,6 @@ export const createCompany = async (title: string) => {
     title,
     features: [],
     services: [],
-    servicesOrderIndex: 0,
   };
 
   try {

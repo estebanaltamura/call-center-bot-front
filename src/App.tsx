@@ -3,7 +3,7 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 
 // ** Contexts
 import SettingsProvider from 'contexts/SettingsProvider';
-import SystemPromptProvider from 'contexts/CompanyProvider';
+import SystemPromptProvider from 'contexts/BusinessProvider';
 import AssistantProvider from 'contexts/AssistantProvider';
 import RulesProvider from 'contexts/RulesProvider';
 import LoadingProvider from 'contexts/LoadingProvider';

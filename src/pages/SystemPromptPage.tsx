@@ -10,7 +10,7 @@ import SettingsTab from 'views/systemPrompt/settingsTab/SettingsTab';
 import Loader from 'components/general/Loader';
 
 // ** Context
-import { useCompanyContext } from 'contexts/CompanyProvider';
+import { useBusinessContext } from 'contexts/BusinessProvider';
 import { useLoadingContext } from 'contexts/LoadingProvider';
 import { useAssistantContext } from 'contexts/AssistantProvider';
 import { useRulesContext } from 'contexts/RulesProvider';
@@ -22,7 +22,7 @@ const SystemPromptPage = () => {
   const [activeTab, setActiveTab] = useState('business');
 
   // Contexts
-  const { setMode: setCompanyMode } = useCompanyContext();
+  const { setMode: setCompanyMode } = useBusinessContext();
   const { setMode: setAssistantMode } = useAssistantContext();
   const { setMode: setRulesMode } = useRulesContext();
   const { setMode: setKnowledgeMode } = useKnowledgeContext();

@@ -1,4 +1,4 @@
-import { useCompanyContext } from 'contexts/CompanyProvider';
+import { useBusinessContext } from 'contexts/BusinessProvider';
 import useBulletFunctions, { PromptComponentsEnum } from 'customHooks/bullets';
 import { bulletOptions } from 'enums/systemPrompts'; // Ajusta la ruta si tus opciones están en otro lugar
 import { useState, useRef } from 'react';
@@ -14,7 +14,7 @@ const CompanyInformationListItem = ({
   index: number;
   tempCompanyInformationLength: number;
 }) => {
-  const { setTempCompanyInformation } = useCompanyContext();
+  const { setTempBusinessData } = useBusinessContext();
 
   const { deleteBullet, moveUpBullet, moveDownBullet } = useBulletFunctions(PromptComponentsEnum.COMPANY);
 
@@ -38,7 +38,7 @@ const CompanyInformationListItem = ({
   };
 
   const handleConfirmEdit = () => {
-    setTempCompanyInformation((prev) => {
+    setTempBusinessData((prev) => {
       const updated = [...prev];
       updated[index] = {
         ...updated[index],

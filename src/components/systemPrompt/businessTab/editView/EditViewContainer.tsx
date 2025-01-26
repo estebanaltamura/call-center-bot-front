@@ -1,5 +1,5 @@
 // ** Context
-import { useCompanyContext } from 'contexts/CompanyProvider';
+import { useBusinessContext } from 'contexts/BusinessProvider';
 
 // ** Components
 import AddBullet from './addBullet/AddBullet';
@@ -7,7 +7,7 @@ import AddService from './addService/AddService';
 import OrderedList from './orderedList/OrderedList';
 
 const EditViewContainer = () => {
-  const { companyToEdit, handleSave, handleCancel } = useCompanyContext();
+  const { businessToEdit, handleSave, handleCancel } = useBusinessContext();
 
   const saveHandler = () => {
     handleSave();
@@ -18,7 +18,7 @@ const EditViewContainer = () => {
       <h1 className="text-xl font-bold text-center">MODIFICAR SYSTEM PROMPT</h1>
       <div className="space-y-2">
         <label className="block text-xl font-semibold text-center text-gray-700">
-          Modificando: {companyToEdit?.title}
+          Modificando: {businessToEdit?.title}
         </label>
       </div>
 

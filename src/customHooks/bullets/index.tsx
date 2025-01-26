@@ -1,6 +1,6 @@
 // Contexts
 import { useAssistantContext } from 'contexts/AssistantProvider';
-import { useCompanyContext } from 'contexts/CompanyProvider';
+import { useBusinessContext } from 'contexts/BusinessProvider';
 import { useKnowledgeContext } from 'contexts/KnowledgeProvider';
 import { useRulesContext } from 'contexts/RulesProvider';
 
@@ -16,20 +16,20 @@ const useBulletFunctions = (promptComponentType: PromptComponentsType) => {
   const { tempAssistantData, setTempAssistantData } = useAssistantContext();
   const { tempRulesData, setTempRulesData } = useRulesContext();
   const { tempKnowledgeData, setTempKnowledgeData } = useKnowledgeContext();
-  const { tempCompanyInformation, setTempCompanyInformation } = useCompanyContext();
+  const { tempBusinessData, setTempBusinessData } = useBusinessContext();
 
   const tempDataMap = {
     ASSISTANT: tempAssistantData,
     RULE: tempRulesData,
     KNOWLEDGE: tempKnowledgeData,
-    COMPANY: tempCompanyInformation,
+    COMPANY: tempBusinessData,
   };
 
   const setTempDataMap = {
     ASSISTANT: setTempAssistantData,
     RULE: setTempRulesData,
     KNOWLEDGE: setTempKnowledgeData,
-    COMPANY: setTempCompanyInformation,
+    COMPANY: setTempBusinessData,
   };
 
   const addBullet = (option: string, text: string) => {

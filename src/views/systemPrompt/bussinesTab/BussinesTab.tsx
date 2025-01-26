@@ -1,22 +1,22 @@
 // ** Context
-import { useCompanyContext } from 'contexts/CompanyProvider';
+import { useBusinessContext } from 'contexts/BusinessProvider';
 
 // ** components
-import PromptSystemEditViewContainer from 'components/systemPrompt/bussinessTab/editView/EditViewContainer';
-import SystemPromptMainViewContainer from 'components/systemPrompt/bussinessTab/mainView/MainViewContainer';
+import MainViewContainer from 'components/systemPrompt/businessTab/mainView/MainViewContainer';
+import EditViewContainer from 'components/systemPrompt/businessTab/editView/EditViewContainer';
 
 const BussinesTab = () => {
-  const { mode } = useCompanyContext();
+  const { mode } = useBusinessContext();
 
   //Sirve para generar documentos en firestore con cadenas de texto deinidas por el usuario que tambien se indica en que orden van a ser concatenadas
   //Se pueden crear multiples documentos
 
   if (mode === 'main') {
-    return <SystemPromptMainViewContainer />;
+    return <MainViewContainer />;
   }
 
   if (mode === 'edit') {
-    return <PromptSystemEditViewContainer />;
+    return <EditViewContainer />;
   } else return <div>Modo no definido</div>;
 };
 

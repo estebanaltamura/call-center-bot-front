@@ -5,13 +5,13 @@ import { useState } from 'react';
 import { serviceOptions } from 'enums/systemPrompts';
 
 // ** Custom hooks
-import useServices from 'customHooks/company/services';
+import useServices from 'customHooks/services';
 
 // ** 3rd party
 import { v4 as uuidv4 } from 'uuid';
 
 const AddService = () => {
-  const { addCompanyService } = useServices();
+  const { addService } = useServices();
   const [serviceTitle, setServiceTitle] = useState('');
   const [serviceDescription, setServiceDescription] = useState('');
   const [serviceOption, setServiceOption] = useState(serviceOptions[0].options[0]);
@@ -38,7 +38,7 @@ const AddService = () => {
       description: serviceDescription.trim(),
       items: serviceItems,
     };
-    addCompanyService(newService);
+    addService(newService);
     setServiceTitle('');
     setServiceDescription('');
     setServiceItems([]);

@@ -1,5 +1,5 @@
 // ** Context
-import { useCompanyContext } from 'contexts/CompanyProvider';
+import { useBusinessContext } from 'contexts/BusinessProvider';
 import { useState } from 'react';
 
 // ** 3rd library
@@ -11,7 +11,7 @@ import ServiceListEditItem from './ServiceListEditItem';
 import { IService } from 'types';
 
 const ServicesList = () => {
-  const { tempCompanyServices } = useCompanyContext();
+  const { tempCompanyServices } = useBusinessContext();
   const [isEditing, setIsEditing] = useState(false);
   const [serviceToEdit, setServiceToEdit] = useState<IService>();
 

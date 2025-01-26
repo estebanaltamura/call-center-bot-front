@@ -15,7 +15,10 @@ import { Entities, IKnowledgeEntity } from 'types/dynamicSevicesTypes';
 // ** Types
 import { IOptionTextItem } from 'types';
 
-interface SystemContextType {
+// ** Utils
+import UTILS from 'utils';
+
+interface KnowledgeContextType {
   mode: 'main' | 'edit';
   setMode: React.Dispatch<React.SetStateAction<'main' | 'edit'>>;
 
@@ -36,7 +39,7 @@ interface SystemContextType {
   handleCancel: () => void;
 }
 
-const KnowledgeContext = createContext<SystemContextType | undefined>(undefined);
+const KnowledgeContext = createContext<KnowledgeContextType | undefined>(undefined);
 
 export const useKnowledgeContext = () => {
   const context = useContext(KnowledgeContext);
@@ -66,13 +69,11 @@ export const KnowledgeProvider = ({ children }: { children: React.ReactNode }) =
         ...res,
       });
 
-      // Setea los bullets del systemPrompt puntual que se quiere modificar
-      // Setea el modo de la tab systemPrompt en edit. Oculta el componente con el listado de systemPrompts y muestra el componente para editar un systemPrompt puntual
       setTempKnowledgeData(res.features);
       setMode('edit');
     } catch (error) {
       console.error('Error al cargar documento:', error);
-      alert('Error al cargar documento');
+      UTILS.POPUPS.simplePopUp('Error al cargar documento');
     }
   };
 
@@ -92,7 +93,7 @@ export const KnowledgeProvider = ({ children }: { children: React.ReactNode }) =
       setKnowledgeToEdit(null);
     } catch (error) {
       console.error('Error al guardar documento:', error);
-      alert('Ocurrió un error al guardar.');
+      UTILS.POPUPS.simplePopUp('Ucurrio un error al guardar el documento');
     }
   };
 

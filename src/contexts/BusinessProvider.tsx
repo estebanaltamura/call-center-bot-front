@@ -15,21 +15,24 @@ import { Entities, IcompanyEntity } from 'types/dynamicSevicesTypes';
 // ** Types
 import { IOptionTextItem, IService } from 'types';
 
-interface SystemContextType {
+// ** Utils
+import UTILS from 'utils';
+
+interface BusinessContextType {
   mode: 'main' | 'edit';
   setMode: React.Dispatch<React.SetStateAction<'main' | 'edit'>>;
 
   currentBussines: IcompanyEntity | null;
   setCurrentBussines: React.Dispatch<React.SetStateAction<IcompanyEntity | null>>;
 
-  allBussinesesList: IcompanyEntity[];
-  setAllBussinesesList: React.Dispatch<React.SetStateAction<IcompanyEntity[]>>;
+  allBusinessesList: IcompanyEntity[];
+  setAllBusinessesList: React.Dispatch<React.SetStateAction<IcompanyEntity[]>>;
 
-  companyToEdit: IcompanyEntity | null;
-  setCompanyToEdit: React.Dispatch<React.SetStateAction<IcompanyEntity | null>>;
+  businessToEdit: IcompanyEntity | null;
+  setBusinessToEdit: React.Dispatch<React.SetStateAction<IcompanyEntity | null>>;
 
-  tempCompanyInformation: IOptionTextItem[];
-  setTempCompanyInformation: React.Dispatch<React.SetStateAction<IOptionTextItem[]>>;
+  tempBusinessData: IOptionTextItem[];
+  setTempBusinessData: React.Dispatch<React.SetStateAction<IOptionTextItem[]>>;
 
   tempCompanyServices: IService[];
   setTempCompanyServices: React.Dispatch<React.SetStateAction<IService[]>>;
@@ -39,9 +42,9 @@ interface SystemContextType {
   handleCancel: () => void;
 }
 
-const CompanyContext = createContext<SystemContextType | undefined>(undefined);
+const CompanyContext = createContext<BusinessContextType | undefined>(undefined);
 
-export const useCompanyContext = () => {
+export const useBusinessContext = () => {
   const context = useContext(CompanyContext);
   if (!context) {
     throw new Error('useSystemContext debe usarse dentro de un SystemPromptProvider');
@@ -49,15 +52,15 @@ export const useCompanyContext = () => {
   return context;
 };
 
-export const CompanyProvider = ({ children }: { children: React.ReactNode }) => {
+export const BusinessProvider = ({ children }: { children: React.ReactNode }) => {
   const settings = useContext(SettingsContext);
 
   // States
   const [mode, setMode] = useState<'main' | 'edit'>('main');
   const [currentBussines, setCurrentBussines] = useState<IcompanyEntity | null>(null);
-  const [allBussinesesList, setAllBussinesesList] = useState<IcompanyEntity[]>([]);
-  const [companyToEdit, setCompanyToEdit] = useState<IcompanyEntity | null>(null);
-  const [tempCompanyInformation, setTempCompanyInformation] = useState<IOptionTextItem[]>([]);
+  const [allBusinessesList, setAllBusinessesList] = useState<IcompanyEntity[]>([]);
+  const [businessToEdit, setBusinessToEdit] = useState<IcompanyEntity | null>(null);
+  const [tempBusinessData, setTempBusinessData] = useState<IOptionTextItem[]>([]);
   const [tempCompanyServices, setTempCompanyServices] = useState<IService[]>([]);
 
   const handleModifyDoc = async (docId: string) => {
@@ -66,61 +69,58 @@ export const CompanyProvider = ({ children }: { children: React.ReactNode }) => 
 
       if (!res) return;
 
-      setCompanyToEdit({
+      setBusinessToEdit({
         ...res,
       });
 
-      // Setea los bullets del systemPrompt puntual que se quiere modificar
-      // Setea el modo de la tab systemPrompt en edit. Oculta el componente con el listado de systemPrompts y muestra el componente para editar un systemPrompt puntual
       setTempCompanyServices(res.services);
-      setTempCompanyInformation(res.features);
+      setTempBusinessData(res.features);
       setMode('edit');
     } catch (error) {
       console.error('Error al cargar documento:', error);
-      alert('Error al cargar documento');
+      UTILS.POPUPS.simplePopUp('Error al cargar documento');
     }
   };
 
   const handleSave = async () => {
-    if (!companyToEdit) return;
+    if (!businessToEdit) return;
 
     const payload = {
-      title: companyToEdit.title,
-      features: tempCompanyInformation,
+      title: businessToEdit.title,
+      features: tempBusinessData,
       services: tempCompanyServices,
     };
 
     try {
-      SERVICES.CMS.update(Entities.companies, companyToEdit.id, payload);
+      SERVICES.CMS.update(Entities.companies, businessToEdit.id, payload);
 
-      alert('Documento guardado correctamente');
       setMode('main');
       setTempCompanyServices([]);
-      setTempCompanyInformation([]);
-      setCompanyToEdit(null);
+      setTempBusinessData([]);
+      setBusinessToEdit(null);
     } catch (error) {
       console.error('Error al guardar documento:', error);
-      alert('Ocurrió un error al guardar.');
+      UTILS.POPUPS.simplePopUp('Ucurrio un error al guardar el documento');
     }
   };
 
   const handleCancel = () => {
     setMode('main');
     setTempCompanyServices([]);
-    setTempCompanyInformation([]);
-    setCompanyToEdit(null);
+    setTempBusinessData([]);
+    setBusinessToEdit(null);
   };
 
   // Cuando cargo todos los system prompts y cargo el string del título del system prompt en uso, se setea el estado que contiene todos los datos del prompt en uso
   useEffect(() => {
-    if (allBussinesesList && settings?.currentBussinesName) {
-      const currentBussinesData = allBussinesesList.filter(
+    if (allBusinessesList && settings?.currentBussinesName) {
+      const currentBussinesData = allBusinessesList.filter(
         (item) => item.title === settings?.currentBussinesName,
       );
 
       setCurrentBussines(currentBussinesData[0]);
     }
-  }, [settings?.currentBussinesName, allBussinesesList]);
+  }, [settings?.currentBussinesName, allBusinessesList]);
 
   // Se cargan todos los systemPropmpts
   useEffect(() => {
@@ -135,7 +135,7 @@ export const CompanyProvider = ({ children }: { children: React.ReactNode }) => 
           ...docData,
         });
       });
-      setAllBussinesesList(data);
+      setAllBusinessesList(data);
     });
 
     return () => unsubscribe();
@@ -148,15 +148,15 @@ export const CompanyProvider = ({ children }: { children: React.ReactNode }) => 
         setMode,
         currentBussines,
         setCurrentBussines,
-        allBussinesesList,
-        setAllBussinesesList,
-        companyToEdit,
-        setCompanyToEdit,
+        allBusinessesList,
+        setAllBusinessesList,
+        businessToEdit,
+        setBusinessToEdit,
         handleModifyDoc,
         handleSave,
         handleCancel,
-        tempCompanyInformation,
-        setTempCompanyInformation,
+        tempBusinessData,
+        setTempBusinessData,
         tempCompanyServices,
         setTempCompanyServices,
       }}
@@ -166,4 +166,4 @@ export const CompanyProvider = ({ children }: { children: React.ReactNode }) => 
   );
 };
 
-export default CompanyProvider;
+export default BusinessProvider;

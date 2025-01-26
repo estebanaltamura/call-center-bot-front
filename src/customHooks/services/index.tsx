@@ -1,21 +1,21 @@
-import { useCompanyContext } from 'contexts/CompanyProvider';
+import { useBusinessContext } from 'contexts/BusinessProvider';
 import { IService } from 'types';
 
 const useServices = () => {
-  const { tempCompanyServices, setTempCompanyServices } = useCompanyContext();
+  const { tempCompanyServices, setTempCompanyServices } = useBusinessContext();
 
-  const addCompanyService = (service: IService) => {
+  const addService = (service: IService) => {
     setTempCompanyServices((prev) => [...prev, service]);
   };
 
-  const moveUpCompanyServices = (index: number) => {
+  const moveUpService = (index: number) => {
     if (index === 0) return;
     const updated = [...tempCompanyServices];
     [updated[index - 1], updated[index]] = [updated[index], updated[index - 1]];
     setTempCompanyServices(updated);
   };
 
-  const moveDownCompanyServices = (index: number) => {
+  const moveDownService = (index: number) => {
     if (index === tempCompanyServices.length - 1) return;
     const updated = [...tempCompanyServices];
     [updated[index + 1], updated[index]] = [updated[index], updated[index + 1]];
@@ -28,7 +28,7 @@ const useServices = () => {
     setTempCompanyServices(updated);
   };
 
-  return { addCompanyService, moveUpCompanyServices, moveDownCompanyServices, deleteService };
+  return { addService, moveUpService, moveDownService, deleteService };
 };
 
 export default useServices;

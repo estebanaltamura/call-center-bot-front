@@ -3,7 +3,7 @@ import React, { useContext } from 'react';
 
 // ** Contexts
 import { SettingsContext } from 'contexts/SettingsProvider';
-import { useCompanyContext } from 'contexts/CompanyProvider';
+import { useBusinessContext } from 'contexts/BusinessProvider';
 import { useRulesContext } from 'contexts/RulesProvider';
 import { useAssistantContext } from 'contexts/AssistantProvider';
 import { useKnowledgeContext } from 'contexts/KnowledgeProvider';
@@ -20,7 +20,7 @@ const SettingsTab = () => {
   const { currentBussinesName, currentAssistantName, currentRulesName, currentKnowledgeName } =
     settings as ISettings;
 
-  const { allBussinesesList } = useCompanyContext();
+  const { allBusinessesList } = useBusinessContext();
   const { allAssistantList } = useAssistantContext();
   const { allRulesList } = useRulesContext();
   const { allKnowledgeList } = useKnowledgeContext();
@@ -52,7 +52,7 @@ const SettingsTab = () => {
       {/* Negocio */}
       <div className="flex items-center space-x-2">
         <span className="font-semibold flex items-center h-[40px] w-[180px]">Negocio seleccionado:</span>
-        {allBussinesesList.filter((doc) => doc.state === StateTypes.active).length === 0 ? (
+        {allBusinessesList.filter((doc) => doc.state === StateTypes.active).length === 0 ? (
           <span className="font-semibold flex items-center h-[40px] w-[400px]">No hay negocios creados</span>
         ) : (
           <select
@@ -61,7 +61,7 @@ const SettingsTab = () => {
             className="border rounded px-2 py-1 h-[40px] w-[320px]"
           >
             <option value="none">Ninguno</option>
-            {allBussinesesList
+            {allBusinessesList
               .filter((doc) => doc.state === StateTypes.active)
               .sort((a, b) => a.title.localeCompare(b.title))
 

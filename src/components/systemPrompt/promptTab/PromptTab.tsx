@@ -1,6 +1,6 @@
 import Typo from 'components/general/Typo';
 import { useAssistantContext } from 'contexts/AssistantProvider';
-import { useCompanyContext } from 'contexts/CompanyProvider';
+import { useBusinessContext } from 'contexts/BusinessProvider';
 import { useKnowledgeContext } from 'contexts/KnowledgeProvider';
 import { useRulesContext } from 'contexts/RulesProvider';
 import { useEffect, useState } from 'react';
@@ -17,7 +17,7 @@ import { concatenateBullets } from 'utils/prompt/concatenateBullets';
 
 const SystemPromptTab = () => {
   const [currentFullSystemPrompt, setCurrentFullSystemPrompt] = useState<string>('');
-  const { currentBussines } = useCompanyContext();
+  const { currentBussines } = useBusinessContext();
   const { currentAssistant } = useAssistantContext();
   const { currentRules } = useRulesContext();
   const { currentKnowledge } = useKnowledgeContext();

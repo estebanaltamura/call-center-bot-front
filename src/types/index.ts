@@ -16,19 +16,6 @@ export interface IMessage {
     nanoseconds: number;
   };
 }
-
-export interface IPromptItem {
-  option: string;
-  text: string;
-}
-
-export interface ISystemPromptDoc {
-  id: string;
-  title: string;
-  prompts: string[];
-}
-
-// Ejemplo de interfaz para un servicio (puedes ajustarla a tus necesidades)
 export interface IOptionTextItem {
   option: string;
   text: string;
@@ -39,5 +26,3 @@ export interface IService {
   description: string;
   items: IOptionTextItem[];
 }
-
-export type OrderedListType = { text: string; type: 'bullet' } | { type: 'service' } | { type: 'noData' };

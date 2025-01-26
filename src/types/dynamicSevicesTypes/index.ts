@@ -43,7 +43,6 @@ export interface Icompany {
   title: string;
   features: IOptionTextItem[];
   services: IService[];
-  servicesOrderIndex: number;
 }
 
 export interface IAssistant {

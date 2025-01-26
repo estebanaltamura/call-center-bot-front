@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 
 // ** Context
-import { useCompanyContext } from 'contexts/CompanyProvider';
+import { useBusinessContext } from 'contexts/BusinessProvider';
 
 // ** 3rd party library
 import { v4 as uuidv4 } from 'uuid';
@@ -14,7 +14,7 @@ import { IOptionTextItem, IService } from 'types';
 import { serviceOptions } from 'enums/systemPrompts';
 
 // ** Custom hooks
-import useServices from 'customHooks/company/services';
+import useServices from 'customHooks/services';
 
 // ** Components
 import FormInputField from 'components/general/FormInputField';
@@ -37,7 +37,7 @@ const ServiceListEditItem = ({
   setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const { deleteService } = useServices();
-  const { setTempCompanyServices } = useCompanyContext();
+  const { setTempCompanyServices } = useBusinessContext();
 
   // ** Editing states
   const [isThereAnEditingItem, setIsThereAnEditingItem] = useState(false);

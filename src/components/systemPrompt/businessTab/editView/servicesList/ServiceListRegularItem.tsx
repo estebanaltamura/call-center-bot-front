@@ -1,15 +1,12 @@
 // **  React
 import { useState } from 'react';
 
-// ** Context
-import { useCompanyContext } from 'contexts/CompanyProvider';
-
 // ** 3rd party library
 import { v4 as uuidv4 } from 'uuid';
 
 // ** Types
 import { IService } from 'types';
-import useServices from 'customHooks/company/services';
+import useServices from 'customHooks/services';
 
 const ServiceListRegularItem = ({
   service,
@@ -29,7 +26,7 @@ const ServiceListRegularItem = ({
     setIsExpanded((prev) => !prev);
   };
 
-  const { deleteService, moveUpCompanyServices, moveDownCompanyServices } = useServices();
+  const { deleteService, moveUpService, moveDownService } = useServices();
 
   return (
     <>
@@ -41,7 +38,7 @@ const ServiceListRegularItem = ({
             disabled={index === tempCompanyServicesLength - 1}
             onClick={() => {
               setIsExpanded(false);
-              moveDownCompanyServices(index);
+              moveDownService(index);
             }}
             className={`${
               index === tempCompanyServicesLength - 1 ? 'bg-gray-400' : 'bg-gray-200'
@@ -54,7 +51,7 @@ const ServiceListRegularItem = ({
             disabled={index === 0}
             onClick={() => {
               setIsExpanded(false);
-              moveUpCompanyServices(index);
+              moveUpService(index);
             }}
             className={`${index === 0 ? 'bg-gray-400' : 'bg-gray-200'} px-2 w-[40px] h-[40px] rounded`}
           >

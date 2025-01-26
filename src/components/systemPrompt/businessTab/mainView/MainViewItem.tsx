@@ -1,5 +1,5 @@
 // ** Contexts
-import { useCompanyContext } from 'contexts/CompanyProvider';
+import { useBusinessContext } from 'contexts/BusinessProvider';
 
 // ** Services
 import { SERVICES } from 'services/index';
@@ -18,13 +18,13 @@ import { faFileArrowDown } from '@fortawesome/free-solid-svg-icons';
 import { useAssistantContext } from 'contexts/AssistantProvider';
 
 const MainViewItem = ({ docItem }: { docItem: IcompanyEntity }) => {
-  const { handleModifyDoc, currentAssistant } = useAssistantContext();
+  const { handleModifyDoc, currentBussines } = useBusinessContext();
 
   const handleDownloadPDF = async () => {
     UTILS.PDF.createPdfFromSystemPrompt({ docItem });
   };
 
-  const isActive = currentAssistant?.title === docItem.title;
+  const isActive = currentBussines?.title === docItem.title;
 
   const deleteCompanyHandler = () => {
     if (isActive) {
