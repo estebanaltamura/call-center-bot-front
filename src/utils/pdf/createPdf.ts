@@ -1,7 +1,7 @@
 import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
-import { IcompanyEntity, ISystemPrompt } from 'types/dynamicSevicesTypes';
+import { IBusinessEntity, ISystemPrompt } from 'types/dynamicSevicesTypes';
 
-const createPdfFromSystemPrompt = async ({ docItem }: { docItem: IcompanyEntity }) => {
+const createPdfFromSystemPrompt = async ({ docItem }: { docItem: IBusinessEntity }) => {
   // Función para generar el PDF
   try {
     const pdfDoc = await PDFDocument.create();

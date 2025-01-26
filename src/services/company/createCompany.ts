@@ -20,7 +20,7 @@ export const createCompany = async (title: string) => {
   };
 
   try {
-    const newDoc = SERVICES.CMS.create(Entities.companies, payload);
+    const newDoc = SERVICES.CMS.create(Entities.business, payload);
     return newDoc;
   } catch (error) {
     console.error('Error al crear documento:', error);

@@ -9,7 +9,7 @@ import { useBusinessContext } from 'contexts/BusinessProvider';
 import { SERVICES } from 'services/index';
 
 // ** Types
-import { IAssistantEntity, IcompanyEntity, StateTypes } from 'types/dynamicSevicesTypes';
+import { IBusinessEntity, StateTypes } from 'types/dynamicSevicesTypes';
 
 // ** Components
 import MainViewItem from './MainViewItem';
@@ -19,18 +19,18 @@ import UTILS from 'utils';
 
 const MainViewContainer = () => {
   // ** States
-  const [newAssistantTitle, setNewAssistantTitle] = useState<string>('');
+  const [newBusinessTitle, setNewBusinessTitle] = useState<string>('');
   const [includeInactive, setIncludeInactive] = useState<boolean>(false);
 
   // ** Context
-  const { allBusinessesList, currentBussines, setMode, handleModifyDoc } = useBusinessContext();
+  const { allBusinessesList, currentBusiness, setMode, handleModifyDoc } = useBusinessContext();
   const { setIsLoading } = useLoadingContext();
 
   const activesSortedWithActiveFirst = allBusinessesList
     .filter((item) => item.state === StateTypes.active)
     .sort((a, b) => a.title.localeCompare(b.title))
-    .reduce((acc: IcompanyEntity[], docItem) => {
-      if (docItem.title === currentBussines?.title) {
+    .reduce((acc: IBusinessEntity[], docItem) => {
+      if (docItem.title === currentBusiness?.title) {
         acc.unshift(docItem);
       } else {
         acc.push(docItem);
@@ -49,29 +49,29 @@ const MainViewContainer = () => {
   const renderedItems = () => {
     return (
       <ul className="space-y-2">
-        {orderedList.map((docItem: IcompanyEntity, index: number) => (
+        {orderedList.map((docItem: IBusinessEntity, index: number) => (
           <MainViewItem key={index} docItem={docItem} />
         ))}
       </ul>
     );
   };
 
-  const createAssistantHandler = async () => {
-    if (!newAssistantTitle) {
-      await UTILS.POPUPS.simplePopUp('Ingresá un título para el nuevo asistente');
+  const createBusinessHandler = async () => {
+    if (!newBusinessTitle) {
+      await UTILS.POPUPS.simplePopUp('Ingresá un título para el nuevo negocio');
       return;
     }
 
     setIsLoading(true);
-    const newDoc = await SERVICES.ASSISTANT.create(newAssistantTitle);
+    const newDoc = await SERVICES.BUSINESS.create(newBusinessTitle);
     if (!newDoc) {
-      await UTILS.POPUPS.simplePopUp('Ocurrio un error creando el nuevo asistente');
+      await UTILS.POPUPS.simplePopUp('Ocurrio un error creando el nuevo negocio');
       return;
     }
 
     handleModifyDoc(newDoc.id);
     setMode('edit');
-    setNewAssistantTitle('');
+    setNewBusinessTitle('');
     setIsLoading(false);
   };
 
@@ -82,17 +82,17 @@ const MainViewContainer = () => {
 
   return (
     <div className="p-4 space-y-4">
-      <h1 className="text-xl font-bold text-center">ASISTENTE</h1>
+      <h1 className="text-xl font-bold text-center">NEGOCIO</h1>
       <div className="flex space-x-2 items-center">
         <input
           type="text"
           className="border rounded px-2 h-[40px] w-96"
           placeholder="Nombre del nuevo asistente"
-          value={newAssistantTitle}
-          onChange={(e) => setNewAssistantTitle(e.target.value)}
+          value={newBusinessTitle}
+          onChange={(e) => setNewBusinessTitle(e.target.value)}
         />
-        <button onClick={createAssistantHandler} className="button button1">
-          Crear asistente
+        <button onClick={createBusinessHandler} className="button button1">
+          Crear negocio
         </button>
         <div className="flex-grow"></div>
         {allBusinessesList.filter((item) => item.state === StateTypes.inactive).length > 0 && (
@@ -109,7 +109,7 @@ const MainViewContainer = () => {
         )}
       </div>
       {allBusinessesList.filter((item) => item.state === StateTypes.active).length === 0 &&
-        !includeInactive && <p className="text-gray-500 ml-[10px]">No hay asistentes creados</p>}
+        !includeInactive && <p className="text-gray-500 ml-[10px]">No hay negocios creados</p>}
       {renderedItems()}
     </div>
   );

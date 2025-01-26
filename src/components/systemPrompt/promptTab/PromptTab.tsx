@@ -8,7 +8,7 @@ import { SERVICES } from 'services/index';
 import {
   Entities,
   IAssistantEntity,
-  IcompanyEntity,
+  IBusinessEntity,
   IKnowledge,
   IKnowledgeEntity,
   IRulesEntity,
@@ -17,7 +17,7 @@ import { concatenateBullets } from 'utils/prompt/concatenateBullets';
 
 const SystemPromptTab = () => {
   const [currentFullSystemPrompt, setCurrentFullSystemPrompt] = useState<string>('');
-  const { currentBussines } = useBusinessContext();
+  const { currentBusiness } = useBusinessContext();
   const { currentAssistant } = useAssistantContext();
   const { currentRules } = useRulesContext();
   const { currentKnowledge } = useKnowledgeContext();
@@ -31,10 +31,10 @@ const SystemPromptTab = () => {
     const coreAspects = [];
 
     // Verificar y agregar cada aspecto core solo si existe
-    if (currentBussines && currentBussines?.features?.length > 0) {
+    if (currentBusiness && currentBusiness?.features?.length > 0) {
       coreAspects.push('Negocio');
     }
-    if (currentBussines && currentBussines?.services?.length > 0) {
+    if (currentBusiness && currentBusiness?.services?.length > 0) {
       coreAspects.push('Servicios');
     }
     if (currentAssistant) {
@@ -48,14 +48,14 @@ const SystemPromptTab = () => {
     }
 
     // Generar las descripciones de cada aspecto core solo si existen
-    const companyInformation = currentBussines && concatenateBullets(currentBussines.features);
+    const companyInformation = currentBusiness && concatenateBullets(currentBusiness.features);
     const assistantInformation = currentAssistant && concatenateBullets(currentAssistant.features);
     const rulesInformation = currentRules && concatenateBullets(currentRules.features);
     const knowledgeInformation = currentKnowledge && concatenateBullets(currentKnowledge.features);
 
     const servicesInformation =
-      currentBussines && currentBussines?.services?.length > 0
-        ? currentBussines.services
+      currentBusiness && currentBusiness?.services?.length > 0
+        ? currentBusiness.services
             .map(
               (item, index) =>
                 `Servicio ${index + 1}: Titulo: ${item.title}, Descripcion: ${
@@ -67,11 +67,11 @@ const SystemPromptTab = () => {
 
     // Concatenar todo en el prompt
     const prompt = `${firstElement} ${coreAspects.join(', ')}. ${
-      currentBussines && currentBussines?.features?.length > 0
+      currentBusiness && currentBusiness?.features?.length > 0
         ? `Negocio(paso a describir esta informacion core): ${companyInformation}.`
         : ''
     } ${
-      currentBussines && currentBussines?.services?.length > 0
+      currentBusiness && currentBusiness?.services?.length > 0
         ? `Servicios(paso a describir esta informacion core): ${servicesInformation}.`
         : ''
     } ${
@@ -102,9 +102,9 @@ const SystemPromptTab = () => {
   useEffect(() => {
     setCurrentFullSystemPrompt(concatenateSystemPrompt());
     updateSystemPrompt();
-  }, [currentAssistant, currentRules, currentKnowledge, currentBussines]);
+  }, [currentAssistant, currentRules, currentKnowledge, currentBusiness]);
 
-  const renderCompany = (currentBussines: IcompanyEntity) => {
+  const renderCompany = (currentBussines: IBusinessEntity) => {
     return (
       <>
         {currentBussines && (
@@ -126,7 +126,7 @@ const SystemPromptTab = () => {
     );
   };
 
-  const renderServices = (currentBussines: IcompanyEntity) => {
+  const renderServices = (currentBussines: IBusinessEntity) => {
     return (
       <>
         {currentBussines &&
@@ -237,10 +237,10 @@ const SystemPromptTab = () => {
       <h1 className="text-xl font-bold text-center">PROMPT</h1>
       <div className="mt-4 overflow-y-auto scroll-custom">
         {/* Negocio */}
-        {currentBussines && currentBussines.features && renderCompany(currentBussines)}
+        {currentBusiness && currentBusiness.features && renderCompany(currentBusiness)}
 
         {/* Servicios */}
-        {currentBussines && currentBussines.services && renderServices(currentBussines)}
+        {currentBusiness && currentBusiness.services && renderServices(currentBusiness)}
 
         {/* Asistente */}
         {currentAssistant && currentAssistant.features && renderAssistant(currentAssistant)}

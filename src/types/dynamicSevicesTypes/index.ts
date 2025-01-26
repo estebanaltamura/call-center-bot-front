@@ -4,7 +4,7 @@ import { IOptionTextItem, IService } from 'types';
 export enum Entities {
   'systemPrompt' = 'systemPrompt',
   'settings' = 'settings',
-  'companies' = 'companies',
+  'business' = 'business',
   'assistant' = 'assistant',
   'rules' = 'rules',
   'knowledge' = 'knowledge',
@@ -13,7 +13,7 @@ export enum Entities {
 export type EntityTypesMapReturnedValues = {
   [Entities.systemPrompt]: ISystemPromptEntity;
   [Entities.settings]: ISettingsEntity;
-  [Entities.companies]: IcompanyEntity;
+  [Entities.business]: IBusinessEntity;
   [Entities.assistant]: IAssistantEntity;
   [Entities.rules]: IRulesEntity;
   [Entities.knowledge]: IKnowledgeEntity;
@@ -22,7 +22,7 @@ export type EntityTypesMapReturnedValues = {
 export type EntityTypesMapPayloadValues = {
   [Entities.systemPrompt]: ISystemPrompt;
   [Entities.settings]: ISettings;
-  [Entities.companies]: Icompany;
+  [Entities.business]: IBusiness;
   [Entities.assistant]: IAssistant;
   [Entities.rules]: IRules;
   [Entities.knowledge]: IKnowledge;
@@ -39,7 +39,7 @@ export interface ISettings {
   currentKnowledgeName: string | null;
 }
 
-export interface Icompany {
+export interface IBusiness {
   title: string;
   features: IOptionTextItem[];
   services: IService[];
@@ -75,7 +75,7 @@ export interface ISystemPromptEntity extends ISystemPrompt, IEntity {}
 
 export interface ISettingsEntity extends ISettings, IEntity {}
 
-export interface IcompanyEntity extends Icompany, IEntity {}
+export interface IBusinessEntity extends IBusiness, IEntity {}
 
 export interface IAssistantEntity extends IAssistant, IEntity {}
 

@@ -25,7 +25,7 @@ export const SERVICES = {
     softDelete: dynamicSoftDelete,
     reactivateSoftDeleted: dynamicReactivateSoftDeleted,
   },
-  COMPANY: {
+  BUSINESS: {
     create: createCompany,
   },
   ASSISTANT: {

@@ -1,51 +1,60 @@
+// React
+import { useEffect, useState } from 'react';
+
 // ** Contexts
 import { useBusinessContext } from 'contexts/BusinessProvider';
 
 // ** Services
 import { SERVICES } from 'services/index';
 
+// ** Types
+import { Entities, IBusinessEntity, StateTypes } from 'types/dynamicSevicesTypes';
+
 // ** Utils
 import UTILS from 'utils';
 
-// ** Types
-import { Entities, IcompanyEntity, StateTypes } from 'types/dynamicSevicesTypes';
+const MainViewItem = ({ docItem }: { docItem: IBusinessEntity }) => {
+  // Contexts
+  const { handleModifyDoc, currentBusiness } = useBusinessContext();
 
-// ** 3rd party library
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+  // States
+  const [isActive, setIsActive] = useState(false);
 
-// ** icons
-import { faFileArrowDown } from '@fortawesome/free-solid-svg-icons';
-import { useAssistantContext } from 'contexts/AssistantProvider';
-
-const MainViewItem = ({ docItem }: { docItem: IcompanyEntity }) => {
-  const { handleModifyDoc, currentBussines } = useBusinessContext();
-
-  const handleDownloadPDF = async () => {
-    UTILS.PDF.createPdfFromSystemPrompt({ docItem });
-  };
-
-  const isActive = currentBussines?.title === docItem.title;
-
-  const deleteCompanyHandler = () => {
+  const softDeleteBusinessHandler = async () => {
     if (isActive) {
-      alert('No puede eliminarse una empresa activa. Asignar otra como activa primero');
+      await UTILS.POPUPS.simplePopUp(
+        'No puede eliminarse un negocio activo. Asignar otro como activo primero',
+      );
+
       return;
     }
 
-    if (confirm('Confirma que quieres eliminar este documento')) {
-      SERVICES.CMS.softDelete(Entities.companies, docItem.id);
-    } else {
-      return;
-    }
+    await UTILS.POPUPS.twoOptionsPopUp(
+      'Confirma que quieres eliminar este negocio',
+      () => SERVICES.CMS.softDelete(Entities.business, docItem.id),
+      'El negocio ha sido eliminado.',
+    );
   };
 
-  const reactivateCompanyHandler = () => {
-    if (confirm('Confirma que quieres reactivar este documento')) {
-      SERVICES.CMS.reactivateSoftDeleted(Entities.companies, docItem.id);
-    } else {
-      return;
-    }
+  const hardDeleteBusinessHandler = async () => {
+    await UTILS.POPUPS.twoOptionsPopUp(
+      'Confirma que quieres eliminar definitivamente este negocio. No se podrá recuperar',
+      () => SERVICES.CMS.delete(Entities.business, docItem.id),
+      'El negocio ha sido eliminado.',
+    );
   };
+
+  const reactivateBusinessHandler = async () => {
+    await UTILS.POPUPS.twoOptionsPopUp(
+      'Confirma que quieres reactivar este negocio',
+      () => SERVICES.CMS.reactivateSoftDeleted(Entities.business, docItem.id),
+      'El negocio ha sido reactivado.',
+    );
+  };
+
+  useEffect(() => {
+    setIsActive(currentBusiness?.title === docItem.title);
+  }, [currentBusiness?.title, docItem.title]);
 
   return (
     <li
@@ -60,45 +69,40 @@ const MainViewItem = ({ docItem }: { docItem: IcompanyEntity }) => {
         <p className="truncate">
           <strong>{docItem.title || '(Sin título)'}</strong>
         </p>
-        <div className="flex gap-1">
-          <span className="block text-sm text-gray-600">{docItem.features.length} bullets</span>
-          <span className="block text-sm text-gray-600">{docItem.services.length} servicios</span>
-        </div>
       </div>
       <p className="absolute right-1/2 flex justify-end items-center mr-3 font-bold text-blue-600">
         {isActive && 'ACTIVO'}
       </p>
 
       <div className="flex space-x-2">
-        <button
-          onClick={() => handleModifyDoc(docItem.id)}
-          className="bg-green-600 text-white px-4 py-1 rounded h-[40px]"
-        >
+        <button onClick={() => handleModifyDoc(docItem.id)} className="button button1 green">
           Editar
         </button>
 
-        <button
-          onClick={handleDownloadPDF}
-          className="bg-blue-600 text-white px-1 py-1 rounded flex items-center w-[40px] h-[40px] justify-center text-[18px] font-bold"
-          title="Descargar PDF"
-        >
-          <FontAwesomeIcon icon={faFileArrowDown} className="text-[22px]" />
-        </button>
         {docItem.state === StateTypes.active ? (
           <button
-            onClick={deleteCompanyHandler}
-            className="bg-red-600 text-white px-1 py-1 rounded flex items-center w-[40px] h-[40px] justify-center"
+            onClick={softDeleteBusinessHandler}
+            className="red text-white px-1 py-1 rounded flex items-center w-[40px] h-[40px] justify-center"
             title="Eliminar"
           >
             🗑️
           </button>
         ) : (
           <button
-            onClick={reactivateCompanyHandler}
-            className="bg-violet-600 text-white px-1 py-1 rounded flex items-center w-[40px] h-[40px] justify-center"
+            onClick={reactivateBusinessHandler}
+            className="violet text-white px-1 py-1 rounded flex items-center w-[40px] h-[40px] justify-center"
             title="Reactivar"
           >
             R
+          </button>
+        )}
+        {docItem.state === StateTypes.inactive && (
+          <button
+            onClick={hardDeleteBusinessHandler}
+            className="red text-white px-1 py-1 rounded flex items-center w-[40px] h-[40px] justify-center"
+            title="Eliminar"
+          >
+            🗑️
           </button>
         )}
       </div>

@@ -23,8 +23,7 @@ const MainViewContainer = () => {
   const [includeInactive, setIncludeInactive] = useState<boolean>(false);
 
   // ** Context
-  const { allAssistantList, currentAssistant, setMode } = useAssistantContext();
-  const { handleModifyDoc } = useAssistantContext();
+  const { allAssistantList, currentAssistant, setMode, handleModifyDoc } = useAssistantContext();
   const { setIsLoading } = useLoadingContext();
 
   const activesSortedWithActiveFirst = allAssistantList

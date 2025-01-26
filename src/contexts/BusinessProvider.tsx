@@ -10,7 +10,7 @@ import { collection, onSnapshot, query } from 'firebase/firestore';
 
 // ** Services
 import { SERVICES } from 'services/index';
-import { Entities, IcompanyEntity } from 'types/dynamicSevicesTypes';
+import { Entities, IBusinessEntity } from 'types/dynamicSevicesTypes';
 
 // ** Types
 import { IOptionTextItem, IService } from 'types';
@@ -22,14 +22,14 @@ interface BusinessContextType {
   mode: 'main' | 'edit';
   setMode: React.Dispatch<React.SetStateAction<'main' | 'edit'>>;
 
-  currentBussines: IcompanyEntity | null;
-  setCurrentBussines: React.Dispatch<React.SetStateAction<IcompanyEntity | null>>;
+  currentBusiness: IBusinessEntity | null;
+  setCurrentBusiness: React.Dispatch<React.SetStateAction<IBusinessEntity | null>>;
 
-  allBusinessesList: IcompanyEntity[];
-  setAllBusinessesList: React.Dispatch<React.SetStateAction<IcompanyEntity[]>>;
+  allBusinessesList: IBusinessEntity[];
+  setAllBusinessesList: React.Dispatch<React.SetStateAction<IBusinessEntity[]>>;
 
-  businessToEdit: IcompanyEntity | null;
-  setBusinessToEdit: React.Dispatch<React.SetStateAction<IcompanyEntity | null>>;
+  businessToEdit: IBusinessEntity | null;
+  setBusinessToEdit: React.Dispatch<React.SetStateAction<IBusinessEntity | null>>;
 
   tempBusinessData: IOptionTextItem[];
   setTempBusinessData: React.Dispatch<React.SetStateAction<IOptionTextItem[]>>;
@@ -57,15 +57,15 @@ export const BusinessProvider = ({ children }: { children: React.ReactNode }) =>
 
   // States
   const [mode, setMode] = useState<'main' | 'edit'>('main');
-  const [currentBussines, setCurrentBussines] = useState<IcompanyEntity | null>(null);
-  const [allBusinessesList, setAllBusinessesList] = useState<IcompanyEntity[]>([]);
-  const [businessToEdit, setBusinessToEdit] = useState<IcompanyEntity | null>(null);
+  const [currentBusiness, setCurrentBusiness] = useState<IBusinessEntity | null>(null);
+  const [allBusinessesList, setAllBusinessesList] = useState<IBusinessEntity[]>([]);
+  const [businessToEdit, setBusinessToEdit] = useState<IBusinessEntity | null>(null);
   const [tempBusinessData, setTempBusinessData] = useState<IOptionTextItem[]>([]);
   const [tempCompanyServices, setTempCompanyServices] = useState<IService[]>([]);
 
   const handleModifyDoc = async (docId: string) => {
     try {
-      const res = await SERVICES.CMS.get(Entities.companies, 'id', '==', docId);
+      const res = await SERVICES.CMS.get(Entities.business, 'id', '==', docId);
 
       if (!res) return;
 
@@ -92,7 +92,7 @@ export const BusinessProvider = ({ children }: { children: React.ReactNode }) =>
     };
 
     try {
-      SERVICES.CMS.update(Entities.companies, businessToEdit.id, payload);
+      SERVICES.CMS.update(Entities.business, businessToEdit.id, payload);
 
       setMode('main');
       setTempCompanyServices([]);
@@ -118,19 +118,19 @@ export const BusinessProvider = ({ children }: { children: React.ReactNode }) =>
         (item) => item.title === settings?.currentBussinesName,
       );
 
-      setCurrentBussines(currentBussinesData[0]);
+      setCurrentBusiness(currentBussinesData[0]);
     }
   }, [settings?.currentBussinesName, allBusinessesList]);
 
   // Se cargan todos los systemPropmpts
   useEffect(() => {
-    const colRef = collection(db, Entities.companies);
+    const colRef = collection(db, Entities.business);
     const q = query(colRef);
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const data: IcompanyEntity[] = [];
+      const data: IBusinessEntity[] = [];
       snapshot.forEach((docSnap) => {
-        const docData = docSnap.data() as IcompanyEntity;
+        const docData = docSnap.data() as IBusinessEntity;
         data.push({
           ...docData,
         });
@@ -146,8 +146,8 @@ export const BusinessProvider = ({ children }: { children: React.ReactNode }) =>
       value={{
         mode,
         setMode,
-        currentBussines,
-        setCurrentBussines,
+        currentBusiness,
+        setCurrentBusiness,
         allBusinessesList,
         setAllBusinessesList,
         businessToEdit,
