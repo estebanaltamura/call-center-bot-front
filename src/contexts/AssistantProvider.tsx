@@ -60,16 +60,19 @@ export const AssistantProvider = ({ children }: { children: React.ReactNode }) =
   const [tempBullets, setTempBullets] = useState<IOptionTextItem[]>([]);
 
   const handleModifyDoc = async (docId: string) => {
+    console.log('handleModifyDoc', docId);
     try {
       const res = await SERVICES.CMS.get(Entities.assistant, 'id', '==', docId);
 
       if (!res) return;
 
+      const item = res[0];
+
       setItemToEdit({
-        ...res,
+        ...item,
       });
 
-      setTempBullets(res.features);
+      setTempBullets(item.features);
       setMode('edit');
     } catch (error) {
       console.error('Error al cargar documento:', error);

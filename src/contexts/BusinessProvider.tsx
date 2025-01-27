@@ -69,12 +69,14 @@ export const BusinessProvider = ({ children }: { children: React.ReactNode }) =>
 
       if (!res) return;
 
+      const item = res[0];
+
       setItemToEdit({
-        ...res,
+        ...item,
       });
 
-      setTempBusinessServices(res.services);
-      setTempBullets(res.features);
+      setTempBusinessServices(item.services);
+      setTempBullets(item.features);
       setMode('edit');
     } catch (error) {
       console.error('Error al cargar documento:', error);

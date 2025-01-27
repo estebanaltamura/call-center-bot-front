@@ -65,11 +65,13 @@ export const RulesProvider = ({ children }: { children: React.ReactNode }) => {
 
       if (!res) return;
 
+      const item = res[0];
+
       setItemToEdit({
-        ...res,
+        ...item,
       });
 
-      setTempBullets(res.features);
+      setTempBullets(item.features);
       setMode('edit');
     } catch (error) {
       console.error('Error al cargar documento:', error);

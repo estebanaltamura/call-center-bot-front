@@ -7,7 +7,7 @@ import { dynamicSoftDelete } from './dynamicServices/dynamicSoftDelete';
 import { dynamicUpdate } from './dynamicServices/dynamicUpdate';
 
 // ** CustomServices
-import { createCompany } from './company/createCompany';
+import { createBusiness } from './company/createBusiness';
 import { createAssistant } from './assistant/createAssistant';
 import { createRule } from './rules/createRule';
 import { createKnowledge } from './knowledge/createKnowledge';
@@ -26,7 +26,7 @@ export const SERVICES = {
     reactivateSoftDeleted: dynamicReactivateSoftDeleted,
   },
   BUSINESS: {
-    create: createCompany,
+    create: createBusiness,
   },
   ASSISTANT: {
     create: createAssistant,

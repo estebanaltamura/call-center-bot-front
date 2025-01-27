@@ -12,7 +12,7 @@ export const dynamicGet = async <T extends keyof EntityTypesMapReturnedValues>(
   field?: string, // Campo para el filtro
   operator?: WhereFilterOp, // Operador para el filtro
   value?: unknown, // Valor para el filtro
-): Promise<EntityTypesMapReturnedValues[T] | undefined> => {
+): Promise<EntityTypesMapReturnedValues[T][] | undefined> => {
   const productsCollection = collection(db, entity);
 
   try {
@@ -30,7 +30,7 @@ export const dynamicGet = async <T extends keyof EntityTypesMapReturnedValues>(
       ...item.data(),
     }));
 
-    return itemList[0] as unknown as EntityTypesMapReturnedValues[T];
+    return itemList as unknown as EntityTypesMapReturnedValues[T][];
   } catch (error) {
     console.log('Error al obtener los datos:', error);
   }
