@@ -2,53 +2,48 @@
 import { useEffect, useState } from 'react';
 
 // ** Contexts
-import { useAssistantContext } from 'contexts/AssistantProvider';
+import { useKnowledgeContext } from 'contexts/KnowledgeProvider';
 
 // ** Services
 import { SERVICES } from 'services/index';
 
 // ** Types
-import { Entities, IAssistantEntity, StateTypes } from 'types/dynamicSevicesTypes';
+import { Entities, IKnowledgeEntity, StateTypes } from 'types/dynamicSevicesTypes';
 
 // ** Utils
 import UTILS from 'utils';
 
-const MainViewItem = ({ docItem }: { docItem: IAssistantEntity }) => {
+const MainViewItem = ({ docItem }: { docItem: IKnowledgeEntity }) => {
   // Contexts
-  const { handleModifyDoc, currentItem } = useAssistantContext();
+  const { handleModifyDoc, currentItem } = useKnowledgeContext();
 
   // States
   const [isActive, setIsActive] = useState(false);
 
-  const softDeleteAssistantHandler = async () => {
+  const softDeleteKnowledgeHandler = async () => {
     if (isActive) {
       await UTILS.POPUPS.simplePopUp(
-        'No puede eliminarse un asistente activo. Asignar otro como activo primero',
+        'No puede eliminarse un contexto de conocimiento activo. Asignar otro como activo primero',
       );
 
       return;
     }
 
-    await UTILS.POPUPS.twoOptionsPopUp(
-      'Confirma que quieres eliminar este asistente',
-      () => SERVICES.CMS.softDelete(Entities.assistant, docItem.id),
-      'El asistente ha sido eliminado.',
+    await UTILS.POPUPS.twoOptionsPopUp('Confirma que quieres eliminar este contexto de conocimiento', () =>
+      SERVICES.CMS.softDelete(Entities.knowledge, docItem.id),
     );
   };
 
-  const hardDeleteAssistantHandler = async () => {
+  const hardDeleteKnowledgeHandler = async () => {
     await UTILS.POPUPS.twoOptionsPopUp(
-      'Confirma que quieres eliminar definitivamente este asistente. No se podrá recuperar',
-      () => SERVICES.CMS.delete(Entities.assistant, docItem.id),
-      'El asistente ha sido eliminado.',
+      'Confirma que quieres eliminar definitivamente este contexto de conocimiento. No se podrá recuperar',
+      () => SERVICES.CMS.delete(Entities.knowledge, docItem.id),
     );
   };
 
-  const reactivateAssistantHandler = async () => {
-    await UTILS.POPUPS.twoOptionsPopUp(
-      'Confirma que quieres reactivar este asistente',
-      () => SERVICES.CMS.reactivateSoftDeleted(Entities.assistant, docItem.id),
-      'El asistente ha sido reactivado.',
+  const reactivateKnowledgeHandler = async () => {
+    await UTILS.POPUPS.twoOptionsPopUp('Confirma que quieres reactivar este contexto de conocimiento', () =>
+      SERVICES.CMS.reactivateSoftDeleted(Entities.knowledge, docItem.id),
     );
   };
 
@@ -81,7 +76,7 @@ const MainViewItem = ({ docItem }: { docItem: IAssistantEntity }) => {
 
         {docItem.state === StateTypes.active ? (
           <button
-            onClick={softDeleteAssistantHandler}
+            onClick={softDeleteKnowledgeHandler}
             className="red text-white px-1 py-1 rounded flex items-center w-[40px] h-[40px] justify-center"
             title="Eliminar"
           >
@@ -89,7 +84,7 @@ const MainViewItem = ({ docItem }: { docItem: IAssistantEntity }) => {
           </button>
         ) : (
           <button
-            onClick={reactivateAssistantHandler}
+            onClick={reactivateKnowledgeHandler}
             className="violet text-white px-1 py-1 rounded flex items-center w-[40px] h-[40px] justify-center"
             title="Reactivar"
           >
@@ -98,7 +93,7 @@ const MainViewItem = ({ docItem }: { docItem: IAssistantEntity }) => {
         )}
         {docItem.state === StateTypes.inactive && (
           <button
-            onClick={hardDeleteAssistantHandler}
+            onClick={hardDeleteKnowledgeHandler}
             className="red text-white px-1 py-1 rounded flex items-center w-[40px] h-[40px] justify-center"
             title="Eliminar"
           >

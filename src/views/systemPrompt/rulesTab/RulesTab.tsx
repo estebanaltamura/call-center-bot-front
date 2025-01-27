@@ -1,9 +1,12 @@
 // ** components
-import EditViewContainer from 'components/systemPrompt/rulesTab/editView/EditViewContainer';
-import MainViewContainer from 'components/systemPrompt/rulesTab/mainView/MainViewContainer';
+import EditViewContainer from 'components/systemPrompt/commonComponents/editView/EditViewContainer';
+import MainViewContainer from 'components/systemPrompt/rulesTab/MainViewContainer';
 
 // ** Context
 import { useRulesContext } from 'contexts/RulesProvider';
+
+// ** Types
+import { PromptComponentsEnum } from 'types';
 
 const RulesTab = () => {
   const { mode } = useRulesContext();
@@ -13,7 +16,7 @@ const RulesTab = () => {
   }
 
   if (mode === 'edit') {
-    return <EditViewContainer />;
+    return <EditViewContainer promptComponentType={PromptComponentsEnum.RULE} />;
   } else return <div>Modo no definido</div>;
 };
 

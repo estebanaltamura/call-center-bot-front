@@ -6,14 +6,9 @@ import { AssistantProvider, useAssistantContext } from 'contexts/AssistantProvid
 import { BusinessProvider, useBusinessContext } from 'contexts/BusinessProvider';
 import { KnowledgeProvider, useKnowledgeContext } from 'contexts/KnowledgeProvider';
 import { RulesProvider, useRulesContext } from 'contexts/RulesProvider';
+import { PromptComponentsEnum } from 'types';
 
 // Enum para definir los contextos disponibles
-export enum DefinedContextEnum {
-  ASSISTANTS = 'ASSISTANTS',
-  RULES = 'RULES',
-  BUSINESSES = 'BUSINESSES',
-  KNOWLEDGE = 'KNOWLEDGE',
-}
 
 // Interfaz que define todos los contextos
 interface IDataContext {
@@ -59,15 +54,15 @@ export const DataProvider = ({ children }: { children: React.ReactNode }) => {
 };
 
 // Hook para acceder a un subcontexto específico
-export const useDataContext = <T extends DefinedContextEnum>(
+export const useDataContext = <T extends PromptComponentsEnum>(
   definedContext: T,
-): T extends DefinedContextEnum.ASSISTANTS
+): T extends PromptComponentsEnum.ASSISTANT
   ? ReturnType<typeof useAssistantContext>
-  : T extends DefinedContextEnum.RULES
+  : T extends PromptComponentsEnum.RULE
   ? ReturnType<typeof useRulesContext>
-  : T extends DefinedContextEnum.BUSINESSES
+  : T extends PromptComponentsEnum.BUSINESS
   ? ReturnType<typeof useBusinessContext>
-  : T extends DefinedContextEnum.KNOWLEDGE
+  : T extends PromptComponentsEnum.KNOWLEDGE
   ? ReturnType<typeof useKnowledgeContext>
   : never => {
   const context = useContext(DataContext);
@@ -77,13 +72,13 @@ export const useDataContext = <T extends DefinedContextEnum>(
 
   // Retorna el subcontexto correspondiente según el valor de `definedContext`
   switch (definedContext) {
-    case DefinedContextEnum.ASSISTANTS:
+    case PromptComponentsEnum.ASSISTANT:
       return context.assistant as any;
-    case DefinedContextEnum.RULES:
+    case PromptComponentsEnum.RULE:
       return context.rules as any;
-    case DefinedContextEnum.BUSINESSES:
+    case PromptComponentsEnum.BUSINESS:
       return context.business as any;
-    case DefinedContextEnum.KNOWLEDGE:
+    case PromptComponentsEnum.KNOWLEDGE:
       return context.knowledge as any;
     default:
       throw new Error(`Contexto no definido: ${definedContext}`);

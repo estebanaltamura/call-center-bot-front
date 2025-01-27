@@ -29,10 +29,8 @@ const MainViewItem = ({ docItem }: { docItem: IRulesEntity }) => {
       return;
     }
 
-    await UTILS.POPUPS.twoOptionsPopUp(
-      'Confirma que quieres eliminar esta regla',
-      () => SERVICES.CMS.softDelete(Entities.rules, docItem.id),
-      'La regla ha sido eliminada.',
+    await UTILS.POPUPS.twoOptionsPopUp('Confirma que quieres eliminar esta regla', () =>
+      SERVICES.CMS.softDelete(Entities.rules, docItem.id),
     );
   };
 
@@ -40,15 +38,12 @@ const MainViewItem = ({ docItem }: { docItem: IRulesEntity }) => {
     await UTILS.POPUPS.twoOptionsPopUp(
       'Confirma que quieres eliminar definitivamente esta regla. No se podrá recuperar',
       () => SERVICES.CMS.delete(Entities.rules, docItem.id),
-      'La regla ha sido eliminada.',
     );
   };
 
   const reactivateRulesHandler = async () => {
-    await UTILS.POPUPS.twoOptionsPopUp(
-      'Confirma que quieres reactivar esta regla',
-      () => SERVICES.CMS.reactivateSoftDeleted(Entities.rules, docItem.id),
-      ' regla ha sido reactivado.',
+    await UTILS.POPUPS.twoOptionsPopUp('Confirma que quieres reactivar esta regla', () =>
+      SERVICES.CMS.reactivateSoftDeleted(Entities.rules, docItem.id),
     );
   };
 

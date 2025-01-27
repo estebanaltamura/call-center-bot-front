@@ -5,19 +5,20 @@ import { useEffect, useState } from 'react';
 import { useBusinessContext } from 'contexts/BusinessProvider';
 
 // ** Components
-import AddBulletSection from './addBullet/AddBullet';
-import BulletList from './bulletList/BulletList';
+import BulletList from '../../commonComponents/bulletList/BulletList';
+import AddBulletSection from 'components/systemPrompt/commonComponents/addBullet/AddBulletSection';
+import AddServiceSection from './addService/AddService';
+import ServicesList from './servicesList/ServicesList';
 
 // ** Services
 import { SERVICES } from 'services/index';
 
 // ** Types
 import { Entities } from 'types/dynamicSevicesTypes';
+import { PromptComponentsEnum } from 'types';
 
 // ** Utils
 import UTILS from 'utils';
-import AddServiceSection from './addService/AddService';
-import ServicesList from './servicesList/ServicesList';
 
 const EditViewContainer = () => {
   // Contexts
@@ -26,7 +27,6 @@ const EditViewContainer = () => {
   // States
   const [editingBulletIndex, setEditingBulletIndex] = useState<number | null>(null);
   const [editingServiceIndex, setEditingServiceIndex] = useState<number | null>(null);
-
   const [isBulletEditing, setIsBulletEditing] = useState<boolean>(false);
   const [isServiceEditing, setIsServiceEditing] = useState<boolean>(false);
 
@@ -70,7 +70,10 @@ const EditViewContainer = () => {
       </div>
 
       {/*Main */}
-      <AddBulletSection isEditing={isBulletEditing || isServiceEditing} />
+      <AddBulletSection
+        promptComponentType={PromptComponentsEnum.BUSINESS}
+        isEditing={isBulletEditing || isServiceEditing}
+      />
       <AddServiceSection isEditing={isBulletEditing || isServiceEditing} />
       <BulletList
         itemEditingIndex={editingBulletIndex}
@@ -78,6 +81,7 @@ const EditViewContainer = () => {
         isEditing={isBulletEditing}
         setIsEditing={setIsBulletEditing}
         disabled={isServiceEditing}
+        promptComponentType={PromptComponentsEnum.BUSINESS}
       />
 
       <ServicesList

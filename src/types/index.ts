@@ -26,3 +26,10 @@ export interface IService {
   description: string;
   items: IOptionTextItem[];
 }
+
+export enum PromptComponentsEnum {
+  ASSISTANT = 'ASSISTANT',
+  RULE = 'RULE',
+  KNOWLEDGE = 'KNOWLEDGE',
+  BUSINESS = 'BUSINESS',
+}

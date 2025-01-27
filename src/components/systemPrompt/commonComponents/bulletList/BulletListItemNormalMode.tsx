@@ -1,23 +1,20 @@
 // ** React
 import { useEffect, useState } from 'react';
 
-// ** Thrid Party libraries
-import { v4 as uuidv4 } from 'uuid';
-
-// ** Contexts
-import { useBusinessContext } from 'contexts/BusinessProvider';
-
 // ** Hooks
-import useBusinessInformation, { PromptComponentsEnum } from 'customHooks/bullets';
-import useBusinessBulletFunctions from 'customHooks/bullets';
 import useBulletFunctions from 'customHooks/bullets';
+
+// ** Types
+import { IOptionTextItem, PromptComponentsEnum } from 'types';
 
 interface IBulletListItemProps {
   index: number;
   setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
   itemEditingIndex: number | null;
   setitemEditingIndex: React.Dispatch<React.SetStateAction<number | null>>;
-  disabled: boolean;
+  disabled?: boolean;
+  tempBullets: IOptionTextItem[];
+  promptComponentType: PromptComponentsEnum;
 }
 
 const BulletListItemNormalMode = ({
@@ -26,10 +23,11 @@ const BulletListItemNormalMode = ({
   itemEditingIndex,
   setitemEditingIndex,
   disabled,
+  tempBullets,
+  promptComponentType,
 }: IBulletListItemProps) => {
   // Contexts
-  const { tempBullets } = useBusinessContext();
-  const { deleteBullet, moveUpBullet, moveDownBullet } = useBulletFunctions(PromptComponentsEnum.BUSINESS);
+  const { deleteBullet, moveUpBullet, moveDownBullet } = useBulletFunctions(promptComponentType);
 
   // States
   const [isExpanded, setIsExpanded] = useState(false);

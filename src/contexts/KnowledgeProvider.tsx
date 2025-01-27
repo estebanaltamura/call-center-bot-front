@@ -133,6 +133,10 @@ export const KnowledgeProvider = ({ children }: { children: React.ReactNode }) =
     return () => unsubscribe();
   }, []);
 
+  useEffect(() => {
+    console.log(tempBullets);
+  }, [tempBullets]);
+
   return (
     <KnowledgeContext.Provider
       value={{

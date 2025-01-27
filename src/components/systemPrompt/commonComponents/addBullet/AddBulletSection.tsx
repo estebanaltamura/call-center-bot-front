@@ -2,28 +2,35 @@
 import { useState, useRef, useEffect } from 'react';
 
 // ** Custom hooks
-import { PromptComponentsEnum } from 'customHooks/bullets';
 import useBulletFunctions from 'customHooks/bullets';
 
 // ** Contexts
-import { useBusinessContext } from 'contexts/BusinessProvider';
+import { useDataContext } from 'contexts/DataContextProvider';
 
 // ** Enums
 import { bulletOptions } from 'enums/systemPrompts';
 
 // ** 3rd party
 import { v4 as uuidv4 } from 'uuid';
-import { DefinedContextEnum, useDataContext } from 'contexts/DataContextProvider';
 
-const AddBulletSection = ({ isEditing }: { isEditing: boolean }) => {
+// ** Types
+import { PromptComponentsEnum } from 'types';
+
+const AddBulletSection = ({
+  promptComponentType,
+  isEditing,
+}: {
+  promptComponentType: PromptComponentsEnum;
+  isEditing: boolean;
+}) => {
   // ** States
   const [bulletOption, setBulletOption] = useState(bulletOptions[0].options[0]);
   const [bulletText, setBulletText] = useState('');
   const [usedOptions, setUsedOptions] = useState<string[]>([]);
 
   // Contexts
-  const { addBullet } = useBulletFunctions(PromptComponentsEnum.BUSINESS);
-  const { tempBullets } = useDataContext(DefinedContextEnum.BUSINESSES);
+  const { addBullet } = useBulletFunctions(promptComponentType);
+  const { tempBullets } = useDataContext(promptComponentType);
 
   // Guarda la última opción válida para revertir en caso de selección inválida
   const lastValidOption = useRef(bulletOption);
@@ -48,7 +55,7 @@ const AddBulletSection = ({ isEditing }: { isEditing: boolean }) => {
   };
 
   useEffect(() => {
-    const updatedUsed = tempBusinessData.map((item) => item.option);
+    const updatedUsed = tempBullets.map((item) => item.option);
 
     // Buscamos la primera opción disponible
     let nextAvailable = '';
@@ -64,7 +71,7 @@ const AddBulletSection = ({ isEditing }: { isEditing: boolean }) => {
     setUsedOptions(updatedUsed);
     setBulletOption(nextAvailable);
     lastValidOption.current = nextAvailable;
-  }, [tempBusinessData]);
+  }, [tempBullets]);
 
   return (
     <div className="border border-gray-400 p-4 bg-gray-50 rounded space-y-4">

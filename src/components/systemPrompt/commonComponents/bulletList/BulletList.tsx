@@ -2,22 +2,34 @@
 import { v4 as uuidv4 } from 'uuid';
 
 // ** Context
-import { useAssistantContext } from 'contexts/AssistantProvider';
+import { useDataContext } from 'contexts/DataContextProvider';
 
 // ** Components
 import Typo from 'components/general/Typo';
 import BulletListItemEditMode from './BulletListItemEditMode';
 import BulletListItemNormalMode from './BulletListItemNormalMode';
 
+// ** Types
+import { PromptComponentsEnum } from 'types';
+
 interface IBulletListProps {
+  promptComponentType: PromptComponentsEnum;
   isEditing: boolean;
   setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
   itemEditingIndex: number | null;
   setitemEditingIndex: React.Dispatch<React.SetStateAction<number | null>>;
+  disabled?: boolean;
 }
 
-const BulletList = ({ isEditing, setIsEditing, itemEditingIndex, setitemEditingIndex }: IBulletListProps) => {
-  const { tempBullets } = useAssistantContext();
+const BulletList = ({
+  promptComponentType,
+  isEditing,
+  setIsEditing,
+  itemEditingIndex,
+  setitemEditingIndex,
+  disabled,
+}: IBulletListProps) => {
+  const { tempBullets, setTempBullets } = useDataContext(promptComponentType);
 
   if (!tempBullets.length) {
     return (
@@ -42,6 +54,8 @@ const BulletList = ({ isEditing, setIsEditing, itemEditingIndex, setitemEditingI
               setIsEditing={setIsEditing}
               itemEditingIndex={itemEditingIndex}
               setitemEditingIndex={setitemEditingIndex}
+              tempBullets={tempBullets}
+              setTempBullets={setTempBullets}
             />
           ) : (
             // Modo normal: renderizamos todos los ítems
@@ -52,6 +66,9 @@ const BulletList = ({ isEditing, setIsEditing, itemEditingIndex, setitemEditingI
                 setIsEditing={setIsEditing}
                 itemEditingIndex={null}
                 setitemEditingIndex={setitemEditingIndex}
+                disabled={disabled}
+                tempBullets={tempBullets}
+                promptComponentType={promptComponentType}
               />
             ))
           )}

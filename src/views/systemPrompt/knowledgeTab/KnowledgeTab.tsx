@@ -2,8 +2,11 @@
 import { useKnowledgeContext } from 'contexts/KnowledgeProvider';
 
 // ** components
-import EditViewContainer from 'components/systemPrompt/knowledgeTab/editView/EditViewContainer';
-import MainViewContainer from 'components/systemPrompt/knowledgeTab/mainView/MainViewContainer';
+import MainViewContainer from 'components/systemPrompt/knowledgeTab/MainViewContainer';
+import EditViewContainer from 'components/systemPrompt/commonComponents/editView/EditViewContainer';
+
+// ** Types
+import { PromptComponentsEnum } from 'types';
 
 const KnowledgeTab = () => {
   const { mode } = useKnowledgeContext();
@@ -13,7 +16,7 @@ const KnowledgeTab = () => {
   }
 
   if (mode === 'edit') {
-    return <EditViewContainer />;
+    return <EditViewContainer promptComponentType={PromptComponentsEnum.KNOWLEDGE} />;
   } else return <div>Modo no definido</div>;
 };
 

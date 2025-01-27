@@ -5,11 +5,11 @@ import { bulletOptions } from 'enums/systemPrompts';
 
 // ** Context
 import { useBusinessContext } from 'contexts/BusinessProvider';
-import { IOptionTextItem, IService } from 'types';
+import { IOptionTextItem, IService, PromptComponentsEnum } from 'types';
 
 // ** Custom hooks
 import useServiceFunctions from 'customHooks/services';
-import useBulletFunctions, { PromptComponentsEnum } from 'customHooks/bullets';
+import useBulletFunctions from 'customHooks/bullets';
 
 const AddServiceSection = ({ isEditing }: { isEditing: boolean }) => {
   const { tempBusinessServices } = useBusinessContext();

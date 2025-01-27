@@ -1,0 +1,148 @@
+// ** React
+import { useState } from 'react';
+
+// ** Context
+import { useDataContext } from 'contexts/DataContextProvider';
+
+// ** Components
+import AddBulletSection from 'components/systemPrompt/commonComponents/addBullet/AddBulletSection';
+import BulletList from 'components/systemPrompt/commonComponents/bulletList/BulletList';
+
+// ** Services
+import { SERVICES } from 'services/index';
+
+// ** Types
+import { Entities } from 'types/dynamicSevicesTypes';
+import { PromptComponentsEnum } from 'types';
+
+// ** Utils
+import UTILS from 'utils';
+
+const EditViewContainer = ({ promptComponentType }: { promptComponentType: PromptComponentsEnum }) => {
+  // Contexts
+  const { itemToEdit, tempBullets, handleSave, handleCancel } = useDataContext(promptComponentType);
+
+  // States
+  const [itemEditingIndex, setitemEditingIndex] = useState<number | null>(null);
+  const [isEditing, setIsEditing] = useState<boolean>(false);
+
+  let entity: Entities;
+
+  switch (promptComponentType) {
+    case PromptComponentsEnum.ASSISTANT:
+      entity = Entities.assistant;
+      break;
+    case PromptComponentsEnum.KNOWLEDGE:
+      entity = Entities.knowledge;
+      break;
+    case PromptComponentsEnum.RULE:
+      entity = Entities.rules;
+      break;
+    default:
+      entity = Entities.assistant;
+      break;
+  }
+
+  let adaptedText1: string;
+
+  switch (promptComponentType) {
+    case PromptComponentsEnum.ASSISTANT:
+      adaptedText1 = 'de un asistente';
+      break;
+    case PromptComponentsEnum.KNOWLEDGE:
+      adaptedText1 = 'de un contexto de conocimiento';
+      break;
+    case PromptComponentsEnum.RULE:
+      adaptedText1 = 'de una regla';
+      break;
+    default:
+      adaptedText1 = 'de un asistente';
+      break;
+  }
+
+  let adaptedText2: string;
+
+  switch (promptComponentType) {
+    case PromptComponentsEnum.ASSISTANT:
+      adaptedText2 = 'del asistente';
+      break;
+    case PromptComponentsEnum.KNOWLEDGE:
+      adaptedText2 = 'del contexto de conocimiento';
+      break;
+    case PromptComponentsEnum.RULE:
+      adaptedText2 = 'de la regla';
+      break;
+    default:
+      adaptedText2 = 'del asistente';
+      break;
+  }
+
+  const saveHandler = async () => {
+    if (tempBullets.length === 0) {
+      await UTILS.POPUPS.simplePopUp('Tenés que ingresar al menos un bullet');
+
+      return;
+    }
+    handleSave();
+  };
+
+  const handleCancelHandler = async () => {
+    const isNewItem = itemToEdit?.features.length === 0;
+
+    if (isNewItem) {
+      await UTILS.POPUPS.twoOptionsPopUp(
+        `Si cancelas la edición ${adaptedText1} ${
+          promptComponentType === PromptComponentsEnum.RULE ? 'nueva' : 'nuevo'
+        }, este se borrará`,
+        async () => {
+          await SERVICES.CMS.delete(entity, itemToEdit.id);
+          handleCancel();
+        },
+        'El asistente ha sido borrado.',
+      );
+    } else {
+      await UTILS.POPUPS.twoOptionsPopUp(
+        `Si cancelás la edición ${adaptedText2} perderás los cambios. ¿Estás seguro?`,
+        () => handleCancel(),
+      );
+    }
+  };
+
+  return (
+    <div className="p-4 space-y-4">
+      {/*Header*/}
+      <h1 className="text-xl font-bold text-center">EDICION</h1>
+      <div className="space-y-2">
+        <label className="block text-xl font-semibold text-center text-gray-700">
+          {itemToEdit?.title.toUpperCase()}
+        </label>
+      </div>
+
+      {/*Main */}
+      <AddBulletSection promptComponentType={promptComponentType} isEditing={isEditing} />
+      <BulletList
+        itemEditingIndex={itemEditingIndex}
+        setitemEditingIndex={setitemEditingIndex}
+        isEditing={isEditing}
+        setIsEditing={setIsEditing}
+        promptComponentType={promptComponentType}
+      />
+
+      {/* Botones de cancelar y guardar */}
+      <div className="flex justify-end gap-4 mr-[50px]">
+        <button onClick={handleCancelHandler} className="button button1 buttonSecondary">
+          Cancelar
+        </button>
+        <button
+          disabled={isEditing}
+          onClick={saveHandler}
+          className={`button button1 ${isEditing && 'disabled'}`}
+        >
+          Guardar
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default EditViewContainer;

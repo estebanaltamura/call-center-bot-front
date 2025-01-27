@@ -5,15 +5,8 @@ import { useKnowledgeContext } from 'contexts/KnowledgeProvider';
 import { useRulesContext } from 'contexts/RulesProvider';
 
 type PromptComponentsType = 'ASSISTANT' | 'RULE' | 'KNOWLEDGE' | 'BUSINESS';
-export enum PromptComponentsEnum {
-  ASSISTANT = 'ASSISTANT',
-  RULE = 'RULE',
-  KNOWLEDGE = 'KNOWLEDGE',
-  BUSINESS = 'BUSINESS',
-}
 
 const useBulletFunctions = (promptComponentType: PromptComponentsType) => {
-  console.log(promptComponentType);
   const { tempBullets: assistantTempBullets, setTempBullets: setAssistantTempBullets } =
     useAssistantContext();
   const { tempBullets: rulesTempBullets, setTempBullets: setRulesTempBullets } = useRulesContext();

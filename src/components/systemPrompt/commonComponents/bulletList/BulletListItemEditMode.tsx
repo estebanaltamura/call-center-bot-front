@@ -1,23 +1,24 @@
 // React
 import { useState } from 'react';
 
-// Contexts
-import { useAssistantContext } from 'contexts/AssistantProvider';
+// ** Types
+import { IOptionTextItem } from 'types';
 
 interface IBulletListItemEditModeProps {
   setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
   itemEditingIndex: number;
   setitemEditingIndex: React.Dispatch<React.SetStateAction<number | null>>;
+  tempBullets: IOptionTextItem[];
+  setTempBullets: React.Dispatch<React.SetStateAction<IOptionTextItem[]>>;
 }
 
 const BulletListItemEditMode = ({
   setIsEditing,
   itemEditingIndex,
   setitemEditingIndex,
+  tempBullets,
+  setTempBullets,
 }: IBulletListItemEditModeProps) => {
-  // Contexts
-  const { tempBullets, setTempBullets } = useAssistantContext();
-
   const optionInitialValue: string = tempBullets[itemEditingIndex].option;
   const textInitialValue: string = tempBullets[itemEditingIndex].text;
 
@@ -50,10 +51,10 @@ const BulletListItemEditMode = ({
   };
 
   return (
-    <div className="relative bg-white border rounded flex flex-col">
-      <div className="bg-blue-600 text-white text-center p-2 font-bold rounded-t">MODO EDICIÓN</div>
+    <div className="relative bg-white rounded flex flex-col border-[2px] border-gray-500 pb-2">
+      <div className="bg-blue-600 text-white text-center p-2 font-bold">MODO EDICIÓN</div>
 
-      <div className="relative bg-white flex flex-col pt-2 pb-0 px-2 rounded">
+      <div className="relative bg-white flex flex-col pt-2 pb-2 px-4 rounded">
         <span className="font-bold mt-2 w-full ml-[7px]">{tempOption}</span>
 
         <textarea

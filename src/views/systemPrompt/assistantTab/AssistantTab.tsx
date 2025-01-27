@@ -2,8 +2,11 @@
 import { useAssistantContext } from 'contexts/AssistantProvider';
 
 // ** components
-import MainViewContainer from 'components/systemPrompt/assistantTab/mainView/MainViewContainer';
-import EditViewContainer from 'components/systemPrompt/assistantTab/editView/EditViewContainer';
+import MainViewContainer from 'components/systemPrompt/assistantTab/MainViewContainer';
+import EditViewContainer from 'components/systemPrompt/commonComponents/editView/EditViewContainer';
+
+// ** Types
+import { PromptComponentsEnum } from 'types';
 
 const AssistantTab = () => {
   const { mode } = useAssistantContext();
@@ -13,7 +16,7 @@ const AssistantTab = () => {
   }
 
   if (mode === 'edit') {
-    return <EditViewContainer />;
+    return <EditViewContainer promptComponentType={PromptComponentsEnum.ASSISTANT} />;
   } else return <div>Modo no definido</div>;
 };
 
