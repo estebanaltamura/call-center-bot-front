@@ -23,14 +23,14 @@ const MainViewContainer = () => {
   const [includeInactive, setIncludeInactive] = useState<boolean>(false);
 
   // ** Context
-  const { allAssistantList, currentAssistant, setMode, handleModifyDoc } = useAssistantContext();
+  const { allItemList, currentItem, setMode, handleModifyDoc } = useAssistantContext();
   const { setIsLoading } = useLoadingContext();
 
-  const activesSortedWithActiveFirst = allAssistantList
+  const activesSortedWithActiveFirst = allItemList
     .filter((item) => item.state === StateTypes.active)
     .sort((a, b) => a.title.localeCompare(b.title))
     .reduce((acc: IAssistantEntity[], docItem) => {
-      if (docItem.title === currentAssistant?.title) {
+      if (docItem.title === currentItem?.title) {
         acc.unshift(docItem);
       } else {
         acc.push(docItem);
@@ -38,7 +38,7 @@ const MainViewContainer = () => {
       return acc;
     }, []);
 
-  const inactivesSorted = allAssistantList
+  const inactivesSorted = allItemList
     .filter((item) => item.state === StateTypes.inactive)
     .sort((a, b) => a.title.localeCompare(b.title));
 
@@ -76,9 +76,9 @@ const MainViewContainer = () => {
   };
 
   useEffect(() => {
-    allAssistantList.filter((item) => item.state === StateTypes.inactive).length === 0 &&
+    allItemList.filter((item) => item.state === StateTypes.inactive).length === 0 &&
       setIncludeInactive(false);
-  }, [allAssistantList]);
+  }, [allItemList]);
 
   return (
     <div className="p-4 space-y-4">
@@ -95,7 +95,7 @@ const MainViewContainer = () => {
           Crear asistente
         </button>
         <div className="flex-grow"></div>
-        {allAssistantList.filter((item) => item.state === StateTypes.inactive).length > 0 && (
+        {allItemList.filter((item) => item.state === StateTypes.inactive).length > 0 && (
           <div className="flex gap-2 items-center justify-center mr-4">
             <input
               type="checkbox"
@@ -108,8 +108,9 @@ const MainViewContainer = () => {
           </div>
         )}
       </div>
-      {allAssistantList.filter((item) => item.state === StateTypes.active).length === 0 &&
-        !includeInactive && <p className="text-gray-500 ml-[10px]">No hay asistentes creados</p>}
+      {allItemList.filter((item) => item.state === StateTypes.active).length === 0 && !includeInactive && (
+        <p className="text-gray-500 ml-[10px]">No hay asistentes creados</p>
+      )}
       {renderedItems()}
     </div>
   );

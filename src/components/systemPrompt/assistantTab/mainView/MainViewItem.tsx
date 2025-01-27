@@ -15,7 +15,7 @@ import UTILS from 'utils';
 
 const MainViewItem = ({ docItem }: { docItem: IAssistantEntity }) => {
   // Contexts
-  const { handleModifyDoc, currentAssistant } = useAssistantContext();
+  const { handleModifyDoc, currentItem } = useAssistantContext();
 
   // States
   const [isActive, setIsActive] = useState(false);
@@ -53,8 +53,8 @@ const MainViewItem = ({ docItem }: { docItem: IAssistantEntity }) => {
   };
 
   useEffect(() => {
-    setIsActive(currentAssistant?.title === docItem.title);
-  }, [currentAssistant?.title, docItem.title]);
+    setIsActive(currentItem?.title === docItem.title);
+  }, [currentItem?.title, docItem.title]);
 
   return (
     <li

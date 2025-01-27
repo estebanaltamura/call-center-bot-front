@@ -14,12 +14,14 @@ const ServiceListRegularItem = ({
   index,
   setServiceToEdit,
   tempCompanyServicesLength,
+  disabled,
 }: {
   service: IService;
   setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
   setServiceToEdit: React.Dispatch<React.SetStateAction<IService | undefined>>;
   index: number;
   tempCompanyServicesLength: number;
+  disabled: boolean;
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const toggleExpand = () => {
@@ -29,14 +31,16 @@ const ServiceListRegularItem = ({
   const { deleteService, moveUpService, moveDownService } = useServices();
 
   return (
-    <div className="relative bg-white border rounded flex flex-col">
-      <div className="relative bg-white flex flex-col pt-2 pb-0 px-2 rounded">
+    <div className={`${disabled ? 'disabled' : ''} relative bg-white border rounded flex flex-col`}>
+      <div
+        className={`${disabled ? 'disabled' : ''}  relative bg-white flex flex-col pt-2 pb-0 px-2 rounded`}
+      >
         <div className="flex h-[40px] justify-between items-center">
           <span className="font-bold border rounded flex-grow p-2 h-[40px]">{service.title}</span>
 
           <div className="flex items-center justify-center gap-2 ml-2">
             <button
-              disabled={index === tempCompanyServicesLength - 1}
+              disabled={index === tempCompanyServicesLength - 1 || disabled}
               onClick={() => {
                 setIsExpanded(false);
                 moveDownService(index);
@@ -49,36 +53,48 @@ const ServiceListRegularItem = ({
             </button>
 
             <button
-              disabled={index === 0}
+              disabled={index === 0 || disabled}
               onClick={() => {
                 setIsExpanded(false);
                 moveUpService(index);
               }}
-              className={`${index === 0 ? 'bg-gray-400' : 'bg-gray-200'} px-2 w-[40px] h-[40px] rounded`}
+              className={`${
+                index === 0 ? 'bg-gray-400' : 'bg-gray-200'
+              } px-2 rounded flex items-center w-[40px] h-[40px] justify-center`}
             >
               ↑
             </button>
 
             <button
+              disabled={disabled}
               onClick={() => {
                 setIsEditing(true);
                 setServiceToEdit(service);
                 setIsExpanded(true);
               }}
-              className="bg-gray-200 px-2 w-[40px] h-[40px] rounded text-xl"
+              className={`${
+                disabled ? 'bg-gray-400' : 'bg-gray-200'
+              } bg-gray-200 px-2 w-[40px] h-[40px] rounded text-xl`}
             >
               ✎
             </button>
 
             <button
+              disabled={disabled}
               onClick={() => deleteService(index)}
-              className="bg-red-600 px-2 w-[40px] h-[40px] flex items-center justify-center rounded"
+              className={`${
+                disabled ? 'bg-gray-400' : 'bg-gray-200'
+              } red px-2 w-[40px] h-[40px] flex items-center justify-center rounded`}
             >
               🗑️
             </button>
           </div>
         </div>
-        <button onClick={toggleExpand} className="flex justify-center h-[22px] mb-[2px]">
+        <button
+          disabled={disabled}
+          onClick={toggleExpand}
+          className={`${disabled ? 'disabled' : ''}  flex justify-center h-[22px] mb-[2px]`}
+        >
           {isExpanded ? '▲' : '▼'}
         </button>
         {isExpanded && (

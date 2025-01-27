@@ -30,9 +30,9 @@ interface ILocalItem extends IOptionTextItem {
 const ServiceListEditItem = ({
   service,
   setIsEditing,
-  index,
+  itemEditingIndex,
 }: {
-  index: number;
+  itemEditingIndex: number;
   service: IService;
   setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
@@ -98,8 +98,8 @@ const ServiceListEditItem = ({
     // Actualizamos en el contexto global
     setTempBusinessServices((prev) => {
       const updated = [...prev];
-      updated[index] = {
-        ...updated[index],
+      updated[itemEditingIndex] = {
+        ...updated[itemEditingIndex],
         title: tempTitle.text,
         description: tempDescription.text,
         // Quitamos las props internas (id, isEditing, isNew, originalText) para guardarlo limpio
@@ -113,7 +113,7 @@ const ServiceListEditItem = ({
 
   // Diálogo al no tener items
   const handleConfirmDeleteService = () => {
-    deleteService(index);
+    deleteService(itemEditingIndex);
     setShowNoItemsDialog(false);
   };
 

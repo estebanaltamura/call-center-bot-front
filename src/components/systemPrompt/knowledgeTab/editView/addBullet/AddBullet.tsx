@@ -23,7 +23,7 @@ const AddBulletSection = ({ isEditing }: { isEditing: boolean }) => {
 
   // Contexts
   const { addBullet } = useBulletFunctions(PromptComponentsEnum.KNOWLEDGE);
-  const { tempKnowledgeData } = useKnowledgeContext();
+  const { tempBullets } = useKnowledgeContext();
 
   // Guarda la última opción válida para revertir en caso de selección inválida
   const lastValidOption = useRef(bulletOption);
@@ -50,7 +50,7 @@ const AddBulletSection = ({ isEditing }: { isEditing: boolean }) => {
   };
 
   useEffect(() => {
-    const updatedUsed = tempKnowledgeData.map((item) => item.option);
+    const updatedUsed = tempBullets.map((item) => item.option);
 
     // Buscamos la primera opción disponible
     let nextAvailable = '';
@@ -66,7 +66,7 @@ const AddBulletSection = ({ isEditing }: { isEditing: boolean }) => {
     setUsedOptions(updatedUsed);
     setBulletOption(nextAvailable);
     lastValidOption.current = nextAvailable;
-  }, [tempKnowledgeData]);
+  }, [tempBullets]);
 
   return (
     <div className="border border-gray-400 p-4 bg-gray-50 rounded space-y-4">

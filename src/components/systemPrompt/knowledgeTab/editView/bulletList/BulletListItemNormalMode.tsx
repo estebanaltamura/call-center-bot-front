@@ -26,14 +26,14 @@ const BulletListItemNormalMode = ({
   setitemEditingIndex,
 }: IBulletListItemProps) => {
   // Contexts
-  const { tempKnowledgeData } = useKnowledgeContext();
+  const { tempBullets } = useKnowledgeContext();
   const { deleteBullet, moveUpBullet, moveDownBullet } = useBulletFunctions(PromptComponentsEnum.KNOWLEDGE);
 
   // States
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const optionInitialValue: string = tempKnowledgeData[index].option;
-  const textInitialValue: string = tempKnowledgeData[index].text;
+  const optionInitialValue: string = tempBullets[index].option;
+  const textInitialValue: string = tempBullets[index].text;
 
   const toggleExpand = () => setIsExpanded((prev) => !prev);
 
@@ -50,13 +50,13 @@ const BulletListItemNormalMode = ({
 
           <div className="flex items-center justify-center gap-2 ml-2">
             <button
-              disabled={index === tempKnowledgeData.length - 1}
+              disabled={index === tempBullets.length - 1}
               onClick={() => {
                 setIsExpanded(false);
                 moveDownBullet(index);
               }}
               className={`${
-                index === tempKnowledgeData.length - 1 ? 'bg-gray-400' : 'bg-gray-200'
+                index === tempBullets.length - 1 ? 'bg-gray-400' : 'bg-gray-200'
               } px-2 rounded flex items-center w-[40px] h-[40px] justify-center`}
             >
               ↓

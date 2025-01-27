@@ -15,7 +15,7 @@ import UTILS from 'utils';
 
 const MainViewItem = ({ docItem }: { docItem: IBusinessEntity }) => {
   // Contexts
-  const { handleModifyDoc, currentBusiness } = useBusinessContext();
+  const { handleModifyDoc, currentItem } = useBusinessContext();
 
   // States
   const [isActive, setIsActive] = useState(false);
@@ -53,8 +53,8 @@ const MainViewItem = ({ docItem }: { docItem: IBusinessEntity }) => {
   };
 
   useEffect(() => {
-    setIsActive(currentBusiness?.title === docItem.title);
-  }, [currentBusiness?.title, docItem.title]);
+    setIsActive(currentItem?.title === docItem.title);
+  }, [currentItem?.title, docItem.title]);
 
   return (
     <li

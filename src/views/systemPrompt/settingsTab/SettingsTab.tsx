@@ -20,10 +20,10 @@ const SettingsTab = () => {
   const { currentBussinesName, currentAssistantName, currentRulesName, currentKnowledgeName } =
     settings as ISettings;
 
-  const { allBusinessesList } = useBusinessContext();
-  const { allAssistantList } = useAssistantContext();
-  const { allRulesList } = useRulesContext();
-  const { allKnowledgeList } = useKnowledgeContext();
+  const { allItemList: allItemListBusiness } = useBusinessContext();
+  const { allItemList: allItemListAssistant } = useAssistantContext();
+  const { allItemList: allItemListRules } = useRulesContext();
+  const { allItemList: allItemListKnoledge } = useKnowledgeContext();
 
   const handleSelectCompany = async (e: React.ChangeEvent<HTMLSelectElement>) => {
     const val = e.target.value;
@@ -52,7 +52,7 @@ const SettingsTab = () => {
       {/* Negocio */}
       <div className="flex items-center space-x-2">
         <span className="font-semibold flex items-center h-[40px] w-[180px]">Negocio seleccionado:</span>
-        {allBusinessesList.filter((doc) => doc.state === StateTypes.active).length === 0 ? (
+        {allItemListBusiness.filter((doc) => doc.state === StateTypes.active).length === 0 ? (
           <span className="font-semibold flex items-center h-[40px] w-[400px]">No hay negocios creados</span>
         ) : (
           <select
@@ -61,7 +61,7 @@ const SettingsTab = () => {
             className="border rounded px-2 py-1 h-[40px] w-[320px]"
           >
             <option value="none">Ninguno</option>
-            {allBusinessesList
+            {allItemListBusiness
               .filter((doc) => doc.state === StateTypes.active)
               .sort((a, b) => a.title.localeCompare(b.title))
 
@@ -77,7 +77,7 @@ const SettingsTab = () => {
       {/* Asistente */}
       <div className="flex items-center space-x-2">
         <span className="font-semibold flex items-center h-[40px] w-[180px]">Asistente seleccionado:</span>
-        {allAssistantList.filter((doc) => doc.state === StateTypes.active).length === 0 ? (
+        {allItemListAssistant.filter((doc) => doc.state === StateTypes.active).length === 0 ? (
           <span className="font-semibold flex items-center h-[40px] w-[400px]">
             No hay Asistentes creados
           </span>
@@ -88,7 +88,7 @@ const SettingsTab = () => {
             className="border rounded px-2 py-1 h-[40px] w-[320px]"
           >
             <option value="none">Ninguno</option>
-            {allAssistantList
+            {allItemListAssistant
               .filter((doc) => doc.state === StateTypes.active)
               .sort((a, b) => a.title.localeCompare(b.title))
               .map((doc) => (
@@ -103,7 +103,7 @@ const SettingsTab = () => {
       {/* Regla */}
       <div className="flex items-center space-x-2">
         <span className="font-semibold flex items-center h-[40px] w-[180px]">Regla seleccionada:</span>
-        {allRulesList.filter((doc) => doc.state === StateTypes.active).length === 0 ? (
+        {allItemListRules.filter((doc) => doc.state === StateTypes.active).length === 0 ? (
           <span className="font-semibold flex items-center h-[40px] w-[400px]">No hay reglas creadas</span>
         ) : (
           <select
@@ -112,7 +112,7 @@ const SettingsTab = () => {
             className="border rounded px-2 py-1 h-[40px] w-[320px]"
           >
             <option value="none">Ninguno</option>
-            {allRulesList
+            {allItemListRules
               .filter((doc) => doc.state === StateTypes.active)
               .sort((a, b) => a.title.localeCompare(b.title))
 
@@ -128,7 +128,7 @@ const SettingsTab = () => {
       {/* Contexto de conocimiento */}
       <div className="flex items-center space-x-2">
         <span className="font-semibold flex items-center h-[40px] w-[180px]">Contexto seleccionado:</span>
-        {allKnowledgeList.filter((doc) => doc.state === StateTypes.active).length === 0 ? (
+        {allItemListKnoledge.filter((doc) => doc.state === StateTypes.active).length === 0 ? (
           <span className="font-semibold flex items-center h-[40px] w-[400px]">
             No hay contexto de conocimiento creados
           </span>
@@ -139,7 +139,7 @@ const SettingsTab = () => {
             className="border rounded px-2 py-1 h-[40px] w-[320px]"
           >
             <option value="none">Ninguno</option>
-            {allKnowledgeList
+            {allItemListKnoledge
               .filter((doc) => doc.state === StateTypes.active)
               .sort((a, b) => a.title.localeCompare(b.title))
 

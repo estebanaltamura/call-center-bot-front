@@ -22,17 +22,17 @@ interface KnowledgeContextType {
   mode: 'main' | 'edit';
   setMode: React.Dispatch<React.SetStateAction<'main' | 'edit'>>;
 
-  currentKnowledge: IKnowledgeEntity | null;
-  setCurrentKnowledge: React.Dispatch<React.SetStateAction<IKnowledgeEntity | null>>;
+  currentItem: IKnowledgeEntity | null;
+  setCurrentItem: React.Dispatch<React.SetStateAction<IKnowledgeEntity | null>>;
 
-  allKnowledgeList: IKnowledgeEntity[];
-  setKnowledgeList: React.Dispatch<React.SetStateAction<IKnowledgeEntity[]>>;
+  allItemList: IKnowledgeEntity[];
+  setAllItemList: React.Dispatch<React.SetStateAction<IKnowledgeEntity[]>>;
 
-  knowledgeToEdit: IKnowledgeEntity | null;
-  setKnowledgeToEdit: React.Dispatch<React.SetStateAction<IKnowledgeEntity | null>>;
+  itemToEdit: IKnowledgeEntity | null;
+  setItemToEdit: React.Dispatch<React.SetStateAction<IKnowledgeEntity | null>>;
 
-  tempKnowledgeData: IOptionTextItem[];
-  setTempKnowledgeData: React.Dispatch<React.SetStateAction<IOptionTextItem[]>>;
+  tempBullets: IOptionTextItem[];
+  setTempBullets: React.Dispatch<React.SetStateAction<IOptionTextItem[]>>;
 
   handleModifyDoc: (docId: string) => Promise<void>;
   handleSave: () => Promise<void>;
@@ -54,10 +54,10 @@ export const KnowledgeProvider = ({ children }: { children: React.ReactNode }) =
 
   // States
   const [mode, setMode] = useState<'main' | 'edit'>('main');
-  const [currentKnowledge, setCurrentKnowledge] = useState<IKnowledgeEntity | null>(null);
-  const [allKnowledgeList, setKnowledgeList] = useState<IKnowledgeEntity[]>([]);
-  const [knowledgeToEdit, setKnowledgeToEdit] = useState<IKnowledgeEntity | null>(null);
-  const [tempKnowledgeData, setTempKnowledgeData] = useState<IOptionTextItem[]>([]);
+  const [currentItem, setCurrentItem] = useState<IKnowledgeEntity | null>(null);
+  const [allItemList, setAllItemList] = useState<IKnowledgeEntity[]>([]);
+  const [itemToEdit, setItemToEdit] = useState<IKnowledgeEntity | null>(null);
+  const [tempBullets, setTempBullets] = useState<IOptionTextItem[]>([]);
 
   const handleModifyDoc = async (docId: string) => {
     try {
@@ -65,11 +65,11 @@ export const KnowledgeProvider = ({ children }: { children: React.ReactNode }) =
 
       if (!res) return;
 
-      setKnowledgeToEdit({
+      setItemToEdit({
         ...res,
       });
 
-      setTempKnowledgeData(res.features);
+      setTempBullets(res.features);
       setMode('edit');
     } catch (error) {
       console.error('Error al cargar documento:', error);
@@ -78,19 +78,19 @@ export const KnowledgeProvider = ({ children }: { children: React.ReactNode }) =
   };
 
   const handleSave = async () => {
-    if (!knowledgeToEdit) return;
+    if (!itemToEdit) return;
 
     const payload = {
-      title: knowledgeToEdit.title,
-      features: tempKnowledgeData,
+      title: itemToEdit.title,
+      features: tempBullets,
     };
 
     try {
-      SERVICES.CMS.update(Entities.knowledge, knowledgeToEdit.id, payload);
+      SERVICES.CMS.update(Entities.knowledge, itemToEdit.id, payload);
 
       setMode('main');
-      setTempKnowledgeData([]);
-      setKnowledgeToEdit(null);
+      setTempBullets([]);
+      setItemToEdit(null);
     } catch (error) {
       console.error('Error al guardar documento:', error);
       UTILS.POPUPS.simplePopUp('Ucurrio un error al guardar el documento');
@@ -99,20 +99,20 @@ export const KnowledgeProvider = ({ children }: { children: React.ReactNode }) =
 
   const handleCancel = () => {
     setMode('main');
-    setTempKnowledgeData([]);
-    setKnowledgeToEdit(null);
+    setTempBullets([]);
+    setItemToEdit(null);
   };
 
   // Cuando cargo todos los system prompts y cargo el string del título del system prompt en uso, se setea el estado que contiene todos los datos del prompt en uso
   useEffect(() => {
-    if (allKnowledgeList && settings?.currentKnowledgeName) {
-      const currentKnowledgeData = allKnowledgeList.filter(
+    if (allItemList && settings?.currentKnowledgeName) {
+      const currentKnowledgeData = allItemList.filter(
         (item) => item.title === settings?.currentKnowledgeName,
       );
 
-      setCurrentKnowledge(currentKnowledgeData[0]);
+      setCurrentItem(currentKnowledgeData[0]);
     }
-  }, [settings?.currentKnowledgeName, allKnowledgeList]);
+  }, [settings?.currentKnowledgeName, allItemList]);
 
   // Se cargan todos los systemPropmpts
   useEffect(() => {
@@ -127,7 +127,7 @@ export const KnowledgeProvider = ({ children }: { children: React.ReactNode }) =
           ...docData,
         });
       });
-      setKnowledgeList(data);
+      setAllItemList(data);
     });
 
     return () => unsubscribe();
@@ -138,17 +138,17 @@ export const KnowledgeProvider = ({ children }: { children: React.ReactNode }) =
       value={{
         mode,
         setMode,
-        currentKnowledge,
-        setCurrentKnowledge,
-        allKnowledgeList,
-        setKnowledgeList,
-        knowledgeToEdit,
-        setKnowledgeToEdit,
+        currentItem,
+        setCurrentItem,
+        allItemList,
+        setAllItemList,
+        itemToEdit,
+        setItemToEdit,
         handleModifyDoc,
         handleSave,
         handleCancel,
-        tempKnowledgeData,
-        setTempKnowledgeData,
+        tempBullets,
+        setTempBullets,
       }}
     >
       {children}

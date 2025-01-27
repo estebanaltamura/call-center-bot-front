@@ -22,17 +22,17 @@ interface RulesContextType {
   mode: 'main' | 'edit';
   setMode: React.Dispatch<React.SetStateAction<'main' | 'edit'>>;
 
-  currentRules: IRulesEntity | null;
-  setCurrentRules: React.Dispatch<React.SetStateAction<IRulesEntity | null>>;
+  currentItem: IRulesEntity | null;
+  setCurrentItem: React.Dispatch<React.SetStateAction<IRulesEntity | null>>;
 
-  allRulesList: IRulesEntity[];
-  setRulesList: React.Dispatch<React.SetStateAction<IRulesEntity[]>>;
+  allItemList: IRulesEntity[];
+  setAllItemList: React.Dispatch<React.SetStateAction<IRulesEntity[]>>;
 
-  rulesToEdit: IRulesEntity | null;
-  setRulesToEdit: React.Dispatch<React.SetStateAction<IRulesEntity | null>>;
+  itemToEdit: IRulesEntity | null;
+  setItemToEdit: React.Dispatch<React.SetStateAction<IRulesEntity | null>>;
 
-  tempRulesData: IOptionTextItem[];
-  setTempRulesData: React.Dispatch<React.SetStateAction<IOptionTextItem[]>>;
+  tempBullets: IOptionTextItem[];
+  setTempBullets: React.Dispatch<React.SetStateAction<IOptionTextItem[]>>;
 
   handleModifyDoc: (docId: string) => Promise<void>;
   handleSave: () => Promise<void>;
@@ -54,10 +54,10 @@ export const RulesProvider = ({ children }: { children: React.ReactNode }) => {
 
   // States
   const [mode, setMode] = useState<'main' | 'edit'>('main');
-  const [currentRules, setCurrentRules] = useState<IRulesEntity | null>(null);
-  const [allRulesList, setRulesList] = useState<IRulesEntity[]>([]);
-  const [rulesToEdit, setRulesToEdit] = useState<IRulesEntity | null>(null);
-  const [tempRulesData, setTempRulesData] = useState<IOptionTextItem[]>([]);
+  const [currentItem, setCurrentItem] = useState<IRulesEntity | null>(null);
+  const [allItemList, setAllItemList] = useState<IRulesEntity[]>([]);
+  const [itemToEdit, setItemToEdit] = useState<IRulesEntity | null>(null);
+  const [tempBullets, setTempBullets] = useState<IOptionTextItem[]>([]);
 
   const handleModifyDoc = async (docId: string) => {
     try {
@@ -65,11 +65,11 @@ export const RulesProvider = ({ children }: { children: React.ReactNode }) => {
 
       if (!res) return;
 
-      setRulesToEdit({
+      setItemToEdit({
         ...res,
       });
 
-      setTempRulesData(res.features);
+      setTempBullets(res.features);
       setMode('edit');
     } catch (error) {
       console.error('Error al cargar documento:', error);
@@ -78,19 +78,19 @@ export const RulesProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const handleSave = async () => {
-    if (!rulesToEdit) return;
+    if (!itemToEdit) return;
 
     const payload = {
-      title: rulesToEdit.title,
-      features: tempRulesData,
+      title: itemToEdit.title,
+      features: tempBullets,
     };
 
     try {
-      SERVICES.CMS.update(Entities.rules, rulesToEdit.id, payload);
+      SERVICES.CMS.update(Entities.rules, itemToEdit.id, payload);
 
       setMode('main');
-      setTempRulesData([]);
-      setRulesToEdit(null);
+      setTempBullets([]);
+      setItemToEdit(null);
     } catch (error) {
       console.error('Error al guardar documento:', error);
       UTILS.POPUPS.simplePopUp('Ucurrio un error al guardar el documento');
@@ -99,18 +99,18 @@ export const RulesProvider = ({ children }: { children: React.ReactNode }) => {
 
   const handleCancel = () => {
     setMode('main');
-    setTempRulesData([]);
-    setRulesToEdit(null);
+    setTempBullets([]);
+    setItemToEdit(null);
   };
 
   // Cuando cargo todos los system prompts y cargo el string del título del system prompt en uso, se setea el estado que contiene todos los datos del prompt en uso
   useEffect(() => {
-    if (allRulesList && settings?.currentRulesName) {
-      const currentRulesData = allRulesList.filter((item) => item.title === settings?.currentRulesName);
+    if (allItemList && settings?.currentRulesName) {
+      const currentRulesData = allItemList.filter((item) => item.title === settings?.currentRulesName);
 
-      setCurrentRules(currentRulesData[0]);
+      setCurrentItem(currentRulesData[0]);
     }
-  }, [settings?.currentRulesName, allRulesList]);
+  }, [settings?.currentRulesName, allItemList]);
 
   // Se cargan todos los systemPropmpts
   useEffect(() => {
@@ -125,7 +125,7 @@ export const RulesProvider = ({ children }: { children: React.ReactNode }) => {
           ...docData,
         });
       });
-      setRulesList(data);
+      setAllItemList(data);
     });
 
     return () => unsubscribe();
@@ -136,17 +136,17 @@ export const RulesProvider = ({ children }: { children: React.ReactNode }) => {
       value={{
         mode,
         setMode,
-        currentRules,
-        setCurrentRules,
-        allRulesList,
-        setRulesList,
-        rulesToEdit,
-        setRulesToEdit,
+        currentItem,
+        setCurrentItem,
+        allItemList,
+        setAllItemList,
+        itemToEdit,
+        setItemToEdit,
         handleModifyDoc,
         handleSave,
         handleCancel,
-        tempRulesData,
-        setTempRulesData,
+        tempBullets,
+        setTempBullets,
       }}
     >
       {children}

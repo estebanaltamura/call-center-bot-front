@@ -13,6 +13,7 @@ import { bulletOptions } from 'enums/systemPrompts';
 
 // ** 3rd party
 import { v4 as uuidv4 } from 'uuid';
+import { DefinedContextEnum, useDataContext } from 'contexts/DataContextProvider';
 
 const AddBulletSection = ({ isEditing }: { isEditing: boolean }) => {
   // ** States
@@ -22,14 +23,13 @@ const AddBulletSection = ({ isEditing }: { isEditing: boolean }) => {
 
   // Contexts
   const { addBullet } = useBulletFunctions(PromptComponentsEnum.BUSINESS);
-  const { tempBusinessData } = useBusinessContext();
+  const { tempBullets } = useDataContext(DefinedContextEnum.BUSINESSES);
 
   // Guarda la última opción válida para revertir en caso de selección inválida
   const lastValidOption = useRef(bulletOption);
 
   // Agregar bullet
   const addBusinessBulletHandler = () => {
-    console.log(addBullet);
     addBullet(bulletOption, bulletText);
     setBulletText('');
   };

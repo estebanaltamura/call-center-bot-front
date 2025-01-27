@@ -14,12 +14,19 @@ interface IBulletListProps {
   setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
   itemEditingIndex: number | null;
   setitemEditingIndex: React.Dispatch<React.SetStateAction<number | null>>;
+  disabled: boolean;
 }
 
-const BulletList = ({ isEditing, setIsEditing, itemEditingIndex, setitemEditingIndex }: IBulletListProps) => {
-  const { tempBusinessData } = useBusinessContext();
+const BulletList = ({
+  isEditing,
+  setIsEditing,
+  itemEditingIndex,
+  setitemEditingIndex,
+  disabled,
+}: IBulletListProps) => {
+  const { tempBullets } = useBusinessContext();
 
-  if (!tempBusinessData.length) {
+  if (!tempBullets.length) {
     return (
       <div className="border border-gray-400 p-4 bg-gray-50 rounded space-y-4">
         <div className="flex justify-center">No hay bullets añadidos</div>
@@ -45,13 +52,14 @@ const BulletList = ({ isEditing, setIsEditing, itemEditingIndex, setitemEditingI
             />
           ) : (
             // Modo normal: renderizamos todos los ítems
-            tempBusinessData.map((_, idx) => (
+            tempBullets.map((_, idx) => (
               <BulletListItemNormalMode
                 key={uuidv4()}
                 index={idx}
                 setIsEditing={setIsEditing}
                 itemEditingIndex={null}
                 setitemEditingIndex={setitemEditingIndex}
+                disabled={disabled}
               />
             ))
           )}

@@ -17,10 +17,10 @@ import { concatenateBullets } from 'utils/prompt/concatenateBullets';
 
 const SystemPromptTab = () => {
   const [currentFullSystemPrompt, setCurrentFullSystemPrompt] = useState<string>('');
-  const { currentBusiness } = useBusinessContext();
-  const { currentAssistant } = useAssistantContext();
-  const { currentRules } = useRulesContext();
-  const { currentKnowledge } = useKnowledgeContext();
+  const { currentItem: currentBusinessItem } = useBusinessContext();
+  const { currentItem: currentAssistantItem } = useAssistantContext();
+  const { currentItem: currentRulesItem } = useRulesContext();
+  const { currentItem: currentKnowledgeItem } = useKnowledgeContext();
 
   const concatenateSystemPrompt = () => {
     // Construcción inicial del texto
@@ -31,31 +31,31 @@ const SystemPromptTab = () => {
     const coreAspects = [];
 
     // Verificar y agregar cada aspecto core solo si existe
-    if (currentBusiness && currentBusiness?.features?.length > 0) {
+    if (currentBusinessItem && currentBusinessItem?.features?.length > 0) {
       coreAspects.push('Negocio');
     }
-    if (currentBusiness && currentBusiness?.services?.length > 0) {
+    if (currentBusinessItem && currentBusinessItem?.services?.length > 0) {
       coreAspects.push('Servicios');
     }
-    if (currentAssistant) {
+    if (currentAssistantItem) {
       coreAspects.push('Asistente');
     }
-    if (currentRules) {
+    if (currentRulesItem) {
       coreAspects.push('Reglas');
     }
-    if (currentKnowledge) {
+    if (currentKnowledgeItem) {
       coreAspects.push('Conocimiento');
     }
 
     // Generar las descripciones de cada aspecto core solo si existen
-    const companyInformation = currentBusiness && concatenateBullets(currentBusiness.features);
-    const assistantInformation = currentAssistant && concatenateBullets(currentAssistant.features);
-    const rulesInformation = currentRules && concatenateBullets(currentRules.features);
-    const knowledgeInformation = currentKnowledge && concatenateBullets(currentKnowledge.features);
+    const companyInformation = currentBusinessItem && concatenateBullets(currentBusinessItem.features);
+    const assistantInformation = currentAssistantItem && concatenateBullets(currentAssistantItem.features);
+    const rulesInformation = currentRulesItem && concatenateBullets(currentRulesItem.features);
+    const knowledgeInformation = currentKnowledgeItem && concatenateBullets(currentKnowledgeItem.features);
 
     const servicesInformation =
-      currentBusiness && currentBusiness?.services?.length > 0
-        ? currentBusiness.services
+      currentBusinessItem && currentBusinessItem?.services?.length > 0
+        ? currentBusinessItem.services
             .map(
               (item, index) =>
                 `Servicio ${index + 1}: Titulo: ${item.title}, Descripcion: ${
@@ -67,23 +67,23 @@ const SystemPromptTab = () => {
 
     // Concatenar todo en el prompt
     const prompt = `${firstElement} ${coreAspects.join(', ')}. ${
-      currentBusiness && currentBusiness?.features?.length > 0
+      currentBusinessItem && currentBusinessItem?.features?.length > 0
         ? `Negocio(paso a describir esta informacion core): ${companyInformation}.`
         : ''
     } ${
-      currentBusiness && currentBusiness?.services?.length > 0
+      currentBusinessItem && currentBusinessItem?.services?.length > 0
         ? `Servicios(paso a describir esta informacion core): ${servicesInformation}.`
         : ''
     } ${
-      currentAssistant && currentAssistant?.features?.length > 0
+      currentAssistantItem && currentAssistantItem?.features?.length > 0
         ? `Asistente(paso a describir esta informacion core): ${assistantInformation}.`
         : ''
     } ${
-      currentRules && currentRules?.features?.length > 0
+      currentRulesItem && currentRulesItem?.features?.length > 0
         ? `Reglas(paso a describir esta informacion core): ${rulesInformation}.`
         : ''
     } ${
-      currentKnowledge && currentKnowledge?.features?.length > 0
+      currentKnowledgeItem && currentKnowledgeItem?.features?.length > 0
         ? `Conocimiento(paso a describir esta informacion core): ${knowledgeInformation}.`
         : ''
     }`;
@@ -98,11 +98,6 @@ const SystemPromptTab = () => {
 
     await SERVICES.CMS.update(Entities.systemPrompt, 'global', payload);
   };
-
-  useEffect(() => {
-    setCurrentFullSystemPrompt(concatenateSystemPrompt());
-    updateSystemPrompt();
-  }, [currentAssistant, currentRules, currentKnowledge, currentBusiness]);
 
   const renderCompany = (currentBussines: IBusinessEntity) => {
     return (
@@ -206,16 +201,16 @@ const SystemPromptTab = () => {
     );
   };
 
-  const renderKnowledge = (currentKnowledge: IKnowledgeEntity) => {
+  const renderKnowledge = (currentItem: IKnowledgeEntity) => {
     return (
       <>
-        {currentKnowledge && (
+        {currentItem && (
           <div>
             <Typo type="title3Semibold" style={{ marginBottom: '10px' }}>
               CONTEXTO DE CONOCIMIENTO
             </Typo>
             <div className="space-y-2">
-              {currentKnowledge.features.map((item, index) => (
+              {currentItem.features.map((item, index) => (
                 <div key={index} className="p-1 flex gap-2">
                   <Typo type="body1Semibold">{item.option}:</Typo>
                   <Typo type="body2">{item.text}:</Typo>
@@ -229,30 +224,31 @@ const SystemPromptTab = () => {
   };
 
   useEffect(() => {
-    currentAssistant && concatenateBullets(currentAssistant.features);
-  }, [currentAssistant, currentRules, currentKnowledge]);
+    setCurrentFullSystemPrompt(concatenateSystemPrompt());
+    updateSystemPrompt();
+  }, [currentBusinessItem, currentAssistantItem, currentRulesItem, currentKnowledgeItem]);
 
   return (
     <div className="p-4 h-full flex flex-col">
       <h1 className="text-xl font-bold text-center">PROMPT</h1>
       <div className="mt-4 overflow-y-auto scroll-custom">
         {/* Negocio */}
-        {currentBusiness && currentBusiness.features && renderCompany(currentBusiness)}
+        {currentBusinessItem && currentBusinessItem.features && renderCompany(currentBusinessItem)}
 
         {/* Servicios */}
-        {currentBusiness && currentBusiness.services && renderServices(currentBusiness)}
+        {currentBusinessItem && currentBusinessItem.services && renderServices(currentBusinessItem)}
 
         {/* Asistente */}
-        {currentAssistant && currentAssistant.features && renderAssistant(currentAssistant)}
+        {currentAssistantItem && currentAssistantItem.features && renderAssistant(currentAssistantItem)}
 
         {/* Rules */}
-        {currentRules && currentRules.features && renderRules(currentRules)}
+        {currentRulesItem && currentRulesItem.features && renderRules(currentRulesItem)}
 
         {/* Knowledge */}
-        {currentKnowledge &&
-          currentKnowledge.features &&
+        {currentKnowledgeItem &&
+          currentKnowledgeItem.features &&
           renderKnowledge &&
-          renderKnowledge(currentKnowledge)}
+          renderKnowledge(currentKnowledgeItem)}
 
         <h1 className="text-xl font-bold text-center">PROMPT FINAL</h1>
         <Typo type="title3Semibold" style={{ marginBottom: '10px' }}>

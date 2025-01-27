@@ -23,15 +23,15 @@ const MainViewContainer = () => {
   const [includeInactive, setIncludeInactive] = useState<boolean>(false);
 
   // ** Context
-  const { allRulesList, currentRules, setMode } = useRulesContext();
+  const { allItemList, currentItem, setMode } = useRulesContext();
   const { handleModifyDoc } = useRulesContext();
   const { setIsLoading } = useLoadingContext();
 
-  const activesSortedWithActiveFirst = allRulesList
+  const activesSortedWithActiveFirst = allItemList
     .filter((item) => item.state === StateTypes.active)
     .sort((a, b) => a.title.localeCompare(b.title))
     .reduce((acc: IRulesEntity[], docItem) => {
-      if (docItem.title === currentRules?.title) {
+      if (docItem.title === currentItem?.title) {
         acc.unshift(docItem);
       } else {
         acc.push(docItem);
@@ -39,7 +39,7 @@ const MainViewContainer = () => {
       return acc;
     }, []);
 
-  const inactivesSorted = allRulesList
+  const inactivesSorted = allItemList
     .filter((item) => item.state === StateTypes.inactive)
     .sort((a, b) => a.title.localeCompare(b.title));
 
@@ -77,9 +77,9 @@ const MainViewContainer = () => {
   };
 
   useEffect(() => {
-    allRulesList.filter((item) => item.state === StateTypes.inactive).length === 0 &&
+    allItemList.filter((item) => item.state === StateTypes.inactive).length === 0 &&
       setIncludeInactive(false);
-  }, [allRulesList]);
+  }, [allItemList]);
 
   return (
     <div className="p-4 space-y-4">
@@ -96,7 +96,7 @@ const MainViewContainer = () => {
           Crear regla
         </button>
         <div className="flex-grow"></div>
-        {allRulesList.filter((item) => item.state === StateTypes.inactive).length > 0 && (
+        {allItemList.filter((item) => item.state === StateTypes.inactive).length > 0 && (
           <div className="flex gap-2 items-center justify-center mr-4">
             <input
               type="checkbox"
@@ -109,7 +109,7 @@ const MainViewContainer = () => {
           </div>
         )}
       </div>
-      {allRulesList.filter((item) => item.state === StateTypes.active).length === 0 && !includeInactive && (
+      {allItemList.filter((item) => item.state === StateTypes.active).length === 0 && !includeInactive && (
         <p className="text-gray-500 ml-[10px]">No hay reglas creadas</p>
       )}
       {renderedItems()}

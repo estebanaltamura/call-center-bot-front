@@ -19,14 +19,14 @@ import UTILS from 'utils';
 
 const EditViewContainer = () => {
   // Contexts
-  const { assistantToEdit, tempAssistantData, handleSave, handleCancel } = useAssistantContext();
+  const { itemToEdit, tempBullets, handleSave, handleCancel } = useAssistantContext();
 
   // States
   const [itemEditingIndex, setitemEditingIndex] = useState<number | null>(null);
   const [isEditing, setIsEditing] = useState<boolean>(false);
 
   const saveHandler = async () => {
-    if (tempAssistantData.length === 0) {
+    if (tempBullets.length === 0) {
       await UTILS.POPUPS.simplePopUp('Tenés que ingresar al menos un bullet');
 
       return;
@@ -35,13 +35,13 @@ const EditViewContainer = () => {
   };
 
   const handleCancelHandler = async () => {
-    const isNewAssistant = assistantToEdit?.features.length === 0;
+    const isNewAssistant = itemToEdit?.features.length === 0;
 
     if (isNewAssistant) {
       await UTILS.POPUPS.twoOptionsPopUp(
         'Si cancelas la edición de un asistente nuevo este borrará',
         async () => {
-          await SERVICES.CMS.delete(Entities.assistant, assistantToEdit.id);
+          await SERVICES.CMS.delete(Entities.assistant, itemToEdit.id);
           handleCancel();
         },
         'El asistente ha sido borrado.',
@@ -60,7 +60,7 @@ const EditViewContainer = () => {
       <h1 className="text-xl font-bold text-center">EDICION</h1>
       <div className="space-y-2">
         <label className="block text-xl font-semibold text-center text-gray-700">
-          {assistantToEdit?.title.toUpperCase()}
+          {itemToEdit?.title.toUpperCase()}
         </label>
       </div>
 

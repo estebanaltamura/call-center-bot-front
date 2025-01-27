@@ -23,15 +23,15 @@ const MainViewContainer = () => {
   const [includeInactive, setIncludeInactive] = useState<boolean>(false);
 
   // ** Context
-  const { allKnowledgeList, currentKnowledge, setMode } = useKnowledgeContext();
+  const { allItemList, currentItem, setMode } = useKnowledgeContext();
   const { handleModifyDoc } = useKnowledgeContext();
   const { setIsLoading } = useLoadingContext();
 
-  const activesSortedWithActiveFirst = allKnowledgeList
+  const activesSortedWithActiveFirst = allItemList
     .filter((item) => item.state === StateTypes.active)
     .sort((a, b) => a.title.localeCompare(b.title))
     .reduce((acc: IKnowledgeEntity[], docItem) => {
-      if (docItem.title === currentKnowledge?.title) {
+      if (docItem.title === currentItem?.title) {
         acc.unshift(docItem);
       } else {
         acc.push(docItem);
@@ -39,7 +39,7 @@ const MainViewContainer = () => {
       return acc;
     }, []);
 
-  const inactivesSorted = allKnowledgeList
+  const inactivesSorted = allItemList
     .filter((item) => item.state === StateTypes.inactive)
     .sort((a, b) => a.title.localeCompare(b.title));
 
@@ -77,9 +77,9 @@ const MainViewContainer = () => {
   };
 
   useEffect(() => {
-    allKnowledgeList.filter((item) => item.state === StateTypes.inactive).length === 0 &&
+    allItemList.filter((item) => item.state === StateTypes.inactive).length === 0 &&
       setIncludeInactive(false);
-  }, [allKnowledgeList]);
+  }, [allItemList]);
 
   return (
     <div className="p-4 space-y-4">
@@ -96,7 +96,7 @@ const MainViewContainer = () => {
           Crear contexto de conocimiento
         </button>
         <div className="flex-grow"></div>
-        {allKnowledgeList.filter((item) => item.state === StateTypes.inactive).length > 0 && (
+        {allItemList.filter((item) => item.state === StateTypes.inactive).length > 0 && (
           <div className="flex gap-2 items-center justify-center mr-4">
             <input
               type="checkbox"
@@ -109,10 +109,9 @@ const MainViewContainer = () => {
           </div>
         )}
       </div>
-      {allKnowledgeList.filter((item) => item.state === StateTypes.active).length === 0 &&
-        !includeInactive && (
-          <p className="text-gray-500 ml-[10px]">No hay contextos de conocimiento creados</p>
-        )}
+      {allItemList.filter((item) => item.state === StateTypes.active).length === 0 && !includeInactive && (
+        <p className="text-gray-500 ml-[10px]">No hay contextos de conocimiento creados</p>
+      )}
       {renderedItems()}
     </div>
   );

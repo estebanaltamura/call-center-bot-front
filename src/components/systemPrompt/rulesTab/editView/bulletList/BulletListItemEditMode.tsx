@@ -16,10 +16,10 @@ const BulletListItemEditMode = ({
   setitemEditingIndex,
 }: IBulletListItemEditModeProps) => {
   // Contexts
-  const { tempRulesData, setTempRulesData } = useRulesContext();
+  const { tempBullets, setTempBullets } = useRulesContext();
 
-  const optionInitialValue: string = tempRulesData[itemEditingIndex].option;
-  const textInitialValue: string = tempRulesData[itemEditingIndex].text;
+  const optionInitialValue: string = tempBullets[itemEditingIndex].option;
+  const textInitialValue: string = tempBullets[itemEditingIndex].text;
 
   // States
   const [tempOption, setTempOption] = useState(optionInitialValue);
@@ -36,7 +36,7 @@ const BulletListItemEditMode = ({
 
   const handleConfirmEdit = () => {
     // Guardamos en el array global
-    setTempRulesData((prev) => {
+    setTempBullets((prev) => {
       const updated = [...prev];
       updated[itemEditingIndex] = {
         ...updated[itemEditingIndex],

@@ -15,7 +15,7 @@ import UTILS from 'utils';
 
 const MainViewItem = ({ docItem }: { docItem: IRulesEntity }) => {
   // Contexts
-  const { handleModifyDoc, currentRules } = useRulesContext();
+  const { handleModifyDoc, currentItem } = useRulesContext();
 
   // States
   const [isActive, setIsActive] = useState(false);
@@ -53,8 +53,8 @@ const MainViewItem = ({ docItem }: { docItem: IRulesEntity }) => {
   };
 
   useEffect(() => {
-    setIsActive(currentRules?.title === docItem.title);
-  }, [currentRules?.title, docItem.title]);
+    setIsActive(currentItem?.title === docItem.title);
+  }, [currentItem?.title, docItem.title]);
 
   return (
     <li

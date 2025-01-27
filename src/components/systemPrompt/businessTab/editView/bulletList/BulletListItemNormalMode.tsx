@@ -17,6 +17,7 @@ interface IBulletListItemProps {
   setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
   itemEditingIndex: number | null;
   setitemEditingIndex: React.Dispatch<React.SetStateAction<number | null>>;
+  disabled: boolean;
 }
 
 const BulletListItemNormalMode = ({
@@ -24,16 +25,17 @@ const BulletListItemNormalMode = ({
   setIsEditing,
   itemEditingIndex,
   setitemEditingIndex,
+  disabled,
 }: IBulletListItemProps) => {
   // Contexts
-  const { tempBusinessData } = useBusinessContext();
+  const { tempBullets } = useBusinessContext();
   const { deleteBullet, moveUpBullet, moveDownBullet } = useBulletFunctions(PromptComponentsEnum.BUSINESS);
 
   // States
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const optionInitialValue: string = tempBusinessData[index].option;
-  const textInitialValue: string = tempBusinessData[index].text;
+  const optionInitialValue: string = tempBullets[index].option;
+  const textInitialValue: string = tempBullets[index].text;
 
   const toggleExpand = () => setIsExpanded((prev) => !prev);
 
@@ -43,53 +45,58 @@ const BulletListItemNormalMode = ({
 
   // Render principal según isEditing
   return (
-    <div className="relative bg-white border rounded flex flex-col">
-      <div className="relative bg-white flex flex-col pt-2 pb-0 px-2 rounded">
+    <div className={`${disabled ? 'disabled' : ''} relative bg-white border rounded flex flex-col`}>
+      <div className={`${disabled ? 'disabled' : ''} relative bg-white flex flex-col pt-2 pb-0 px-2 rounded`}>
         <div className="flex h-[40px] justify-between items-center">
-          <span className="font-bold border rounded flex-grow p-2 h-[40px]">{optionInitialValue}</span>
+          <span className="font-bold flex-grow p-2 h-[40px]">{optionInitialValue}</span>
 
           <div className="flex items-center justify-center gap-2 ml-2">
             <button
-              disabled={index === tempBusinessData.length - 1}
+              disabled={index === tempBullets.length - 1 || disabled}
               onClick={() => {
                 setIsExpanded(false);
                 moveDownBullet(index);
               }}
               className={`${
-                index === tempBusinessData.length - 1 ? 'bg-gray-400' : 'bg-gray-200'
+                index === tempBullets.length - 1 || disabled ? 'bg-gray-400' : 'bg-gray-200'
               } px-2 rounded flex items-center w-[40px] h-[40px] justify-center`}
             >
               ↓
             </button>
 
             <button
-              disabled={index === 0}
+              disabled={index === 0 || disabled}
               onClick={() => {
                 setIsExpanded(false);
                 moveUpBullet(index);
               }}
               className={`${
-                index === 0 ? 'bg-gray-400' : 'bg-gray-200'
+                index === 0 || disabled ? 'bg-gray-400' : 'bg-gray-200'
               } px-2 rounded flex items-center w-[40px] h-[40px] justify-center`}
             >
               ↑
             </button>
 
             <button
+              disabled={disabled}
               onClick={() => {
                 setitemEditingIndex(index);
                 setIsEditing(true);
-
                 setIsExpanded(true);
               }}
-              className="bg-gray-200 px-2 rounded flex items-center w-[40px] h-[40px] justify-center"
+              className={`${
+                disabled ? 'bg-gray-400' : 'bg-gray-200'
+              } bg-gray-200 px-2 rounded flex items-center w-[40px] h-[40px] justify-center`}
             >
               ✎
             </button>
 
             <button
+              disabled={disabled}
               onClick={() => deleteBullet(index)}
-              className="red px-2 rounded flex items-center w-[40px] h-[40px] justify-center"
+              className={`${
+                disabled ? 'bg-gray-400' : 'bg-gray-200'
+              } red px-2 rounded flex items-center w-[40px] h-[40px] justify-center`}
             >
               🗑️
             </button>
@@ -101,8 +108,8 @@ const BulletListItemNormalMode = ({
         )}
       </div>
 
-      <div className="flex justify-center h-[22px] mb-[2px]">
-        <button onClick={toggleExpand} className="text-black flex items-center">
+      <div className={`${disabled ? 'disabled' : ''} flex justify-center h-[22px] mb-[2px]`}>
+        <button disabled={disabled} onClick={toggleExpand} className="text-black flex items-center">
           {isExpanded ? '▲' : '▼'}
         </button>
       </div>

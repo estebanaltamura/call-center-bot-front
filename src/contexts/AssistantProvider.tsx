@@ -22,17 +22,17 @@ interface AssistantContextType {
   mode: 'main' | 'edit';
   setMode: React.Dispatch<React.SetStateAction<'main' | 'edit'>>;
 
-  currentAssistant: IAssistantEntity | null;
-  setCurrentAssistant: React.Dispatch<React.SetStateAction<IAssistantEntity | null>>;
+  currentItem: IAssistantEntity | null;
+  setCurrentItem: React.Dispatch<React.SetStateAction<IAssistantEntity | null>>;
 
-  allAssistantList: IAssistantEntity[];
-  setAssistantList: React.Dispatch<React.SetStateAction<IAssistantEntity[]>>;
+  allItemList: IAssistantEntity[];
+  setAllItemList: React.Dispatch<React.SetStateAction<IAssistantEntity[]>>;
 
-  assistantToEdit: IAssistantEntity | null;
-  setAssistantToEdit: React.Dispatch<React.SetStateAction<IAssistantEntity | null>>;
+  itemToEdit: IAssistantEntity | null;
+  setItemToEdit: React.Dispatch<React.SetStateAction<IAssistantEntity | null>>;
 
-  tempAssistantData: IOptionTextItem[];
-  setTempAssistantData: React.Dispatch<React.SetStateAction<IOptionTextItem[]>>;
+  tempBullets: IOptionTextItem[];
+  setTempBullets: React.Dispatch<React.SetStateAction<IOptionTextItem[]>>;
 
   handleModifyDoc: (docId: string) => Promise<void>;
   handleSave: () => Promise<void>;
@@ -54,10 +54,10 @@ export const AssistantProvider = ({ children }: { children: React.ReactNode }) =
 
   // States
   const [mode, setMode] = useState<'main' | 'edit'>('main');
-  const [currentAssistant, setCurrentAssistant] = useState<IAssistantEntity | null>(null);
-  const [allAssistantList, setAssistantList] = useState<IAssistantEntity[]>([]);
-  const [assistantToEdit, setAssistantToEdit] = useState<IAssistantEntity | null>(null);
-  const [tempAssistantData, setTempAssistantData] = useState<IOptionTextItem[]>([]);
+  const [currentItem, setCurrentItem] = useState<IAssistantEntity | null>(null);
+  const [allItemList, setAllItemList] = useState<IAssistantEntity[]>([]);
+  const [itemToEdit, setItemToEdit] = useState<IAssistantEntity | null>(null);
+  const [tempBullets, setTempBullets] = useState<IOptionTextItem[]>([]);
 
   const handleModifyDoc = async (docId: string) => {
     try {
@@ -65,11 +65,11 @@ export const AssistantProvider = ({ children }: { children: React.ReactNode }) =
 
       if (!res) return;
 
-      setAssistantToEdit({
+      setItemToEdit({
         ...res,
       });
 
-      setTempAssistantData(res.features);
+      setTempBullets(res.features);
       setMode('edit');
     } catch (error) {
       console.error('Error al cargar documento:', error);
@@ -78,19 +78,19 @@ export const AssistantProvider = ({ children }: { children: React.ReactNode }) =
   };
 
   const handleSave = async () => {
-    if (!assistantToEdit) return;
+    if (!itemToEdit) return;
 
     const payload = {
-      title: assistantToEdit.title,
-      features: tempAssistantData,
+      title: itemToEdit.title,
+      features: tempBullets,
     };
 
     try {
-      SERVICES.CMS.update(Entities.assistant, assistantToEdit.id, payload);
+      SERVICES.CMS.update(Entities.assistant, itemToEdit.id, payload);
 
       setMode('main');
-      setTempAssistantData([]);
-      setAssistantToEdit(null);
+      setTempBullets([]);
+      setItemToEdit(null);
     } catch (error) {
       console.error('Error al guardar documento:', error);
       UTILS.POPUPS.simplePopUp('Ucurrio un error al guardar el documento');
@@ -99,20 +99,20 @@ export const AssistantProvider = ({ children }: { children: React.ReactNode }) =
 
   const handleCancel = () => {
     setMode('main');
-    setTempAssistantData([]);
-    setAssistantToEdit(null);
+    setTempBullets([]);
+    setItemToEdit(null);
   };
 
   // Cuando cargo todos los system prompts y cargo el string del título del system prompt en uso, se setea el estado que contiene todos los datos del prompt en uso
   useEffect(() => {
-    if (allAssistantList && settings?.currentAssistantName) {
-      const currentAssistantData = allAssistantList.filter(
+    if (allItemList && settings?.currentAssistantName) {
+      const currentAssistantData = allItemList.filter(
         (item) => item.title === settings?.currentAssistantName,
       );
 
-      setCurrentAssistant(currentAssistantData[0]);
+      setCurrentItem(currentAssistantData[0]);
     }
-  }, [settings?.currentAssistantName, allAssistantList]);
+  }, [settings?.currentAssistantName, allItemList]);
 
   // Se cargan todos los systemPropmpts
   useEffect(() => {
@@ -127,32 +127,32 @@ export const AssistantProvider = ({ children }: { children: React.ReactNode }) =
           ...docData,
         });
       });
-      setAssistantList(data);
+      setAllItemList(data);
     });
 
     return () => unsubscribe();
   }, []);
 
   useEffect(() => {
-    console.log('tempAssistantData', tempAssistantData);
-  }, [tempAssistantData]);
+    console.log('tempAssistantData', tempBullets);
+  }, [tempBullets]);
 
   return (
     <AssistantContext.Provider
       value={{
         mode,
         setMode,
-        currentAssistant,
-        setCurrentAssistant,
-        allAssistantList,
-        setAssistantList,
-        assistantToEdit,
-        setAssistantToEdit,
+        currentItem,
+        setCurrentItem,
+        allItemList,
+        setAllItemList,
+        itemToEdit,
+        setItemToEdit,
         handleModifyDoc,
         handleSave,
         handleCancel,
-        tempAssistantData,
-        setTempAssistantData,
+        tempBullets,
+        setTempBullets,
       }}
     >
       {children}

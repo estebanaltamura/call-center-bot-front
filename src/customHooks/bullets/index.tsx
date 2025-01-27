@@ -14,23 +14,25 @@ export enum PromptComponentsEnum {
 
 const useBulletFunctions = (promptComponentType: PromptComponentsType) => {
   console.log(promptComponentType);
-  const { tempAssistantData, setTempAssistantData } = useAssistantContext();
-  const { tempRulesData, setTempRulesData } = useRulesContext();
-  const { tempKnowledgeData, setTempKnowledgeData } = useKnowledgeContext();
-  const { tempBusinessData, setTempBusinessData } = useBusinessContext();
+  const { tempBullets: assistantTempBullets, setTempBullets: setAssistantTempBullets } =
+    useAssistantContext();
+  const { tempBullets: rulesTempBullets, setTempBullets: setRulesTempBullets } = useRulesContext();
+  const { tempBullets: knowledgeTempBullets, setTempBullets: setKnowledgeTempBullets } =
+    useKnowledgeContext();
+  const { tempBullets: businessTempBullets, setTempBullets: setBusinessTempBullets } = useBusinessContext();
 
   const tempDataMap = {
-    ASSISTANT: tempAssistantData,
-    RULE: tempRulesData,
-    KNOWLEDGE: tempKnowledgeData,
-    BUSINESS: tempBusinessData,
+    ASSISTANT: assistantTempBullets,
+    RULE: rulesTempBullets,
+    KNOWLEDGE: knowledgeTempBullets,
+    BUSINESS: businessTempBullets,
   };
 
   const setTempDataMap = {
-    ASSISTANT: setTempAssistantData,
-    RULE: setTempRulesData,
-    KNOWLEDGE: setTempKnowledgeData,
-    BUSINESS: setTempBusinessData,
+    ASSISTANT: setAssistantTempBullets,
+    RULE: setRulesTempBullets,
+    KNOWLEDGE: setKnowledgeTempBullets,
+    BUSINESS: setBusinessTempBullets,
   };
 
   const addBullet = (option: string, text: string) => {

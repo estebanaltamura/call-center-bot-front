@@ -21,14 +21,17 @@ import ServicesList from './servicesList/ServicesList';
 
 const EditViewContainer = () => {
   // Contexts
-  const { businessToEdit, tempBusinessData, handleSave, handleCancel } = useBusinessContext();
+  const { itemToEdit, tempBullets, handleSave, handleCancel } = useBusinessContext();
 
   // States
-  const [itemEditingIndex, setitemEditingIndex] = useState<number | null>(null);
-  const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [editingBulletIndex, setEditingBulletIndex] = useState<number | null>(null);
+  const [editingServiceIndex, setEditingServiceIndex] = useState<number | null>(null);
+
+  const [isBulletEditing, setIsBulletEditing] = useState<boolean>(false);
+  const [isServiceEditing, setIsServiceEditing] = useState<boolean>(false);
 
   const saveHandler = async () => {
-    if (tempBusinessData.length === 0) {
+    if (tempBullets.length === 0) {
       await UTILS.POPUPS.simplePopUp('Tenés que ingresar al menos un bullet');
 
       return;
@@ -37,13 +40,13 @@ const EditViewContainer = () => {
   };
 
   const handleCancelHandler = async () => {
-    const isNewBusiness = businessToEdit?.features.length === 0;
+    const isNewBusiness = itemToEdit?.features.length === 0;
 
     if (isNewBusiness) {
       await UTILS.POPUPS.twoOptionsPopUp(
         'Si cancelas la edición de un asistente nuevo este borrará',
         async () => {
-          await SERVICES.CMS.delete(Entities.business, businessToEdit.id);
+          await SERVICES.CMS.delete(Entities.business, itemToEdit.id);
           handleCancel();
         },
         'El asistente ha sido borrado.',
@@ -62,21 +65,28 @@ const EditViewContainer = () => {
       <h1 className="text-xl font-bold text-center">EDICION</h1>
       <div className="space-y-2">
         <label className="block text-xl font-semibold text-center text-gray-700">
-          {businessToEdit?.title.toUpperCase()}
+          {itemToEdit?.title.toUpperCase()}
         </label>
       </div>
 
       {/*Main */}
-      <AddBulletSection isEditing={isEditing} />
-      <AddServiceSection isEditing={isEditing} />
+      <AddBulletSection isEditing={isBulletEditing || isServiceEditing} />
+      <AddServiceSection isEditing={isBulletEditing || isServiceEditing} />
       <BulletList
-        itemEditingIndex={itemEditingIndex}
-        setitemEditingIndex={setitemEditingIndex}
-        isEditing={isEditing}
-        setIsEditing={setIsEditing}
+        itemEditingIndex={editingBulletIndex}
+        setitemEditingIndex={setEditingBulletIndex}
+        isEditing={isBulletEditing}
+        setIsEditing={setIsBulletEditing}
+        disabled={isServiceEditing}
       />
 
-      <ServicesList />
+      <ServicesList
+        itemEditingIndex={editingServiceIndex}
+        setitemEditingIndex={setEditingServiceIndex}
+        isEditing={isServiceEditing}
+        setIsEditing={setIsServiceEditing}
+        disabled={isBulletEditing}
+      />
 
       {/* Botones de cancelar y guardar */}
       <div className="flex justify-end gap-4 mr-[50px]">
@@ -84,9 +94,9 @@ const EditViewContainer = () => {
           Cancelar
         </button>
         <button
-          disabled={isEditing}
+          disabled={isBulletEditing || isServiceEditing}
           onClick={saveHandler}
-          className={`button button1 ${isEditing && 'disabled'}`}
+          className={`button button1 ${isBulletEditing || (isServiceEditing && 'disabled')}`}
         >
           Guardar
         </button>

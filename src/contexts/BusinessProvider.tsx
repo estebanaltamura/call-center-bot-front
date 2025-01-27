@@ -22,17 +22,17 @@ interface BusinessContextType {
   mode: 'main' | 'edit';
   setMode: React.Dispatch<React.SetStateAction<'main' | 'edit'>>;
 
-  currentBusiness: IBusinessEntity | null;
-  setCurrentBusiness: React.Dispatch<React.SetStateAction<IBusinessEntity | null>>;
+  currentItem: IBusinessEntity | null;
+  setCurrentItem: React.Dispatch<React.SetStateAction<IBusinessEntity | null>>;
 
-  allBusinessesList: IBusinessEntity[];
-  setAllBusinessesList: React.Dispatch<React.SetStateAction<IBusinessEntity[]>>;
+  allItemList: IBusinessEntity[];
+  setAllItemList: React.Dispatch<React.SetStateAction<IBusinessEntity[]>>;
 
-  businessToEdit: IBusinessEntity | null;
-  setBusinessToEdit: React.Dispatch<React.SetStateAction<IBusinessEntity | null>>;
+  itemToEdit: IBusinessEntity | null;
+  setItemToEdit: React.Dispatch<React.SetStateAction<IBusinessEntity | null>>;
 
-  tempBusinessData: IOptionTextItem[];
-  setTempBusinessData: React.Dispatch<React.SetStateAction<IOptionTextItem[]>>;
+  tempBullets: IOptionTextItem[];
+  setTempBullets: React.Dispatch<React.SetStateAction<IOptionTextItem[]>>;
 
   tempBusinessServices: IService[];
   setTempBusinessServices: React.Dispatch<React.SetStateAction<IService[]>>;
@@ -57,10 +57,10 @@ export const BusinessProvider = ({ children }: { children: React.ReactNode }) =>
 
   // States
   const [mode, setMode] = useState<'main' | 'edit'>('main');
-  const [currentBusiness, setCurrentBusiness] = useState<IBusinessEntity | null>(null);
-  const [allBusinessesList, setAllBusinessesList] = useState<IBusinessEntity[]>([]);
-  const [businessToEdit, setBusinessToEdit] = useState<IBusinessEntity | null>(null);
-  const [tempBusinessData, setTempBusinessData] = useState<IOptionTextItem[]>([]);
+  const [currentItem, setCurrentItem] = useState<IBusinessEntity | null>(null);
+  const [allItemList, setAllItemList] = useState<IBusinessEntity[]>([]);
+  const [itemToEdit, setItemToEdit] = useState<IBusinessEntity | null>(null);
+  const [tempBullets, setTempBullets] = useState<IOptionTextItem[]>([]);
   const [tempBusinessServices, setTempBusinessServices] = useState<IService[]>([]);
 
   const handleModifyDoc = async (docId: string) => {
@@ -69,12 +69,12 @@ export const BusinessProvider = ({ children }: { children: React.ReactNode }) =>
 
       if (!res) return;
 
-      setBusinessToEdit({
+      setItemToEdit({
         ...res,
       });
 
       setTempBusinessServices(res.services);
-      setTempBusinessData(res.features);
+      setTempBullets(res.features);
       setMode('edit');
     } catch (error) {
       console.error('Error al cargar documento:', error);
@@ -83,21 +83,21 @@ export const BusinessProvider = ({ children }: { children: React.ReactNode }) =>
   };
 
   const handleSave = async () => {
-    if (!businessToEdit) return;
+    if (!itemToEdit) return;
 
     const payload = {
-      title: businessToEdit.title,
-      features: tempBusinessData,
+      title: itemToEdit.title,
+      features: tempBullets,
       services: tempBusinessServices,
     };
 
     try {
-      SERVICES.CMS.update(Entities.business, businessToEdit.id, payload);
+      SERVICES.CMS.update(Entities.business, itemToEdit.id, payload);
 
       setMode('main');
       setTempBusinessServices([]);
-      setTempBusinessData([]);
-      setBusinessToEdit(null);
+      setTempBullets([]);
+      setItemToEdit(null);
     } catch (error) {
       console.error('Error al guardar documento:', error);
       UTILS.POPUPS.simplePopUp('Ucurrio un error al guardar el documento');
@@ -107,20 +107,18 @@ export const BusinessProvider = ({ children }: { children: React.ReactNode }) =>
   const handleCancel = () => {
     setMode('main');
     setTempBusinessServices([]);
-    setTempBusinessData([]);
-    setBusinessToEdit(null);
+    setTempBullets([]);
+    setItemToEdit(null);
   };
 
   // Cuando cargo todos los system prompts y cargo el string del título del system prompt en uso, se setea el estado que contiene todos los datos del prompt en uso
   useEffect(() => {
-    if (allBusinessesList && settings?.currentBussinesName) {
-      const currentBussinesData = allBusinessesList.filter(
-        (item) => item.title === settings?.currentBussinesName,
-      );
+    if (allItemList && settings?.currentBussinesName) {
+      const currentBussinesData = allItemList.filter((item) => item.title === settings?.currentBussinesName);
 
-      setCurrentBusiness(currentBussinesData[0]);
+      setCurrentItem(currentBussinesData[0]);
     }
-  }, [settings?.currentBussinesName, allBusinessesList]);
+  }, [settings?.currentBussinesName, allItemList]);
 
   // Se cargan todos los systemPropmpts
   useEffect(() => {
@@ -135,32 +133,32 @@ export const BusinessProvider = ({ children }: { children: React.ReactNode }) =>
           ...docData,
         });
       });
-      setAllBusinessesList(data);
+      setAllItemList(data);
     });
 
     return () => unsubscribe();
   }, []);
 
   useEffect(() => {
-    console.log('tempBusinessData', tempBusinessData);
-  }, [tempBusinessData]);
+    console.log('tempBusinessData', tempBullets);
+  }, [tempBullets]);
 
   return (
     <CompanyContext.Provider
       value={{
         mode,
         setMode,
-        currentBusiness,
-        setCurrentBusiness,
-        allBusinessesList,
-        setAllBusinessesList,
-        businessToEdit,
-        setBusinessToEdit,
+        currentItem,
+        setCurrentItem,
+        allItemList,
+        setAllItemList,
+        itemToEdit,
+        setItemToEdit,
         handleModifyDoc,
         handleSave,
         handleCancel,
-        tempBusinessData,
-        setTempBusinessData,
+        tempBullets,
+        setTempBullets,
         tempBusinessServices,
         setTempBusinessServices,
       }}

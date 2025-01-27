@@ -11,9 +11,20 @@ import ServiceListEditItem from './ServiceListEditItem';
 import { IService } from 'types';
 import Typo from 'components/general/Typo';
 
-const ServicesList = () => {
+const ServicesList = ({
+  isEditing,
+  setIsEditing,
+  itemEditingIndex,
+  setitemEditingIndex,
+  disabled,
+}: {
+  isEditing: boolean;
+  setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
+  itemEditingIndex: number | null;
+  setitemEditingIndex: React.Dispatch<React.SetStateAction<number | null>>;
+  disabled: boolean;
+}) => {
   const { tempBusinessServices } = useBusinessContext();
-  const [isEditing, setIsEditing] = useState(false);
   const [serviceToEdit, setServiceToEdit] = useState<IService>();
 
   return (
@@ -35,7 +46,11 @@ const ServicesList = () => {
               <div className="absolute top-0 left-0 w-full h-[40px] bg-blue-600 text-white text-center font-semibold flex items-center justify-center rounded-t-sm">
                 MODO EDICION
               </div>
-              <ServiceListEditItem service={serviceToEdit} setIsEditing={setIsEditing} index={0} />
+              <ServiceListEditItem
+                service={serviceToEdit}
+                setIsEditing={setIsEditing}
+                itemEditingIndex={itemEditingIndex as number}
+              />
             </div>
           )}
 
@@ -52,6 +67,7 @@ const ServicesList = () => {
                       index={index}
                       tempCompanyServicesLength={tempCompanyServicesLength}
                       setServiceToEdit={setServiceToEdit}
+                      disabled={disabled}
                     />
                   )}
                 </div>

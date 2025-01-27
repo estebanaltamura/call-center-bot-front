@@ -15,7 +15,7 @@ import UTILS from 'utils';
 
 const MainViewItem = ({ docItem }: { docItem: IKnowledgeEntity }) => {
   // Contexts
-  const { handleModifyDoc, currentKnowledge } = useKnowledgeContext();
+  const { handleModifyDoc, currentItem } = useKnowledgeContext();
 
   // States
   const [isActive, setIsActive] = useState(false);
@@ -53,8 +53,8 @@ const MainViewItem = ({ docItem }: { docItem: IKnowledgeEntity }) => {
   };
 
   useEffect(() => {
-    setIsActive(currentKnowledge?.title === docItem.title);
-  }, [currentKnowledge?.title, docItem.title]);
+    setIsActive(currentItem?.title === docItem.title);
+  }, [currentItem?.title, docItem.title]);
 
   return (
     <li

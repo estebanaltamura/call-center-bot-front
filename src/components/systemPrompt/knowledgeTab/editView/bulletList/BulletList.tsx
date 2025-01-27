@@ -17,9 +17,9 @@ interface IBulletListProps {
 }
 
 const BulletList = ({ isEditing, setIsEditing, itemEditingIndex, setitemEditingIndex }: IBulletListProps) => {
-  const { tempKnowledgeData } = useKnowledgeContext();
+  const { tempBullets } = useKnowledgeContext();
 
-  if (!tempKnowledgeData.length) {
+  if (!tempBullets.length) {
     return (
       <div className="border border-gray-400 p-4 bg-gray-50 rounded space-y-4">
         <div className="flex justify-center">No hay bullets añadidos</div>
@@ -45,7 +45,7 @@ const BulletList = ({ isEditing, setIsEditing, itemEditingIndex, setitemEditingI
             />
           ) : (
             // Modo normal: renderizamos todos los ítems
-            tempKnowledgeData.map((_, idx) => (
+            tempBullets.map((_, idx) => (
               <BulletListItemNormalMode
                 key={uuidv4()}
                 index={idx}
