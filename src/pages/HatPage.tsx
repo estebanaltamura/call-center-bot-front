@@ -2,7 +2,7 @@
 
 import { useLoadingContext } from 'contexts/LoadingProvider';
 import Loader from 'components/general/Loader';
-import GeneralHatView from 'views/systemPrompt/generalHatView/GeneralHatView';
+import HatView from 'views/systemPrompt/generalHatView/HatView';
 
 const HatPage = () => {
   // Contexts
@@ -15,7 +15,7 @@ const HatPage = () => {
         <Loader />
       ) : (
         <div className="flex-1 overflow-auto p-4">
-          <GeneralHatView />
+          <HatView />
         </div>
       )}
     </div>

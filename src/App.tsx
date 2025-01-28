@@ -18,6 +18,7 @@ import StatusPage from 'pages/StatusPage';
 import HatPage from 'pages/HatPage';
 import HatProvider from 'contexts/HatProvider';
 import HatViewerPage from 'pages/HatViewerPage';
+import RefreshModeProvider from 'contexts/RefreshModeProvider';
 
 function App() {
   return (
@@ -26,90 +27,92 @@ function App() {
         <ChatHistoryProvider>
           <DataProvider>
             <HatProvider>
-              <Routes>
-                <Route
-                  path="/dashboard"
-                  element={
-                    // <AuthGuard>
-                    <DashboardPage />
-                    // </AuthGuard>
-                  }
-                />
-                <Route
-                  path="/chat"
-                  element={
-                    // <AuthGuard>
-                    <ChatPage />
-                    // </AuthGuard>
-                  }
-                />
+              <RefreshModeProvider>
+                <Routes>
+                  <Route
+                    path="/dashboard"
+                    element={
+                      // <AuthGuard>
+                      <DashboardPage />
+                      // </AuthGuard>
+                    }
+                  />
+                  <Route
+                    path="/chat"
+                    element={
+                      // <AuthGuard>
+                      <ChatPage />
+                      // </AuthGuard>
+                    }
+                  />
 
-                <Route
-                  path="/status"
-                  element={
-                    // <AuthGuard>
-                    <StatusPage />
-                    // </AuthGuard>
-                  }
-                />
+                  <Route
+                    path="/status"
+                    element={
+                      // <AuthGuard>
+                      <StatusPage />
+                      // </AuthGuard>
+                    }
+                  />
 
-                <Route
-                  path="/businesses"
-                  element={
-                    // <AuthGuard>
-                    <BusinessPage />
-                    // </AuthGuard>
-                  }
-                />
+                  <Route
+                    path="/businesses"
+                    element={
+                      // <AuthGuard>
+                      <BusinessPage />
+                      // </AuthGuard>
+                    }
+                  />
 
-                <Route
-                  path="/assistants"
-                  element={
-                    // <AuthGuard>
-                    <AssistantPage />
-                    // </AuthGuard>
-                  }
-                />
+                  <Route
+                    path="/assistants"
+                    element={
+                      // <AuthGuard>
+                      <AssistantPage />
+                      // </AuthGuard>
+                    }
+                  />
 
-                <Route
-                  path="/knowledges"
-                  element={
-                    // <AuthGuard>
-                    <KnowledgePage />
-                    // </AuthGuard>
-                  }
-                />
+                  <Route
+                    path="/knowledges"
+                    element={
+                      // <AuthGuard>
+                      <KnowledgePage />
+                      // </AuthGuard>
+                    }
+                  />
 
-                <Route
-                  path="/rules"
-                  element={
-                    // <AuthGuard>
-                    <RulePage />
-                    // </AuthGuard>
-                  }
-                />
+                  <Route
+                    path="/rules"
+                    element={
+                      // <AuthGuard>
+                      <RulePage />
+                      // </AuthGuard>
+                    }
+                  />
 
-                <Route
-                  path="/hats"
-                  element={
-                    // <AuthGuard>
-                    <HatPage />
-                    // </AuthGuard>
-                  }
-                />
+                  <Route
+                    path="/hats"
+                    element={
+                      // <AuthGuard>
+                      <HatPage />
+                      // </AuthGuard>
+                    }
+                  />
 
-                <Route
-                  path="/hats/viewer"
-                  element={
-                    // <AuthGuard>
-                    <HatViewerPage />
-                    // </AuthGuard>
-                  }
-                />
+                  <Route
+                    path="/hats/viewer"
+                    element={
+                      // <AuthGuard>
+                      <HatViewerPage />
+                      // </AuthGuard>
+                    }
+                  />
 
-                <Route path="/" element={<Navigate to="/dashboard" />} />
-                <Route path="*" element={<Navigate to="/dashboard" />} />
-              </Routes>
+                  <Route path="/" element={<Navigate to="/dashboard" />} />
+                  <Route path="*" element={<Navigate to="/dashboard" />} />
+                </Routes>
+              </RefreshModeProvider>
             </HatProvider>
           </DataProvider>
         </ChatHistoryProvider>

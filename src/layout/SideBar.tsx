@@ -18,6 +18,11 @@ import {
   FaCogs,
   FaHatWizard,
 } from 'react-icons/fa';
+import { useBusinessContext } from 'contexts/BusinessProvider';
+import { useAssistantContext } from 'contexts/AssistantProvider';
+import { useKnowledgeContext } from 'contexts/KnowledgeProvider';
+import { useRulesContext } from 'contexts/RulesProvider';
+import { useHatContext } from 'contexts/HatProvider';
 
 const menuItems = [
   { label: 'Dashboard', path: '/dashboard', icon: <FaTachometerAlt /> },
@@ -46,6 +51,7 @@ const Sidebar = () => {
       setActiveItem(matchedItem.label);
     }
   }, [location.pathname]); // Ejecutar cada vez que el path cambie
+
   return (
     <aside
       className="bg-gray-700 text-white flex flex-col items-center"

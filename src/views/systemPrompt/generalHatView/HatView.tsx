@@ -5,7 +5,7 @@ import { useHatContext } from 'contexts/HatProvider';
 import { useEffect, useState } from 'react';
 import { IHatEntity } from 'types/dynamicSevicesTypes';
 
-const GeneralHatView = () => {
+const HatView = () => {
   const { mode, setMode, itemToEdit, setItemToEdit, allItemList } = useHatContext();
 
   if (mode === 'main') {
@@ -19,4 +19,4 @@ const GeneralHatView = () => {
   } else return <div>Modo no definido</div>;
 };
 
-export default GeneralHatView;
+export default HatView;
