@@ -15,6 +15,7 @@ import updateCurrentBussinesTitle from './settingsServices/updateCurrentPrompt';
 import updateCurrentAssistantTitle from './settingsServices/updateCurrentAssistantTitle';
 import updateCurrentRulesTitle from './settingsServices/updateCurrentRulesTitle';
 import updateCurrentKnowledgeTitle from './settingsServices/updateCurrentKnowledgeTitle';
+import { createHat } from './hat/createHat';
 
 export const SERVICES = {
   CMS: {
@@ -36,6 +37,9 @@ export const SERVICES = {
   },
   KNOWLEDGE: {
     create: createKnowledge,
+  },
+  HAT: {
+    create: createHat,
   },
   SETTINGS: {
     updateCurrentBussinesTitle: updateCurrentBussinesTitle,

@@ -1,8 +1,8 @@
 // ** React
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 // ** React Router
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 // ** Components
 import Typo from 'components/general/Typo';
@@ -27,19 +27,29 @@ const menuItems = [
   { label: 'Asistentes', path: '/assistants', icon: <FaRobot /> },
   { label: 'Conocimientos', path: '/knowledges', icon: <FaBook /> },
   { label: 'Reglas', path: '/rules', icon: <FaCogs /> },
-  { label: 'Sombrero general', path: '/generalHat', icon: <FaHatWizard /> },
-  { label: 'Sombrero closer', path: '/closerHat', icon: <FaHatWizard /> },
-  { label: 'Sombrero post', path: '/postHat', icon: <FaHatWizard /> },
+  { label: 'Sombreros', path: '/hats', icon: <FaHatWizard /> },
 ];
 
 const Sidebar = () => {
   const [activeItem, setActiveItem] = useState<string>('Dashboard');
   const navigate = useNavigate();
+  const location = useLocation();
 
+  useEffect(() => {
+    // Obtener la primera parte del path después de la barra
+    const currentPath = location.pathname.split('/')[1];
+
+    // Buscar el elemento del menú que coincide con el path actual
+    const matchedItem = menuItems.find((item) => item.path.includes(`/${currentPath}`));
+
+    if (matchedItem) {
+      setActiveItem(matchedItem.label);
+    }
+  }, [location.pathname]); // Ejecutar cada vez que el path cambie
   return (
     <aside
       className="bg-gray-700 text-white flex flex-col items-center"
-      style={{ width: '200px', minWidth: '200px' }}
+      style={{ width: '210px', minWidth: '210px' }}
     >
       {/* Logo */}
       <div
@@ -56,17 +66,17 @@ const Sidebar = () => {
       {menuItems.map((item, index) => (
         <React.Fragment key={item.label}>
           <div
-            className={`w-full text-center cursor-pointer flex items-center px-4 gap-2 ${
+            className={`w-full text-center cursor-pointer flex items-center px-3 gap-2 ${
               item.label === activeItem ? 'bg-orange-500 pointer-events-none' : 'hover:bg-gray-600'
             }`}
-            style={{ height: '60px', lineHeight: '70px' }}
+            style={{ height: '50px', maxHeight: '50px', minHeight: '50px', lineHeight: '70px' }}
             onClick={() => {
               setActiveItem(item.label);
               navigate(item.path);
             }}
           >
             <div className="text-xl">{item.icon}</div>
-            <span>{item.label}</span>
+            <Typo type="body2">{item.label}</Typo>
           </div>
           {index < menuItems.length && <div className="w-full h-[1px] bg-gray-500"></div>}
         </React.Fragment>
@@ -74,8 +84,8 @@ const Sidebar = () => {
 
       <div className="h-full"></div>
       <div
-        className="w-full text-center cursor-pointer hover:bg-gray-600 flex items-center justify-center border-t border-t-gray-500"
-        style={{ height: '60px', lineHeight: '70px' }}
+        className="w-full text-center cursor-pointer hover:bg-gray-600 flex items-center justify-center border-t border-t-gray-100"
+        style={{ height: '60px', lineHeight: '70px', color: 'red' }}
       >
         Cerrar sesión
       </div>

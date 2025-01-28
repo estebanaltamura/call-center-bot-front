@@ -8,11 +8,6 @@ import UTILS from 'utils';
 import { SERVICES } from '..';
 
 export const createKnowledge = async (title: string) => {
-  if (!title.trim()) {
-    UTILS.POPUPS.simplePopUp('Por favor, ingresa un nombre para el contexto de conocimiento.');
-    return;
-  }
-
   const payload = {
     title,
     features: [],

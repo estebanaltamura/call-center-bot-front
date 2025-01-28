@@ -2,10 +2,9 @@
 
 import { useLoadingContext } from 'contexts/LoadingProvider';
 import Loader from 'components/general/Loader';
-import BusinessView from 'views/systemPrompt/businessView/BusinessView';
 import GeneralHatView from 'views/systemPrompt/generalHatView/GeneralHatView';
 
-const GeneralHatPage = () => {
+const HatPage = () => {
   // Contexts
   const { isLoading } = useLoadingContext();
 
@@ -23,4 +22,4 @@ const GeneralHatPage = () => {
   );
 };
 
-export default GeneralHatPage;
+export default HatPage;

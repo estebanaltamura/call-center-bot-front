@@ -8,6 +8,7 @@ export enum Entities {
   'assistant' = 'assistant',
   'rules' = 'rules',
   'knowledge' = 'knowledge',
+  'hats' = 'hats',
 }
 
 export type EntityTypesMapReturnedValues = {
@@ -17,6 +18,7 @@ export type EntityTypesMapReturnedValues = {
   [Entities.assistant]: IAssistantEntity;
   [Entities.rules]: IRulesEntity;
   [Entities.knowledge]: IKnowledgeEntity;
+  [Entities.hats]: IHatEntity;
 };
 
 export type EntityTypesMapPayloadValues = {
@@ -26,6 +28,7 @@ export type EntityTypesMapPayloadValues = {
   [Entities.assistant]: IAssistant;
   [Entities.rules]: IRules;
   [Entities.knowledge]: IKnowledge;
+  [Entities.hats]: IHat;
 };
 
 export interface ISystemPrompt {
@@ -59,6 +62,14 @@ export interface IKnowledge {
   title: string;
   features: IOptionTextItem[];
 }
+export interface IHat {
+  title: string;
+  description: string;
+  knowledgeId: string;
+  assistantId: string;
+  businessId: string;
+  ruleId: string;
+}
 
 interface IEntity {
   id: string;
@@ -80,6 +91,8 @@ export interface IBusinessEntity extends IBusiness, IEntity {}
 export interface IAssistantEntity extends IAssistant, IEntity {}
 
 export interface IRulesEntity extends IRules, IEntity {}
+
+export interface IHatEntity extends IHat, IEntity {}
 
 export enum StateTypes {
   'active' = 'active',
