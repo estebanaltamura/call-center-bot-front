@@ -22,9 +22,6 @@ interface RulesContextType {
   mode: 'main' | 'edit';
   setMode: React.Dispatch<React.SetStateAction<'main' | 'edit'>>;
 
-  currentItem: IRulesEntity | null;
-  setCurrentItem: React.Dispatch<React.SetStateAction<IRulesEntity | null>>;
-
   allItemList: IRulesEntity[];
   setAllItemList: React.Dispatch<React.SetStateAction<IRulesEntity[]>>;
 
@@ -54,7 +51,6 @@ export const RulesProvider = ({ children }: { children: React.ReactNode }) => {
 
   // States
   const [mode, setMode] = useState<'main' | 'edit'>('main');
-  const [currentItem, setCurrentItem] = useState<IRulesEntity | null>(null);
   const [allItemList, setAllItemList] = useState<IRulesEntity[]>([]);
   const [itemToEdit, setItemToEdit] = useState<IRulesEntity | null>(null);
   const [tempBullets, setTempBullets] = useState<IOptionTextItem[]>([]);
@@ -105,15 +101,6 @@ export const RulesProvider = ({ children }: { children: React.ReactNode }) => {
     setItemToEdit(null);
   };
 
-  // Cuando cargo todos los system prompts y cargo el string del título del system prompt en uso, se setea el estado que contiene todos los datos del prompt en uso
-  useEffect(() => {
-    if (allItemList && settings?.currentRulesName) {
-      const currentRulesData = allItemList.filter((item) => item.title === settings?.currentRulesName);
-
-      setCurrentItem(currentRulesData[0]);
-    }
-  }, [settings?.currentRulesName, allItemList]);
-
   // Se cargan todos los systemPropmpts
   useEffect(() => {
     const colRef = collection(db, Entities.rules);
@@ -138,8 +125,6 @@ export const RulesProvider = ({ children }: { children: React.ReactNode }) => {
       value={{
         mode,
         setMode,
-        currentItem,
-        setCurrentItem,
         allItemList,
         setAllItemList,
         itemToEdit,

@@ -98,14 +98,14 @@ function App() {
                   }
                 />
 
-                {/* <Route
+                <Route
                   path="/hats/viewer"
                   element={
                     // <AuthGuard>
                     <HatViewerPage />
                     // </AuthGuard>
                   }
-                /> */}
+                />
 
                 <Route path="/" element={<Navigate to="/dashboard" />} />
                 <Route path="*" element={<Navigate to="/dashboard" />} />

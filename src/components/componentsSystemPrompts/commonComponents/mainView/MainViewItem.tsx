@@ -23,7 +23,7 @@ const MainViewItem = ({
   promptComponentType: PromptComponentsEnum;
 }) => {
   // Contexts
-  const { handleModifyDoc, currentItem } = useDataContext(promptComponentType);
+  const { handleModifyDoc } = useDataContext(promptComponentType);
 
   // States
   const [isActive, setIsActive] = useState(false);
@@ -54,10 +54,6 @@ const MainViewItem = ({
       SERVICES.CMS.reactivateSoftDeleted(Entities.business, docItem.id),
     );
   };
-
-  useEffect(() => {
-    setIsActive(currentItem?.title === docItem.title);
-  }, [currentItem?.title, docItem.title]);
 
   return (
     <li

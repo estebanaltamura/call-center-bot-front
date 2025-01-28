@@ -22,9 +22,6 @@ interface AssistantContextType {
   mode: 'main' | 'edit';
   setMode: React.Dispatch<React.SetStateAction<'main' | 'edit'>>;
 
-  currentItem: IAssistantEntity | null;
-  setCurrentItem: React.Dispatch<React.SetStateAction<IAssistantEntity | null>>;
-
   allItemList: IAssistantEntity[];
   setAllItemList: React.Dispatch<React.SetStateAction<IAssistantEntity[]>>;
 
@@ -54,7 +51,6 @@ export const AssistantProvider = ({ children }: { children: React.ReactNode }) =
 
   // States
   const [mode, setMode] = useState<'main' | 'edit'>('main');
-  const [currentItem, setCurrentItem] = useState<IAssistantEntity | null>(null);
   const [allItemList, setAllItemList] = useState<IAssistantEntity[]>([]);
   const [itemToEdit, setItemToEdit] = useState<IAssistantEntity | null>(null);
   const [tempBullets, setTempBullets] = useState<IOptionTextItem[]>([]);
@@ -106,17 +102,6 @@ export const AssistantProvider = ({ children }: { children: React.ReactNode }) =
     setItemToEdit(null);
   };
 
-  // Cuando cargo todos los system prompts y cargo el string del título del system prompt en uso, se setea el estado que contiene todos los datos del prompt en uso
-  useEffect(() => {
-    if (allItemList && settings?.currentAssistantName) {
-      const currentAssistantData = allItemList.filter(
-        (item) => item.title === settings?.currentAssistantName,
-      );
-
-      setCurrentItem(currentAssistantData[0]);
-    }
-  }, [settings?.currentAssistantName, allItemList]);
-
   // Se cargan todos los systemPropmpts
   useEffect(() => {
     const colRef = collection(db, Entities.assistant);
@@ -145,8 +130,6 @@ export const AssistantProvider = ({ children }: { children: React.ReactNode }) =
       value={{
         mode,
         setMode,
-        currentItem,
-        setCurrentItem,
         allItemList,
         setAllItemList,
         itemToEdit,

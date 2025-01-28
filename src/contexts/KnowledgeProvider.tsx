@@ -22,9 +22,6 @@ interface KnowledgeContextType {
   mode: 'main' | 'edit';
   setMode: React.Dispatch<React.SetStateAction<'main' | 'edit'>>;
 
-  currentItem: IKnowledgeEntity | null;
-  setCurrentItem: React.Dispatch<React.SetStateAction<IKnowledgeEntity | null>>;
-
   allItemList: IKnowledgeEntity[];
   setAllItemList: React.Dispatch<React.SetStateAction<IKnowledgeEntity[]>>;
 
@@ -54,7 +51,6 @@ export const KnowledgeProvider = ({ children }: { children: React.ReactNode }) =
 
   // States
   const [mode, setMode] = useState<'main' | 'edit'>('main');
-  const [currentItem, setCurrentItem] = useState<IKnowledgeEntity | null>(null);
   const [allItemList, setAllItemList] = useState<IKnowledgeEntity[]>([]);
   const [itemToEdit, setItemToEdit] = useState<IKnowledgeEntity | null>(null);
   const [tempBullets, setTempBullets] = useState<IOptionTextItem[]>([]);
@@ -105,17 +101,6 @@ export const KnowledgeProvider = ({ children }: { children: React.ReactNode }) =
     setItemToEdit(null);
   };
 
-  // Cuando cargo todos los system prompts y cargo el string del título del system prompt en uso, se setea el estado que contiene todos los datos del prompt en uso
-  useEffect(() => {
-    if (allItemList && settings?.currentKnowledgeName) {
-      const currentKnowledgeData = allItemList.filter(
-        (item) => item.title === settings?.currentKnowledgeName,
-      );
-
-      setCurrentItem(currentKnowledgeData[0]);
-    }
-  }, [settings?.currentKnowledgeName, allItemList]);
-
   // Se cargan todos los systemPropmpts
   useEffect(() => {
     const colRef = collection(db, Entities.knowledge);
@@ -144,8 +129,6 @@ export const KnowledgeProvider = ({ children }: { children: React.ReactNode }) =
       value={{
         mode,
         setMode,
-        currentItem,
-        setCurrentItem,
         allItemList,
         setAllItemList,
         itemToEdit,

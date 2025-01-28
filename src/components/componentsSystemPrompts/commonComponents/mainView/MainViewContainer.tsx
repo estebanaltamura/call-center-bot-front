@@ -24,7 +24,7 @@ const MainViewContainer = ({ promptComponentType }: { promptComponentType: Promp
   const [includeInactive, setIncludeInactive] = useState<boolean>(false);
 
   // ** Context
-  const { allItemList, currentItem, setMode, handleModifyDoc } = useDataContext(promptComponentType);
+  const { allItemList, setMode, handleModifyDoc } = useDataContext(promptComponentType);
   const { setIsLoading } = useLoadingContext();
 
   let createFunction: (title: string) => Promise<any>;
@@ -44,26 +44,6 @@ const MainViewContainer = ({ promptComponentType }: { promptComponentType: Promp
       break;
     default:
       createFunction = SERVICES.ASSISTANT.create;
-      break;
-  }
-
-  let entity: Entities;
-
-  switch (promptComponentType) {
-    case PromptComponentsEnum.ASSISTANT:
-      entity = Entities.assistant;
-      break;
-    case PromptComponentsEnum.KNOWLEDGE:
-      entity = Entities.knowledge;
-      break;
-    case PromptComponentsEnum.RULE:
-      entity = Entities.rules;
-      break;
-    case PromptComponentsEnum.BUSINESS:
-      entity = Entities.business;
-      break;
-    default:
-      entity = Entities.assistant;
       break;
   }
 
@@ -137,27 +117,39 @@ const MainViewContainer = ({ promptComponentType }: { promptComponentType: Promp
       adaptedText4 = 'contextos de conocimiento';
       break;
     case PromptComponentsEnum.RULE:
-      adaptedText4 = 'regla';
+      adaptedText4 = 'reglas';
       break;
     case PromptComponentsEnum.BUSINESS:
-      adaptedText4 = 'negocio';
+      adaptedText4 = 'negocios';
       break;
     default:
-      adaptedText4 = 'asistente';
+      adaptedText4 = 'asistentes';
+      break;
+  }
+
+  let adaptedText5: string;
+
+  switch (promptComponentType) {
+    case PromptComponentsEnum.ASSISTANT:
+      adaptedText5 = 'asistente';
+      break;
+    case PromptComponentsEnum.KNOWLEDGE:
+      adaptedText5 = 'contextos de conocimiento';
+      break;
+    case PromptComponentsEnum.RULE:
+      adaptedText5 = 'regla';
+      break;
+    case PromptComponentsEnum.BUSINESS:
+      adaptedText5 = 'negocio';
+      break;
+    default:
+      adaptedText5 = 'asistente';
       break;
   }
 
   const activesSortedWithActiveFirst = allItemList
     .filter((item) => item.state === StateTypes.active)
-    .sort((a, b) => a.title.localeCompare(b.title))
-    .reduce((acc: any, docItem) => {
-      if (docItem.title === currentItem?.title) {
-        acc.unshift(docItem);
-      } else {
-        acc.push(docItem);
-      }
-      return acc;
-    }, []);
+    .sort((a, b) => a.title.localeCompare(b.title));
 
   const inactivesSorted = allItemList
     .filter((item) => item.state === StateTypes.inactive)
@@ -222,7 +214,7 @@ const MainViewContainer = ({ promptComponentType }: { promptComponentType: Promp
           onChange={(e) => setNewTitle(e.target.value)}
         />
         <button onClick={createBusinessHandler} className="button button1">
-          Crear negocio
+          Crear {adaptedText5}
         </button>
         <div className="flex-grow"></div>
         {allItemList.filter((item) => item.state === StateTypes.inactive).length > 0 && (

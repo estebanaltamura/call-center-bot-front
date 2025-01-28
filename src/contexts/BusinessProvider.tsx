@@ -22,9 +22,6 @@ interface BusinessContextType {
   mode: 'main' | 'edit';
   setMode: React.Dispatch<React.SetStateAction<'main' | 'edit'>>;
 
-  currentItem: IBusinessEntity | null;
-  setCurrentItem: React.Dispatch<React.SetStateAction<IBusinessEntity | null>>;
-
   allItemList: IBusinessEntity[];
   setAllItemList: React.Dispatch<React.SetStateAction<IBusinessEntity[]>>;
 
@@ -57,7 +54,6 @@ export const BusinessProvider = ({ children }: { children: React.ReactNode }) =>
 
   // States
   const [mode, setMode] = useState<'main' | 'edit'>('main');
-  const [currentItem, setCurrentItem] = useState<IBusinessEntity | null>(null);
   const [allItemList, setAllItemList] = useState<IBusinessEntity[]>([]);
   const [itemToEdit, setItemToEdit] = useState<IBusinessEntity | null>(null);
   const [tempBullets, setTempBullets] = useState<IOptionTextItem[]>([]);
@@ -113,15 +109,6 @@ export const BusinessProvider = ({ children }: { children: React.ReactNode }) =>
     setItemToEdit(null);
   };
 
-  // Cuando cargo todos los system prompts y cargo el string del título del system prompt en uso, se setea el estado que contiene todos los datos del prompt en uso
-  useEffect(() => {
-    if (allItemList && settings?.currentBussinesName) {
-      const currentBussinesData = allItemList.filter((item) => item.title === settings?.currentBussinesName);
-
-      setCurrentItem(currentBussinesData[0]);
-    }
-  }, [settings?.currentBussinesName, allItemList]);
-
   // Se cargan todos los systemPropmpts
   useEffect(() => {
     const colRef = collection(db, Entities.business);
@@ -141,17 +128,11 @@ export const BusinessProvider = ({ children }: { children: React.ReactNode }) =>
     return () => unsubscribe();
   }, []);
 
-  useEffect(() => {
-    console.log('tempBusinessData', tempBullets);
-  }, [tempBullets]);
-
   return (
     <CompanyContext.Provider
       value={{
         mode,
         setMode,
-        currentItem,
-        setCurrentItem,
         allItemList,
         setAllItemList,
         itemToEdit,
