@@ -26,9 +26,9 @@ export const dynamicCreate = async <T extends keyof EntityTypesMapPayloadValues>
   const payload: EntityTypesMapReturnedValues[T] = {
     id: itemId,
     ...item,
+    softState: StateTypes.active,
     state: StateTypes.active,
     createdAt: new Date(),
-    updatedAt: new Date(),
   } as EntityTypesMapReturnedValues[T];
 
   try {

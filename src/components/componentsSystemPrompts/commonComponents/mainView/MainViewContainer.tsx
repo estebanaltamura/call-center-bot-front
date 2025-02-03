@@ -8,7 +8,7 @@ import { useLoadingContext } from 'contexts/LoadingProvider';
 import { SERVICES } from 'services/index';
 
 // ** Types
-import { Entities, IBusinessEntity, StateTypes } from 'types/dynamicSevicesTypes';
+import { StateTypes } from 'types/dynamicSevicesTypes';
 
 // ** Components
 import MainViewItem from './MainViewItem';
@@ -147,17 +147,15 @@ const MainViewContainer = ({ promptComponentType }: { promptComponentType: Promp
       break;
   }
 
-  const activesSortedWithActiveFirst = allItemList
-    .filter((item) => item.state === StateTypes.active)
+  const activesSorted = allItemList
+    .filter((item) => item.state === StateTypes.active && item.softState === StateTypes.active)
     .sort((a, b) => a.title.localeCompare(b.title));
 
   const inactivesSorted = allItemList
-    .filter((item) => item.state === StateTypes.inactive)
+    .filter((item) => item.state === StateTypes.active && item.softState === StateTypes.inactive)
     .sort((a, b) => a.title.localeCompare(b.title));
 
-  const orderedList = !includeInactive
-    ? activesSortedWithActiveFirst
-    : activesSortedWithActiveFirst.concat(inactivesSorted);
+  const orderedList = !includeInactive ? activesSorted : activesSorted.concat(inactivesSorted);
 
   const renderedItems = () => {
     return (
@@ -177,7 +175,6 @@ const MainViewContainer = ({ promptComponentType }: { promptComponentType: Promp
 
     const isAInvalidTitle = allItemList.filter((item) => item.title === newTitle).length > 0;
 
-    console.log(isAInvalidTitle);
     if (isAInvalidTitle) {
       await UTILS.POPUPS.simplePopUp('El título ingresado ya fue usado en un item vigente o eliminado');
 
@@ -198,7 +195,7 @@ const MainViewContainer = ({ promptComponentType }: { promptComponentType: Promp
   };
 
   useEffect(() => {
-    allItemList.filter((item) => item.state === StateTypes.inactive).length === 0 &&
+    allItemList.filter((item) => item.softState === StateTypes.inactive).length === 0 &&
       setIncludeInactive(false);
   }, [allItemList]);
 
@@ -217,7 +214,9 @@ const MainViewContainer = ({ promptComponentType }: { promptComponentType: Promp
           Crear {adaptedText5}
         </button>
         <div className="flex-grow"></div>
-        {allItemList.filter((item) => item.state === StateTypes.inactive).length > 0 && (
+        {allItemList.filter(
+          (item) => item.state === StateTypes.active && item.softState === StateTypes.inactive,
+        ).length > 0 && (
           <div className="flex gap-2 items-center justify-center mr-4">
             <input
               type="checkbox"
@@ -230,9 +229,9 @@ const MainViewContainer = ({ promptComponentType }: { promptComponentType: Promp
           </div>
         )}
       </div>
-      {allItemList.filter((item) => item.state === StateTypes.active).length === 0 && !includeInactive && (
-        <p className="text-gray-500 ml-[10px]">No hay {adaptedText4} creados</p>
-      )}
+      {allItemList.filter((item) => item.state === StateTypes.active && item.softState === StateTypes.active)
+        .length === 0 &&
+        !includeInactive && <p className="text-gray-500 ml-[10px]">No hay {adaptedText4} creados</p>}
       {renderedItems()}
     </div>
   );

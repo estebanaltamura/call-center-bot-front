@@ -1,5 +1,7 @@
 // React
 import { useState } from 'react';
+
+// ** React router dom
 import { useNavigate } from 'react-router-dom';
 
 // ** Services
@@ -21,34 +23,25 @@ const MainViewItem = ({
   setMode: React.Dispatch<React.SetStateAction<'main' | 'edit'>>;
 }) => {
   const navigate = useNavigate();
-  // Contexts
 
   // States
   const [isActive, setIsActive] = useState(false);
 
   const softDeleteBusinessHandler = async () => {
-    if (isActive) {
-      await UTILS.POPUPS.simplePopUp(
-        'No puede eliminarse un negocio activo. Asignar otro como activo primero',
-      );
-
-      return;
-    }
-
-    await UTILS.POPUPS.twoOptionsPopUp('Confirma que quieres eliminar este negocio', () =>
+    await UTILS.POPUPS.twoOptionsPopUp('Confirma que quieres eliminar este sombrero', () =>
       SERVICES.CMS.softDelete(Entities.hats, item.id),
     );
   };
 
   const hardDeleteBusinessHandler = async () => {
     await UTILS.POPUPS.twoOptionsPopUp(
-      'Confirma que quieres eliminar definitivamente este negocio. No se podrá recuperar',
+      'Confirma que quieres eliminar definitivamente este sombrero. No se podrá recuperar',
       () => SERVICES.CMS.delete(Entities.hats, item.id),
     );
   };
 
   const reactivateBusinessHandler = async () => {
-    await UTILS.POPUPS.twoOptionsPopUp('Confirma que quieres reactivar este negocio', () =>
+    await UTILS.POPUPS.twoOptionsPopUp('Confirma que quieres reactivar este sombrero', () =>
       SERVICES.CMS.reactivateSoftDeleted(Entities.hats, item.id),
     );
   };
@@ -65,7 +58,7 @@ const MainViewItem = ({
       style={{
         backgroundColor: isActive
           ? 'rgba(143, 0, 255, 0.2)'
-          : item.state === StateTypes.active
+          : item.softState === StateTypes.active
           ? 'white'
           : 'rgba(156, 163, 175, 0.2)',
         border: `1px solid ${isActive ? 'rgba(143, 0, 255, 1)' : 'rgba(156, 163, 175, 1)'}`,
@@ -81,7 +74,7 @@ const MainViewItem = ({
       </p>
 
       <div className="flex space-x-2">
-        {item.state === StateTypes.active ? (
+        {item.softState === StateTypes.active ? (
           <>
             <button onClick={() => navigate(`/hats/viewer?id=${item.id}`)} className="button button1 blue">
               Ver
@@ -106,7 +99,7 @@ const MainViewItem = ({
             R
           </button>
         )}
-        {item.state === StateTypes.inactive && (
+        {item.softState === StateTypes.inactive && (
           <button
             onClick={hardDeleteBusinessHandler}
             className="red text-white px-1 py-1 rounded flex items-center w-[40px] h-[40px] justify-center"

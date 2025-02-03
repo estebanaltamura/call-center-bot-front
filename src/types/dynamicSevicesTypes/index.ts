@@ -9,6 +9,14 @@ export enum Entities {
   'rules' = 'rules',
   'knowledge' = 'knowledge',
   'hats' = 'hats',
+  'stats_newConversations' = 'stats_newConversations',
+  'stats_returnedConversations' = 'stats_returnedConversations',
+  'stats_leads' = 'stats_leads',
+  'stats_sales' = 'stats_sales',
+  'stats_whatsappApiCost' = 'stats_whatsappApiCost',
+  'stats_iaCost' = 'stats_iaCost',
+  'stats_facebookAdsCost' = 'stats_facebookAdsCost',
+  'stats_googleAdsCost' = 'stats_googleAdsCost',
 }
 
 export type EntityTypesMapReturnedValues = {
@@ -19,6 +27,14 @@ export type EntityTypesMapReturnedValues = {
   [Entities.rules]: IRulesEntity;
   [Entities.knowledge]: IKnowledgeEntity;
   [Entities.hats]: IHatEntity;
+  [Entities.stats_newConversations]: IStats_newConversationsEntity;
+  [Entities.stats_returnedConversations]: IStats_returnedConversationsEntity;
+  [Entities.stats_leads]: IStats_leadsEntity;
+  [Entities.stats_sales]: IStats_salesEntity;
+  [Entities.stats_whatsappApiCost]: IStats_whatsappApiCostEntity;
+  [Entities.stats_iaCost]: IStats_iaCostEntity;
+  [Entities.stats_facebookAdsCost]: IStats_facebookAdsCostEntity;
+  [Entities.stats_googleAdsCost]: IStats_googleAdsCostEntity;
 };
 
 export type EntityTypesMapPayloadValues = {
@@ -29,6 +45,14 @@ export type EntityTypesMapPayloadValues = {
   [Entities.rules]: IRules;
   [Entities.knowledge]: IKnowledge;
   [Entities.hats]: IHat;
+  [Entities.stats_newConversations]: IStats_newConversations;
+  [Entities.stats_returnedConversations]: IStats_returnedConversations;
+  [Entities.stats_leads]: IStats_leads;
+  [Entities.stats_sales]: IStats_sales;
+  [Entities.stats_whatsappApiCost]: IStats_whatsappApiCost;
+  [Entities.stats_iaCost]: IStats_iaCost;
+  [Entities.stats_facebookAdsCost]: IStats_facebookAdsCost;
+  [Entities.stats_googleAdsCost]: IStats_googleAdsCost;
 };
 
 export interface ISystemPrompt {
@@ -69,16 +93,59 @@ export interface IHat {
   assistantId: string;
   businessId: string;
   ruleId: string;
+  prompt: string;
+}
+
+export interface IStats_newConversations {
+  data: number;
+}
+export interface IStats_returnedConversations {
+  data: number;
+}
+export interface IStats_leads {
+  data: number;
+}
+export interface IStats_sales {
+  data: number;
+}
+export interface IStats_whatsappApiCost {
+  data: number;
+}
+export interface IStats_iaCost {
+  data: number;
+}
+export interface IStats_facebookAdsCost {
+  data: number;
+}
+export interface IStats_googleAdsCost {
+  data: number;
 }
 
 interface IEntity {
   id: string;
+  softState: StateTypes;
   state: StateTypes;
   createdAt: Date;
   updatedAt: Date;
   softDeletedAt: Date;
   reactivatedAt: Date;
 }
+
+export interface IStats_newConversationsEntity extends IStats_newConversations, IEntity {}
+
+export interface IStats_returnedConversationsEntity extends IStats_returnedConversations, IEntity {}
+
+export interface IStats_leadsEntity extends IStats_leads, IEntity {}
+
+export interface IStats_salesEntity extends IStats_sales, IEntity {}
+
+export interface IStats_whatsappApiCostEntity extends IStats_whatsappApiCost, IEntity {}
+
+export interface IStats_iaCostEntity extends IStats_iaCost, IEntity {}
+
+export interface IStats_facebookAdsCostEntity extends IStats_facebookAdsCost, IEntity {}
+
+export interface IStats_googleAdsCostEntity extends IStats_googleAdsCost, IEntity {}
 
 export interface IKnowledgeEntity extends IKnowledge, IEntity {}
 

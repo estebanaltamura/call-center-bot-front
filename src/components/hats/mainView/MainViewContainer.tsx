@@ -33,17 +33,15 @@ const MainViewContainer = ({
   // ** Context
   const { setIsLoading } = useLoadingContext();
 
-  const activesSortedWithActiveFirst = hatList
-    .filter((item) => item.state === StateTypes.active)
+  const activesSorted = hatList
+    .filter((item) => item.state === StateTypes.active && item.softState === StateTypes.active)
     .sort((a, b) => a.title.localeCompare(b.title));
 
   const inactivesSorted = hatList
-    .filter((item) => item.state === StateTypes.inactive)
+    .filter((item) => item.state === StateTypes.active && item.softState === StateTypes.inactive)
     .sort((a, b) => a.title.localeCompare(b.title));
 
-  const orderedList = !includeInactive
-    ? activesSortedWithActiveFirst
-    : activesSortedWithActiveFirst.concat(inactivesSorted);
+  const orderedList = !includeInactive ? activesSorted : activesSorted.concat(inactivesSorted);
 
   const renderedItems = () => {
     return (
@@ -83,7 +81,8 @@ const MainViewContainer = ({
   };
 
   useEffect(() => {
-    hatList.filter((item) => item.state === StateTypes.inactive).length === 0 && setIncludeInactive(false);
+    hatList.filter((item) => item.softState === StateTypes.inactive).length === 0 &&
+      setIncludeInactive(false);
   }, [hatList]);
 
   return (
@@ -101,7 +100,8 @@ const MainViewContainer = ({
           Crear sombrero
         </button>
         <div className="flex-grow"></div>
-        {hatList.filter((item) => item.state === StateTypes.inactive).length > 0 && (
+        {hatList.filter((item) => item.state === StateTypes.active && item.softState === StateTypes.inactive)
+          .length > 0 && (
           <div className="flex gap-2 items-center justify-center mr-4">
             <input
               type="checkbox"
@@ -114,9 +114,9 @@ const MainViewContainer = ({
           </div>
         )}
       </div>
-      {hatList.filter((item) => item.state === StateTypes.active).length === 0 && !includeInactive && (
-        <p className="text-gray-500 ml-[10px]">No hay sombreros creados</p>
-      )}
+      {hatList.filter((item) => item.state === StateTypes.active && item.softState === StateTypes.active)
+        .length === 0 &&
+        !includeInactive && <p className="text-gray-500 ml-[10px]">No hay sombreros creados</p>}
       {renderedItems()}
     </div>
   );

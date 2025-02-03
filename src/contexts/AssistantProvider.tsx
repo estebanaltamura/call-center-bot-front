@@ -17,6 +17,7 @@ import { IOptionTextItem } from 'types';
 
 // ** Utils
 import UTILS from 'utils';
+import { IFilter } from 'services/dynamicServices/dynamicGet';
 
 interface AssistantContextType {
   mode: 'main' | 'edit';
@@ -58,7 +59,9 @@ export const AssistantProvider = ({ children }: { children: React.ReactNode }) =
   const handleModifyDoc = async (docId: string) => {
     console.log('handleModifyDoc', docId);
     try {
-      const res = await SERVICES.CMS.get(Entities.assistant, 'id', '==', docId);
+      const filters: IFilter[] = [{ field: 'id', operator: '==', value: docId }];
+
+      const res = await SERVICES.CMS.get(Entities.assistant, filters);
 
       if (!res) return;
 

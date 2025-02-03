@@ -17,6 +17,7 @@ import { IOptionTextItem } from 'types';
 
 // ** Utils
 import UTILS from 'utils';
+import { IFilter } from 'services/dynamicServices/dynamicGet';
 
 interface KnowledgeContextType {
   mode: 'main' | 'edit';
@@ -57,7 +58,9 @@ export const KnowledgeProvider = ({ children }: { children: React.ReactNode }) =
 
   const handleModifyDoc = async (docId: string) => {
     try {
-      const res = await SERVICES.CMS.get(Entities.knowledge, 'id', '==', docId);
+      const filters: IFilter[] = [{ field: 'id', operator: '==', value: docId }];
+
+      const res = await SERVICES.CMS.get(Entities.knowledge, filters);
 
       if (!res) return;
 

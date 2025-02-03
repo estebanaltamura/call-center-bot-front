@@ -32,7 +32,7 @@ const AddServiceSection = ({ isEditing }: { isEditing: boolean }) => {
 
   // ** Hooks
   const { addService } = useServiceFunctions();
-  useBulletFunctions(PromptComponentsEnum.BUSINESS); // Por si necesitás otras funciones
+  useBulletFunctions(PromptComponentsEnum.BUSINESS);
 
   // Agrega un nuevo bullet (item) a la lista local
   const addBulletLocal = () => {
@@ -52,30 +52,26 @@ const AddServiceSection = ({ isEditing }: { isEditing: boolean }) => {
     lastValidOption.current = newValue;
   };
 
-  // Calcula las opciones usadas combinando las de todos los services existentes y las del local
+  // Bloquea las opciones dentro del mismo servicio y selecciona la siguiente opción disponible
   useEffect(() => {
-    const usedFromServices = tempBusinessServices.flatMap((service: IService) =>
-      service.items.map((item) => item.option),
-    );
     const usedLocal = items.map((item) => item.option);
-    const allUsed = [...usedFromServices, ...usedLocal];
 
     let nextAvailable = '';
     outer: for (const section of bulletOptions) {
       for (const opt of section.options) {
-        if (!allUsed.includes(opt)) {
+        if (!usedLocal.includes(opt)) {
           nextAvailable = opt;
           break outer;
         }
       }
     }
 
-    setUsedOptions(allUsed);
+    setUsedOptions(usedLocal);
     setBulletOption(nextAvailable || '');
     lastValidOption.current = nextAvailable || '';
-  }, [tempBusinessServices, items]);
+  }, [items]);
 
-  // Cuando terminamos de cargar todos los datos, agregamos un nuevo service
+  // Cuando terminamos de cargar todos los datos, agregamos un nuevo service y reseteamos
   const handleAddService = () => {
     if (!title.trim() || !description.trim() || items.length === 0) return;
     addService(title.trim(), description.trim(), items);
@@ -152,7 +148,6 @@ const AddServiceSection = ({ isEditing }: { isEditing: boolean }) => {
         </button>
       </div>
 
-      {/* Listado de bullets que se van agregando antes de crear el servicio */}
       <div className="space-y-2">
         {items.map((item, index) => (
           <div key={index} className="border p-2 rounded bg-white">

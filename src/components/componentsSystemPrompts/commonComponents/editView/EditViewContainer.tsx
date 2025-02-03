@@ -21,7 +21,6 @@ import { PromptComponentsEnum } from 'types';
 import UTILS from 'utils';
 
 const EditViewContainer = ({ promptComponentType }: { promptComponentType: PromptComponentsEnum }) => {
-  console.log(promptComponentType);
   // Contexts
   const { itemToEdit, tempBullets, handleSave, handleCancel } = useDataContext(promptComponentType);
 
@@ -137,7 +136,9 @@ const EditViewContainer = ({ promptComponentType }: { promptComponentType: Promp
         promptComponentType={promptComponentType}
         isEditing={isBulletEditing || isServiceEditing}
       />
-      <AddServiceSection isEditing={isBulletEditing || isServiceEditing} />
+      {promptComponentType === PromptComponentsEnum.BUSINESS && (
+        <AddServiceSection isEditing={isBulletEditing || isServiceEditing} />
+      )}
 
       <BulletList
         itemEditingIndex={itemEditingIndex}
@@ -148,13 +149,15 @@ const EditViewContainer = ({ promptComponentType }: { promptComponentType: Promp
         disabled={isServiceEditing}
       />
 
-      <ServicesList
-        itemEditingIndex={editingServiceIndex}
-        setitemEditingIndex={setEditingServiceIndex}
-        isEditing={isServiceEditing}
-        setIsEditing={setIsServiceEditing}
-        disabled={isBulletEditing}
-      />
+      {promptComponentType === PromptComponentsEnum.BUSINESS && (
+        <ServicesList
+          itemEditingIndex={editingServiceIndex}
+          setitemEditingIndex={setEditingServiceIndex}
+          isEditing={isServiceEditing}
+          setIsEditing={setIsServiceEditing}
+          disabled={isBulletEditing}
+        />
+      )}
 
       {/* Botones de cancelar y guardar */}
       <div className="flex justify-end gap-4 mr-[50px]">

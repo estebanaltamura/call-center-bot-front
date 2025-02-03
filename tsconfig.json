@@ -20,6 +20,10 @@
       "services/*": ["services/*"]
     }
   },
-  "include": ["src"]
+  "include": [
+    "src",
+    "src/firestore-functions",
+    "scheduleHatsTracker.ts",
+    "functions/src/scheduleHatsTracker.ts"
+  ]
 }
-

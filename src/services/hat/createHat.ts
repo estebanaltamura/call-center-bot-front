@@ -15,6 +15,7 @@ export const createHat = async (title: string) => {
     assistantId: '',
     businessId: '',
     ruleId: '',
+    prompt: '',
   };
 
   try {

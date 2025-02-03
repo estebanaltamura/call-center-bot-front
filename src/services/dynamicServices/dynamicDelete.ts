@@ -1,8 +1,8 @@
 // ** Firestore Imports
-import { deleteDoc, doc, getDoc } from 'firebase/firestore';
+import { deleteDoc, doc, getDoc, updateDoc } from 'firebase/firestore';
 
 // Type imports
-import { EntityTypesMapReturnedValues } from 'types/dynamicSevicesTypes';
+import { EntityTypesMapReturnedValues, StateTypes } from 'types/dynamicSevicesTypes';
 
 // ** Db Import **
 import { db } from 'firebaseConfig';
@@ -17,10 +17,10 @@ export const dynamicDelete = async <T extends keyof EntityTypesMapReturnedValues
     const item = await getDoc(docReference);
 
     if (!item.exists()) {
-      throw new Error('Product does not exist');
+      throw new Error('Document does not exist');
     }
 
-    await deleteDoc(docReference);
+    await updateDoc(docReference, { state: StateTypes.inactive, deletedAt: new Date().toISOString() });
 
     const itemData = item.data();
 

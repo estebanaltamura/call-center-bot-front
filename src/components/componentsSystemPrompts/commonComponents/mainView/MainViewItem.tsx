@@ -1,18 +1,17 @@
 // React
-import { useEffect, useState } from 'react';
-
-// ** Contexts
-import { useBusinessContext } from 'contexts/BusinessProvider';
+import { useState } from 'react';
 
 // ** Services
 import { SERVICES } from 'services/index';
 
 // ** Types
-import { Entities, IBusinessEntity, StateTypes } from 'types/dynamicSevicesTypes';
+import { Entities, StateTypes } from 'types/dynamicSevicesTypes';
+import { PromptComponentsEnum } from 'types';
 
 // ** Utils
 import UTILS from 'utils';
-import { PromptComponentsEnum } from 'types';
+
+// ** Contexts
 import { useDataContext } from 'contexts/DataContextProvider';
 
 const MainViewItem = ({
@@ -28,30 +27,62 @@ const MainViewItem = ({
   // States
   const [isActive, setIsActive] = useState(false);
 
+  let entity: Entities;
+
+  switch (promptComponentType) {
+    case PromptComponentsEnum.ASSISTANT:
+      entity = Entities.assistant;
+      break;
+    case PromptComponentsEnum.KNOWLEDGE:
+      entity = Entities.knowledge;
+      break;
+    case PromptComponentsEnum.RULE:
+      entity = Entities.rules;
+      break;
+    case PromptComponentsEnum.BUSINESS:
+      entity = Entities.business;
+      break;
+    default:
+      entity = Entities.assistant;
+      break;
+  }
+
+  let adaptedText1: string;
+
+  switch (promptComponentType) {
+    case PromptComponentsEnum.ASSISTANT:
+      adaptedText1 = 'este asistente';
+      break;
+    case PromptComponentsEnum.KNOWLEDGE:
+      adaptedText1 = 'este contexto de conocimiento';
+      break;
+    case PromptComponentsEnum.RULE:
+      adaptedText1 = 'esta regla';
+      break;
+    case PromptComponentsEnum.BUSINESS:
+      adaptedText1 = 'este negocio';
+      break;
+    default:
+      adaptedText1 = 'este asistente';
+      break;
+  }
+
   const softDeleteBusinessHandler = async () => {
-    if (isActive) {
-      await UTILS.POPUPS.simplePopUp(
-        'No puede eliminarse un negocio activo. Asignar otro como activo primero',
-      );
-
-      return;
-    }
-
-    await UTILS.POPUPS.twoOptionsPopUp('Confirma que quieres eliminar este negocio', () =>
-      SERVICES.CMS.softDelete(Entities.business, docItem.id),
+    await UTILS.POPUPS.twoOptionsPopUp(`Confirma que quieres eliminar ${adaptedText1}`, () =>
+      SERVICES.CMS.softDelete(entity, docItem.id),
     );
   };
 
   const hardDeleteBusinessHandler = async () => {
     await UTILS.POPUPS.twoOptionsPopUp(
-      'Confirma que quieres eliminar definitivamente este negocio. No se podrá recuperar',
-      () => SERVICES.CMS.delete(Entities.business, docItem.id),
+      `Confirma que quieres eliminar definitivamente ${adaptedText1}. No se podrá recuperar`,
+      () => SERVICES.CMS.delete(entity, docItem.id),
     );
   };
 
   const reactivateBusinessHandler = async () => {
-    await UTILS.POPUPS.twoOptionsPopUp('Confirma que quieres reactivar este negocio', () =>
-      SERVICES.CMS.reactivateSoftDeleted(Entities.business, docItem.id),
+    await UTILS.POPUPS.twoOptionsPopUp(`Confirma que quieres reactivar ${adaptedText1}`, () =>
+      SERVICES.CMS.reactivateSoftDeleted(entity, docItem.id),
     );
   };
 
@@ -62,7 +93,7 @@ const MainViewItem = ({
       style={{
         backgroundColor: isActive
           ? 'rgba(143, 0, 255, 0.2)'
-          : docItem.state === StateTypes.active
+          : docItem.softState === StateTypes.active
           ? 'white'
           : 'rgba(156, 163, 175, 0.2)',
         border: `1px solid ${isActive ? 'rgba(143, 0, 255, 1)' : 'rgba(156, 163, 175, 1)'}`,
@@ -78,7 +109,7 @@ const MainViewItem = ({
       </p>
 
       <div className="flex space-x-2">
-        {docItem.state === StateTypes.active ? (
+        {docItem.softState === StateTypes.active ? (
           <>
             <button onClick={() => handleModifyDoc(docItem.id as string)} className="button button1 green">
               Editar
@@ -100,7 +131,7 @@ const MainViewItem = ({
             R
           </button>
         )}
-        {docItem.state === StateTypes.inactive && (
+        {docItem.softState === StateTypes.inactive && (
           <button
             onClick={hardDeleteBusinessHandler}
             className="red text-white px-1 py-1 rounded flex items-center w-[40px] h-[40px] justify-center"

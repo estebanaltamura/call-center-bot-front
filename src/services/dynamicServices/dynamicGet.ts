@@ -1,30 +1,32 @@
-// ** Firestore Imports **
+// ** Firestore | Firebase
 import { collection, getDocs, query, where, WhereFilterOp } from 'firebase/firestore';
-
-// ** Db Import
 import { db } from 'firebaseConfig';
 
-// ** Type Imports **
+// ** Types
 import { EntityTypesMapReturnedValues } from 'types/dynamicSevicesTypes';
+
+export interface IFilter {
+  field: string;
+  operator: WhereFilterOp;
+  value: unknown;
+}
 
 export const dynamicGet = async <T extends keyof EntityTypesMapReturnedValues>(
   entity: T,
-  field?: string, // Campo para el filtro
-  operator?: WhereFilterOp, // Operador para el filtro
-  value?: unknown, // Valor para el filtro
+  filters?: IFilter[],
 ): Promise<EntityTypesMapReturnedValues[T][] | undefined> => {
   const productsCollection = collection(db, entity);
 
   try {
     let collectionQuery = query(productsCollection);
 
-    // Aplica el filtro where si se proporcionan los argumentos
-    if (field && operator && value !== undefined) {
-      collectionQuery = query(productsCollection, where(field, operator, value));
+    if (filters && filters.length > 0) {
+      filters.forEach((f) => {
+        collectionQuery = query(collectionQuery, where(f.field, f.operator, f.value));
+      });
     }
 
     const itemRes = await getDocs(collectionQuery);
-
     const itemList = itemRes.docs.map((item) => ({
       id: item.id,
       ...item.data(),

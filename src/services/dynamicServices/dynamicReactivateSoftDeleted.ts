@@ -21,10 +21,10 @@ export const dynamicReactivateSoftDeleted = async <T extends keyof EntityTypesMa
     }
 
     // Perform soft delete by updating the `state` field to `inactive`
-    await updateDoc(docReference, { state: StateTypes.active, reactivatedAt: new Date().toISOString() });
+    await updateDoc(docReference, { softState: StateTypes.active, reactivatedAt: new Date().toISOString() });
 
     // Return the updated item data
-    const itemData = { ...item.data(), state: 'inactive' };
+    const itemData = { ...item.data(), softState: 'inactive' };
 
     return itemData as EntityTypesMapReturnedValues[T];
   } catch (error) {

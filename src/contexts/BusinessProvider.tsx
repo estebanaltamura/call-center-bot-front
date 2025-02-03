@@ -17,6 +17,7 @@ import { IOptionTextItem, IService } from 'types';
 
 // ** Utils
 import UTILS from 'utils';
+import { IFilter } from 'services/dynamicServices/dynamicGet';
 
 interface BusinessContextType {
   mode: 'main' | 'edit';
@@ -61,7 +62,9 @@ export const BusinessProvider = ({ children }: { children: React.ReactNode }) =>
 
   const handleModifyDoc = async (docId: string) => {
     try {
-      const res = await SERVICES.CMS.get(Entities.business, 'id', '==', docId);
+      const filters: IFilter[] = [{ field: 'id', operator: '==', value: docId }];
+
+      const res = await SERVICES.CMS.get(Entities.business, filters);
 
       if (!res) return;
 
