@@ -1,11 +1,25 @@
+// ** Context
+
+import { useLoadingContext } from 'contexts/LoadingProvider';
+import Loader from 'components/general/Loader';
+import HatView from 'views/systemPrompt/generalHatView/HatView';
+import DashboardView from 'views/dashboard/DashboardView';
+import StatusView from 'views/status/StatusView';
+
 const StatusPage = () => {
+  // Contexts
+  const { isLoading } = useLoadingContext();
+
   return (
-    <div className="w-full h-full flex flex-col items-center justify-center overflow-hidden relative">
-      <img
-        src="/images/situationStatus.jpg"
-        alt="Dashboard"
-        className="max-w-full max-h-full object-contain"
-      />
+    <div className="flex flex-col h-full">
+      {/* Contenido */}
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <div className="flex-1 overflow-auto p-4">
+          <StatusView />
+        </div>
+      )}
     </div>
   );
 };

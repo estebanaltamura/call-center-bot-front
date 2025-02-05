@@ -4,7 +4,13 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import { sendMessage } from 'services/whatspAppServices/sendMessage';
 import UTILS from 'utils';
 
-const ChatDetail = ({ conversationId }: { conversationId: string | null }) => {
+const ChatDetail = ({
+  conversationId,
+  statusView,
+}: {
+  conversationId: string | null;
+  statusView?: boolean;
+}) => {
   const combinedData = useContext(ChatHistoryContext);
   const chatDetailRef = useRef<HTMLDivElement>(null);
   const [inputText, setInputText] = useState<string>('');
@@ -22,6 +28,9 @@ const ChatDetail = ({ conversationId }: { conversationId: string | null }) => {
   // Filtramos la conversación correspondiente al `conversationId`
   const selectedConversation = combinedData.find((item) => item.phoneNumber === conversationIdSelected);
 
+  const heightStyle =
+    statusView || (!statusView && selectedConversation?.auto) ? 'h-full' : 'h-[calc(100%-60px)]';
+
   // Ir al fondo cuando cambien los mensajes
   useEffect(() => {
     if (chatDetailRef.current) {
@@ -32,11 +41,15 @@ const ChatDetail = ({ conversationId }: { conversationId: string | null }) => {
   if (!selectedConversation) return <Loader />;
 
   return (
-    <div className="flex flex-col border border-gray-300 rounded-tr bg-white shadow-lg flex-grow h-full overflow-hidden z-50">
+    <div
+      className={`flex flex-col ${!statusView && 'border'} border-gray-300 bg-white rounded-tr ${
+        !statusView && 'shadow-lg'
+      }   flex-grow h-full overflow-hidden z-50`}
+    >
       {/* Chat Body */}
       <div
         ref={chatDetailRef}
-        className="flex flex-col overflow-y-auto px-4 py-2 h-[calc(100%-60px)] scroll-custom"
+        className={`flex flex-col overflow-y-auto px-4 py-2 ${heightStyle} scroll-custom`}
       >
         {[...selectedConversation.messages].reverse().map((message, index) => {
           const timestampAdapted = UTILS.DATES.timestampToDate(message.timestamp.seconds);
@@ -64,21 +77,23 @@ const ChatDetail = ({ conversationId }: { conversationId: string | null }) => {
       </div>
 
       {/* Input y botón */}
-      <div className="flex items-center px-4 py-2 bg-gray-100 border-t border-gray-300 h-[60px]">
-        <input
-          type="text"
-          placeholder="Escribe un mensaje..."
-          className="flex-1 border border-gray-300 rounded-lg px-4 py-2 text-sm outline-none"
-          value={inputText}
-          onChange={(e) => setInputText(e.target.value)}
-        />
-        <button
-          className="ml-4 bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm"
-          onClick={sendMessageHandler}
-        >
-          Enviar
-        </button>
-      </div>
+      {!statusView && !selectedConversation.auto && (
+        <div className="flex items-center px-4 py-2 bg-gray-100 border-t border-gray-300 h-[60px]">
+          <input
+            type="text"
+            placeholder="Escribe un mensaje..."
+            className="flex-1 border border-gray-300 rounded-lg px-4 py-2 text-sm outline-none"
+            value={inputText}
+            onChange={(e) => setInputText(e.target.value)}
+          />
+          <button
+            className="ml-4 bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm"
+            onClick={sendMessageHandler}
+          >
+            Enviar
+          </button>
+        </div>
+      )}
     </div>
   );
 };

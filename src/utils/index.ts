@@ -1,4 +1,5 @@
 // ** Functions
+import { firestoreTimeToDate } from './date/firestoreTimeToDate';
 import { timestampToDate } from './date/timestampToDate';
 import createPdf from './pdf/createPdf';
 import { simplePopUp } from './popUps/simplePopUp';
@@ -14,6 +15,7 @@ const UTILS = {
   },
   DATES: {
     timestampToDate: timestampToDate,
+    firestoreTimeToDate: firestoreTimeToDate,
   },
 };
 

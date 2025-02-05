@@ -28,6 +28,7 @@ type TypoProps = {
   children: React.ReactNode;
   align?: 'left' | 'center' | 'right'; // Nueva propiedad opcional para la alineación
   style?: React.CSSProperties;
+  title?: string;
 };
 
 const classMap: { [key in TypoProps['type']]: string } = {
@@ -63,7 +64,7 @@ const alignClassMap = {
   right: 'text-right',
 };
 
-const Typo = ({ type, children, align, style }: TypoProps) => {
+const Typo = ({ type, children, align, style, title }: TypoProps) => {
   const Tag = (() => {
     switch (type) {
       case 'title1':
@@ -105,7 +106,7 @@ const Typo = ({ type, children, align, style }: TypoProps) => {
   const combinedClassName = `${classMap[type]} ${alignClass}`.trim();
 
   return (
-    <Tag style={style} className={combinedClassName}>
+    <Tag style={style} className={combinedClassName} title={title}>
       {children}
     </Tag>
   );

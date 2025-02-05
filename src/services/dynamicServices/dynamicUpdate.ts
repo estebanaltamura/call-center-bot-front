@@ -1,5 +1,5 @@
 // ** Firebase | Firestore imports
-import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import { doc, getDoc, serverTimestamp, updateDoc } from 'firebase/firestore';
 import { db } from 'firebaseConfig';
 
 // ** Types imports
@@ -21,7 +21,7 @@ export const dynamicUpdate = async <T extends keyof EntityTypesMapReturnedValues
 
     const payload = {
       ...item,
-      updatedAt: new Date(),
+      updatedAt: serverTimestamp(),
     };
 
     // Solo actualiza los campos especificados en `item`

@@ -1,7 +1,11 @@
 // ** Types
 import { IOptionTextItem, IService } from 'types';
+import { Timestamp } from 'firebase/firestore';
 
 export enum Entities {
+  'reviews' = 'reviews',
+  'messages' = 'messages',
+  'conversations' = 'conversations',
   'systemPrompt' = 'systemPrompt',
   'settings' = 'settings',
   'business' = 'business',
@@ -20,6 +24,9 @@ export enum Entities {
 }
 
 export type EntityTypesMapReturnedValues = {
+  [Entities.reviews]: IReviewsEntity;
+  [Entities.messages]: IMessageEntity;
+  [Entities.conversations]: IConversationsEntity;
   [Entities.systemPrompt]: ISystemPromptEntity;
   [Entities.settings]: ISettingsEntity;
   [Entities.business]: IBusinessEntity;
@@ -38,6 +45,9 @@ export type EntityTypesMapReturnedValues = {
 };
 
 export type EntityTypesMapPayloadValues = {
+  [Entities.reviews]: IReview;
+  [Entities.messages]: IMessage;
+  [Entities.conversations]: IConversations;
   [Entities.systemPrompt]: ISystemPrompt;
   [Entities.settings]: ISettings;
   [Entities.business]: IBusiness;
@@ -55,6 +65,35 @@ export type EntityTypesMapPayloadValues = {
   [Entities.stats_googleAdsCost]: IStats_googleAdsCost;
 };
 
+export interface IMessage {
+  conversationId: string;
+  message: string;
+  sender: 'company' | 'customer';
+}
+
+export interface IReview {
+  conversationId: string;
+  confirmed: boolean;
+  changes?: string[];
+  comment?: string;
+}
+export interface IConversations {
+  phoneNumber: string;
+  status: ConversationStatusEnum;
+  auto: boolean;
+  lastMessageDate: Timestamp;
+  lastReviewDate: Timestamp;
+  brief?: string;
+  name?: string;
+  lastName?: string;
+}
+
+export enum ConversationStatusEnum {
+  INPROGRESS = 'inProgress',
+  LEAD = 'lead',
+  NOLEAD = 'noLead',
+  NOEVALUABLE = 'noEvaluable',
+}
 export interface ISystemPrompt {
   currentSystemPrompt: string;
 }
@@ -125,11 +164,17 @@ interface IEntity {
   id: string;
   softState: StateTypes;
   state: StateTypes;
-  createdAt: Date;
-  updatedAt: Date;
-  softDeletedAt: Date;
-  reactivatedAt: Date;
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
+  softDeletedAt: Timestamp;
+  reactivatedAt: Timestamp;
 }
+
+export interface IMessageEntity extends IMessage, IEntity {}
+
+export interface IReviewsEntity extends IReview, IEntity {}
+
+export interface IConversationsEntity extends IConversations, IEntity {}
 
 export interface IStats_newConversationsEntity extends IStats_newConversations, IEntity {}
 

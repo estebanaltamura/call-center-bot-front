@@ -1,5 +1,5 @@
 // ** Firestore Imports **
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, serverTimestamp, setDoc } from 'firebase/firestore';
 
 // ** Type Imports **
 import {
@@ -28,7 +28,7 @@ export const dynamicCreate = async <T extends keyof EntityTypesMapPayloadValues>
     ...item,
     softState: StateTypes.active,
     state: StateTypes.active,
-    createdAt: new Date(),
+    createdAt: serverTimestamp(),
   } as EntityTypesMapReturnedValues[T];
 
   try {

@@ -1,5 +1,5 @@
 // ** Firestore Imports
-import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import { doc, getDoc, serverTimestamp, updateDoc } from 'firebase/firestore';
 
 // Type imports
 import { EntityTypesMapReturnedValues, StateTypes } from 'types/dynamicSevicesTypes';
@@ -23,7 +23,7 @@ export const dynamicSoftDelete = async <T extends keyof EntityTypesMapReturnedVa
     // Perform soft delete by updating the `state` field to `inactive`
     await updateDoc(docReference, {
       softState: StateTypes.inactive,
-      softDeletedAt: new Date().toISOString(),
+      softDeletedAt: serverTimestamp(),
     });
 
     // Return the updated item data

@@ -1,12 +1,3 @@
-export interface IConversation {
-  auto: boolean;
-  phoneNumber: string;
-  createdAt: {
-    seconds: number;
-    nanoseconds: number;
-  };
-}
-
 export interface IMessage {
   conversationId: string;
   message: string;
