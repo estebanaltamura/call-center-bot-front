@@ -2,16 +2,16 @@ import React, { createContext, useState, useEffect, useMemo } from 'react';
 import { collection, onSnapshot, DocumentData, QuerySnapshot } from 'firebase/firestore';
 import { db } from 'firebaseConfig';
 import { IMessage } from 'types';
-import { IConversations } from 'types/dynamicSevicesTypes';
+import { IConversations, IConversationsEntity } from 'types/dynamicSevicesTypes';
 
-interface CombinedConversation extends IConversations {
+interface CombinedConversation extends IConversationsEntity {
   messages: IMessage[];
 }
 
 const ChatHistoryContext = createContext<CombinedConversation[]>([]);
 
 const ChatHistoryProvider = ({ children }: { children: React.ReactNode }) => {
-  const [conversations, setConversations] = useState<IConversations[]>([]);
+  const [conversations, setConversations] = useState<IConversationsEntity[]>([]);
   const [messages, setMessages] = useState<IMessage[]>([]);
 
   useEffect(() => {
@@ -19,7 +19,7 @@ const ChatHistoryProvider = ({ children }: { children: React.ReactNode }) => {
       collection(db, 'conversations'),
       (snapshot: QuerySnapshot<DocumentData>) => {
         const convs = snapshot.docs.map((doc) => {
-          return doc.data() as IConversations;
+          return doc.data() as IConversationsEntity;
         });
         setConversations(convs);
       },

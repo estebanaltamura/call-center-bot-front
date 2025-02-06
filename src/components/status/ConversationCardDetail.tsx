@@ -1,5 +1,5 @@
 // ConversationCardDetail.tsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import Typo from 'components/general/Typo';
 import {
@@ -14,6 +14,7 @@ import ChatDetail from 'components/chat/chatTab/ChatDetail';
 import { serverTimestamp, Timestamp } from 'firebase/firestore';
 import UTILS from 'utils';
 import { IFilter } from 'services/dynamicServices/dynamicGet';
+import ChatHistoryContext from 'contexts/ChatHistoryProvider';
 
 interface ConversationCardDetailProps {
   conversation: IConversationsEntity; // Tipo concreto
@@ -28,6 +29,22 @@ const ConversationCardDetail = ({ conversation, onClose }: ConversationCardDetai
   const [loadingSummary, setLoadingSummary] = useState<boolean>(false);
   const [showStateChangePopup, setShowStateChangePopup] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const combinedData = useContext(ChatHistoryContext);
+
+  const statusMap = (name: string | undefined) => {
+    switch (name) {
+      case ConversationStatusEnum.LEAD:
+        return 'Lead';
+      case ConversationStatusEnum.NOLEAD:
+        return 'No lead';
+      case ConversationStatusEnum.NOEVALUABLE:
+        return 'No evaluable';
+      case ConversationStatusEnum.INPROGRESS:
+        return 'En progreso';
+      default:
+        return 'Unknown';
+    }
+  };
 
   // Obtiene el log de revisiones (reviews) para la conversación actual.
   useEffect(() => {
@@ -51,10 +68,12 @@ const ConversationCardDetail = ({ conversation, onClose }: ConversationCardDetai
     const generateSummary = async () => {
       setLoadingSummary(true);
       try {
-        const filters: IFilter[] = [{ field: 'conversationId', operator: '==', value: conversation.id }];
-        const conversationRes = await SERVICES.CMS.get(Entities.messages, filters);
-        if (!conversationRes) return;
-        const conversationConcatenated = conversationRes.map((msg: any) => msg.message).join('\n');
+        // const filters: IFilter[] = [{ field: 'conversationId', operator: '==', value: conversation.id }];
+        // const conversationRes = await SERVICES.CMS.get(Entities.messages, filters);
+        const messages = combinedData.find((converdation) => converdation.id === conversation.id)?.messages;
+
+        if (!messages) return;
+        const conversationConcatenated = messages.map((msg: any) => msg.message).join('\n');
         const response = await axios.post('http://localhost:80/summarize', {
           conversation: conversationConcatenated,
         });
@@ -147,7 +166,7 @@ const ConversationCardDetail = ({ conversation, onClose }: ConversationCardDetai
         <h2 className="text-center font-bold">Detalle de la Conversación</h2>
         <div className="flex h-full pt-4">
           {/* Columna izquierda: detalles y acciones */}
-          <div className="w-1/2 pr-4 border-r border-gray-300">
+          <div className="w-1/2 pr-4 border-gray-300">
             <div className="flex flex-col gap-3">
               {/* Datos */}
               <div className="flex flex-col h-60 gap-3  pr-4">
@@ -199,13 +218,10 @@ const ConversationCardDetail = ({ conversation, onClose }: ConversationCardDetai
                             <Typo type="body2">
                               {review.confirmed
                                 ? 'Revisado'
-                                : `Cambio de Estado: ${review.changes?.[0]} -> ${review.changes?.[1]}`}
+                                : `Cambio de Estado: ${statusMap(review.changes?.[0])} -> ${statusMap(
+                                    review.changes?.[1],
+                                  )}`}
                             </Typo>
-                            {review.comment && (
-                              <Typo type="body2" style={{ fontStyle: 'italic' }}>
-                                Comentario: {review.comment}
-                              </Typo>
-                            )}
                           </div>
                         </div>
                       ))
@@ -225,19 +241,12 @@ const ConversationCardDetail = ({ conversation, onClose }: ConversationCardDetai
                       <Typo type="body2">Generando resumen...</Typo>
                     </div>
                   ) : (
-                    <p className="text-gray-600 text-sm">{summary || 'No hay resumen.'}</p>
+                    <Typo type="body2">{summary || 'No hay resumen.'}</Typo>
                   )}
                 </div>
               </>
             </div>
             <div className="flex justify-end mt-6 gap-4">
-              <button
-                disabled={isLoading}
-                onClick={handleConfirm}
-                className="px-4 py-2 bg-green-500 text-white rounded"
-              >
-                Confirmar estado
-              </button>
               <button
                 disabled={isLoading}
                 onClick={() => {
@@ -247,14 +256,22 @@ const ConversationCardDetail = ({ conversation, onClose }: ConversationCardDetai
                   }
                   setShowStateChangePopup(true);
                 }}
-                className="px-4 py-2 bg-red-500 text-white rounded"
+                className="px-4 py-2 red text-white rounded"
               >
                 Cambiar de Estado
+              </button>
+              <button
+                disabled={isLoading}
+                onClick={handleConfirm}
+                className="px-4 py-2 green text-white rounded"
+              >
+                Confirmar estado
               </button>
             </div>
           </div>
           {/* Columna derecha: ChatDetail */}
-          <div className="w-1/2 pl-4">
+          <div className="w-1/2 pl-4 pb-5 flex z-0">
+            <div className="h-full border-l"></div>
             <ChatDetail conversationId={conversation.phoneNumber} statusView={true} />
           </div>
         </div>
@@ -285,25 +302,25 @@ const ConversationCardDetail = ({ conversation, onClose }: ConversationCardDetai
                 >
                   {availableStates.map((state) => (
                     <option key={state} value={state}>
-                      {state}
+                      {statusMap(state)}
                     </option>
                   ))}
                 </select>
               </div>
-              <div className="flex justify-around">
-                <button
-                  disabled={isLoading}
-                  onClick={handleStateChange}
-                  className="px-4 py-2 bg-blue-500 text-white rounded"
-                >
-                  Confirmar
-                </button>
+              <div className="flex justify-center gap-4">
                 <button
                   disabled={isLoading}
                   onClick={() => setShowStateChangePopup(false)}
-                  className="px-4 py-2 bg-gray-500 text-white rounded"
+                  className="px-6 py-2 bg-gray-500 text-white rounded"
                 >
                   Cancelar
+                </button>
+                <button
+                  disabled={isLoading}
+                  onClick={handleStateChange}
+                  className="px-6 py-2 green text-white rounded"
+                >
+                  Confirmar
                 </button>
               </div>
             </div>
