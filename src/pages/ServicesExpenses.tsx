@@ -1,8 +1,8 @@
 import { useLoadingContext } from 'contexts/LoadingProvider';
 import Loader from 'components/general/Loader';
-import StatusView from 'views/status/StatusView';
+import ServicesExpensesView from 'views/servicesExpenses/ServicesExpensesView';
 
-const StatusPage = () => {
+const ServicesExpensesPage = () => {
   // Contexts
   const { isLoading } = useLoadingContext();
 
@@ -13,11 +13,11 @@ const StatusPage = () => {
         <Loader />
       ) : (
         <div className="flex-1 overflow-auto p-4">
-          <StatusView />
+          <ServicesExpensesView />
         </div>
       )}
     </div>
   );
 };
 
-export default StatusPage;
+export default ServicesExpensesPage;

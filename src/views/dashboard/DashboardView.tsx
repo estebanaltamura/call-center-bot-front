@@ -122,6 +122,8 @@ const DashboardView = () => {
 
     const results = await Promise.all(promises);
 
+    console.log(results);
+
     const formattedStats = results
       .map(({ entity, data }) => {
         if (!data) return null;

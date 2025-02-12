@@ -1,6 +1,7 @@
-// ConversationCard.tsx
-import React from 'react';
+// ** Components
 import Typo from 'components/general/Typo';
+
+// ** Types
 import { IConversations } from 'types/dynamicSevicesTypes';
 import { Timestamp } from 'firebase/firestore';
 
@@ -23,9 +24,6 @@ const ConversationCard = ({ conversation }: ConversationCardProps) => {
     ? (conversation.lastReviewDate as Timestamp).toDate()
     : new Date(0);
 
-  // Determinar el color de fondo:
-  // Si el último mensaje es posterior a la última revisión => fondo gris claro (hay mensaje nuevo)
-  // De lo contrario, fondo verde claro
   const backgroundColor = lastMessageDate > lastReviewDate ? 'bg-gray-200' : 'bg-green-200';
 
   return (

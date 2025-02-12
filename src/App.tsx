@@ -19,6 +19,8 @@ import HatPage from 'pages/HatPage';
 import HatProvider from 'contexts/HatProvider';
 import HatViewerPage from 'pages/HatViewerPage';
 import RefreshModeProvider from 'contexts/RefreshModeProvider';
+import ServicesExpenses from 'pages/ServicesExpenses';
+import ServicesExpensesPage from 'pages/ServicesExpenses';
 
 function App() {
   return (
@@ -105,6 +107,15 @@ function App() {
                     element={
                       // <AuthGuard>
                       <HatViewerPage />
+                      // </AuthGuard>
+                    }
+                  />
+
+                  <Route
+                    path="/servicesExpenses"
+                    element={
+                      // <AuthGuard>
+                      <ServicesExpensesPage />
                       // </AuthGuard>
                     }
                   />

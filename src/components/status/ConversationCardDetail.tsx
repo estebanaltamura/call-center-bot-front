@@ -1,7 +1,14 @@
-// ConversationCardDetail.tsx
-import React, { useState, useEffect, useContext } from 'react';
+// ** React
+import { useState, useEffect, useContext } from 'react';
+
+// ** Third Party libraries
 import axios from 'axios';
+
+// ** Components
 import Typo from 'components/general/Typo';
+import ChatDetail from 'components/chat/chatTab/ChatDetail';
+
+// ** Types
 import {
   ConversationStatusEnum,
   Entities,
@@ -9,11 +16,15 @@ import {
   IReview,
   IReviewsEntity,
 } from 'types/dynamicSevicesTypes';
-import { SERVICES } from 'services/index';
-import ChatDetail from 'components/chat/chatTab/ChatDetail';
 import { serverTimestamp, Timestamp } from 'firebase/firestore';
+
+// ** Services
+import { SERVICES } from 'services/index';
+
+// ** Utils
 import UTILS from 'utils';
-import { IFilter } from 'services/dynamicServices/dynamicGet';
+
+// ** Contexts
 import ChatHistoryContext from 'contexts/ChatHistoryProvider';
 
 interface ConversationCardDetailProps {
@@ -22,14 +33,17 @@ interface ConversationCardDetailProps {
 }
 
 const ConversationCardDetail = ({ conversation, onClose }: ConversationCardDetailProps) => {
-  const [newStatus, setNewStatus] = useState<ConversationStatusEnum>(conversation.status);
-  const [comment, setComment] = useState('');
-  const [reviews, setReviews] = useState<IReviewsEntity[]>([]);
-  const [summary, setSummary] = useState<string>('');
-  const [loadingSummary, setLoadingSummary] = useState<boolean>(false);
-  const [showStateChangePopup, setShowStateChangePopup] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const combinedData = useContext(ChatHistoryContext);
+
+  // ** States data
+  const [reviews, setReviews] = useState<IReviewsEntity[]>([]);
+  const [newStatus, setNewStatus] = useState<ConversationStatusEnum>(conversation.status);
+  const [summary, setSummary] = useState<string>('');
+
+  // ** States UI
+  const [showStateChangePopup, setShowStateChangePopup] = useState<boolean>(false);
+  const [loadingSummary, setLoadingSummary] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const statusMap = (name: string | undefined) => {
     switch (name) {
@@ -53,7 +67,6 @@ const ConversationCardDetail = ({ conversation, onClose }: ConversationCardDetai
         const reviewsData = await SERVICES.CMS.get(Entities.reviews, [
           { field: 'conversationId', operator: '==', value: conversation.id },
         ]);
-        console.log(reviewsData);
         if (!reviewsData) return;
         setReviews(reviewsData);
       } catch (error) {
@@ -68,8 +81,6 @@ const ConversationCardDetail = ({ conversation, onClose }: ConversationCardDetai
     const generateSummary = async () => {
       setLoadingSummary(true);
       try {
-        // const filters: IFilter[] = [{ field: 'conversationId', operator: '==', value: conversation.id }];
-        // const conversationRes = await SERVICES.CMS.get(Entities.messages, filters);
         const messages = combinedData.find((converdation) => converdation.id === conversation.id)?.messages;
 
         if (!messages) return;
@@ -77,7 +88,7 @@ const ConversationCardDetail = ({ conversation, onClose }: ConversationCardDetai
         const response = await axios.post('http://localhost:80/summarize', {
           conversation: conversationConcatenated,
         });
-        console.log(response);
+
         if (response.data && response.data.summary) {
           setSummary(response.data.summary);
         } else {
@@ -160,7 +171,10 @@ const ConversationCardDetail = ({ conversation, onClose }: ConversationCardDetai
         style={{ width: '1300px', height: '1000px' }}
         onClick={(e) => e.stopPropagation()}
       >
-        <button className="absolute top-2 right-2 text-gray-600 hover:text-gray-800" onClick={onClose}>
+        <button
+          className="absolute top-3 right-4 text-xl text-gray-600 hover:text-gray-800"
+          onClick={onClose}
+        >
           X
         </button>
         <h2 className="text-center font-bold">Detalle de la Conversación</h2>
@@ -195,7 +209,7 @@ const ConversationCardDetail = ({ conversation, onClose }: ConversationCardDetai
                 </div>
                 <div className="flex gap-2">
                   <Typo type="body2Semibold">Estado Actual:</Typo>
-                  <Typo type="body2">{conversation.status}</Typo>
+                  <Typo type="body2">{statusMap(conversation.status)}</Typo>
                 </div>
                 <hr className="my-4 border-gray-400" />
               </div>

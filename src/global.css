@@ -86,3 +86,9 @@ code {
   font-family: Arial, sans-serif; /* Fuente personalizada */
   line-height: 24px;
 }
+
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}

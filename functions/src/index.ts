@@ -1,3 +1,3 @@
-import { scheduleHatsTracker } from './scheduleHatsTracker'; // Asegúrate de que la ruta sea correcta.
+import { dailyStatsAggregator } from './dailyStatsAggregator'; // Asegúrate de que la ruta sea correcta.
 
-export { scheduleHatsTracker };
+export { dailyStatsAggregator };

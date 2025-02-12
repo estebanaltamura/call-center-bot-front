@@ -17,12 +17,8 @@ import {
   FaBook,
   FaCogs,
   FaHatWizard,
+  FaMoneyBillWave,
 } from 'react-icons/fa';
-import { useBusinessContext } from 'contexts/BusinessProvider';
-import { useAssistantContext } from 'contexts/AssistantProvider';
-import { useKnowledgeContext } from 'contexts/KnowledgeProvider';
-import { useRulesContext } from 'contexts/RulesProvider';
-import { useHatContext } from 'contexts/HatProvider';
 
 const menuItems = [
   { label: 'Dashboard', path: '/dashboard', icon: <FaTachometerAlt /> },
@@ -33,6 +29,7 @@ const menuItems = [
   { label: 'Conocimientos', path: '/knowledges', icon: <FaBook /> },
   { label: 'Reglas', path: '/rules', icon: <FaCogs /> },
   { label: 'Sombreros', path: '/hats', icon: <FaHatWizard /> },
+  { label: 'Costo de servicios', path: '/servicesExpenses', icon: <FaMoneyBillWave /> },
 ];
 
 const Sidebar = () => {

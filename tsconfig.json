@@ -24,6 +24,6 @@
     "src",
     "src/firestore-functions",
     "scheduleHatsTracker.ts",
-    "functions/src/scheduleHatsTracker.ts"
+    "functions/src/dailyStatsAggregator.ts"
   ]
 }

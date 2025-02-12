@@ -1,8 +1,14 @@
-// StatusView.tsx
-import React, { useContext, useEffect, useState } from 'react';
+// ** React
+import { useContext, useEffect, useState } from 'react';
+
+// ** Components
 import ConversationCard from 'components/status/ConversationCard';
 import ConversationCardDetail from 'components/status/ConversationCardDetail';
+
+// ** Types
 import { ConversationStatusEnum } from 'types/dynamicSevicesTypes';
+
+// ** Contexts
 import ChatHistoryContext from 'contexts/ChatHistoryProvider';
 
 interface Column {
@@ -15,14 +21,17 @@ interface Columns {
 }
 
 const StatusView = () => {
-  // Se obtienen todas las conversaciones (sin filtrar por fecha) del contexto
   const combinedData = useContext(ChatHistoryContext);
+
+  // States data
   const [columns, setColumns] = useState<Columns>({
     inProgress: { name: ConversationStatusEnum.INPROGRESS, items: [] },
     lead: { name: ConversationStatusEnum.LEAD, items: [] },
     noLead: { name: ConversationStatusEnum.NOLEAD, items: [] },
     noEvaluable: { name: ConversationStatusEnum.NOEVALUABLE, items: [] },
   });
+
+  // States UI
   const [selectedConversation, setSelectedConversation] = useState<any>(null);
 
   useEffect(() => {
@@ -43,14 +52,14 @@ const StatusView = () => {
     setColumns(newColumns);
   }, [combinedData]);
 
-  const nameMap = (name: string) => {
+  const statusMap = (name: string | undefined) => {
     switch (name) {
       case ConversationStatusEnum.LEAD:
         return 'Lead';
       case ConversationStatusEnum.NOLEAD:
-        return 'No Lead';
+        return 'No lead';
       case ConversationStatusEnum.NOEVALUABLE:
-        return 'No Evaluable';
+        return 'No evaluable';
       case ConversationStatusEnum.INPROGRESS:
         return 'En progreso';
       default:
@@ -64,7 +73,7 @@ const StatusView = () => {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         {Object.entries(columns).map(([columnKey, column]) => (
           <div key={columnKey} className="bg-white rounded shadow p-2">
-            <h3 className="text-center font-semibold mb-2">{nameMap(column.name)}</h3>
+            <h3 className="text-center font-semibold mb-2">{statusMap(column.name)}</h3>
             {column.items.length === 0 ? (
               <div className="text-center text-sm text-gray-600">Sin conversaciones</div>
             ) : (
