@@ -9,7 +9,7 @@ const DashboardView = () => {
   const [selectedFilter, setSelectedFilter] = useState('Esta semana');
   const [isLoading, setIsLoading] = useState(true);
 
-  const filters = ['Esta semana', 'Últimos 30 días', 'Últimos 90 días'];
+  const filters = ['Últimos 7 días', 'Últimos 30 días', 'Últimos 90 días'];
 
   // Retorna el número de días según el filtro seleccionado
   const getDaysFromFilter = (filter: string): 7 | 30 | 90 => {
