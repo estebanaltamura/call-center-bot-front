@@ -1,6 +1,6 @@
 // ** Dynamic services
 import { dynamicCreate } from './dynamicServices/dynamicCreate';
-import { dynamicDelete } from './dynamicServices/dynamicDelete';
+import { dynamicHardDelete } from './dynamicServices/dynamicHardDelete';
 import { dynamicGet } from './dynamicServices/dynamicGet';
 import { dynamicReactivateSoftDeleted } from './dynamicServices/dynamicReactivateSoftDeleted';
 import { dynamicSoftDelete } from './dynamicServices/dynamicSoftDelete';
@@ -16,14 +16,16 @@ import updateCurrentAssistantTitle from './settingsServices/updateCurrentAssista
 import updateCurrentRulesTitle from './settingsServices/updateCurrentRulesTitle';
 import updateCurrentKnowledgeTitle from './settingsServices/updateCurrentKnowledgeTitle';
 import { createHat } from './hat/createHat';
+import { dynamicDelete } from './dynamicServices/dynamicDelete';
 
 export const SERVICES = {
   CMS: {
     create: dynamicCreate,
     update: dynamicUpdate,
     get: dynamicGet,
-    delete: dynamicDelete,
     softDelete: dynamicSoftDelete,
+    dynamicHardDelete: dynamicHardDelete,
+    delete: dynamicDelete,
     reactivateSoftDeleted: dynamicReactivateSoftDeleted,
   },
   BUSINESS: {

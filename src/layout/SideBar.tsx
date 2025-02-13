@@ -24,12 +24,12 @@ const menuItems = [
   { label: 'Dashboard', path: '/dashboard', icon: <FaTachometerAlt /> },
   { label: 'Chat', path: '/chat', icon: <FaComments /> },
   { label: 'Estado de situación', path: '/status', icon: <FaChartBar /> },
+  { label: 'Costo de servicios', path: '/servicesExpenses', icon: <FaMoneyBillWave /> },
   { label: 'Negocios', path: '/businesses', icon: <FaBuilding /> },
   { label: 'Asistentes', path: '/assistants', icon: <FaRobot /> },
   { label: 'Conocimientos', path: '/knowledges', icon: <FaBook /> },
   { label: 'Reglas', path: '/rules', icon: <FaCogs /> },
   { label: 'Sombreros', path: '/hats', icon: <FaHatWizard /> },
-  { label: 'Costo de servicios', path: '/servicesExpenses', icon: <FaMoneyBillWave /> },
 ];
 
 const Sidebar = () => {

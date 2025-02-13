@@ -1,146 +1,96 @@
-// ** DashboardView.tsx
 import StatsChart from 'components/charts/StatsChart';
 import Loader from 'components/general/Loader';
 import { useEffect, useState } from 'react';
-
-// ** Services
 import { SERVICES } from 'services/index';
-
-// ** Types
 import { Entities } from 'types/dynamicSevicesTypes';
 
 const DashboardView = () => {
-  const [stats, setStats] = useState<
-    {
-      label: string;
-      data: { date: Date; value: number }[];
-    }[]
-  >([]);
-  const [selectedFilter, setSelectedFilter] = useState('Ayer');
+  const [stats, setStats] = useState<{ label: string; data: { date: Date; value: number }[] }[]>([]);
+  const [selectedFilter, setSelectedFilter] = useState('Esta semana');
   const [isLoading, setIsLoading] = useState(true);
 
-  const filters = ['Ayer', 'Esta semana', 'Semana pasada', 'Últimos 30 días', 'Últimos 90 días'];
+  const filters = ['Esta semana', 'Últimos 30 días', 'Últimos 90 días'];
 
-  // Devuelve [fechaInicio, fechaFin] según el filtro
-  const getRange = (filter: string): [Date, Date] => {
-    const now = new Date();
-    const start = new Date(now);
-    const end = new Date(now);
-
-    start.setHours(0, 0, 0, 0);
-    end.setHours(23, 59, 59, 999);
-
-    switch (filter) {
-      case 'Ayer':
-        start.setDate(start.getDate() - 1);
-        end.setDate(end.getDate() - 1);
-        return [start, end];
-
-      case 'Esta semana':
-        {
-          const dayOfWeek = now.getDay(); // domingo=0, lunes=1...
-          const diffToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
-          start.setDate(now.getDate() - diffToMonday);
-          start.setHours(0, 0, 0, 0);
-          end.setDate(start.getDate() + 6);
-          end.setHours(23, 59, 59, 999);
-        }
-        return [start, end];
-
-      case 'Semana pasada':
-        {
-          const currentDay = now.getDay();
-          const diffToLastMonday = (currentDay === 0 ? 7 : currentDay) + 6;
-          start.setDate(now.getDate() - diffToLastMonday);
-          start.setHours(0, 0, 0, 0);
-          end.setDate(start.getDate() + 6);
-          end.setHours(23, 59, 59, 999);
-        }
-        return [start, end];
-
-      case 'Últimos 30 días':
-        start.setDate(now.getDate() - 30);
-        return [start, end];
-
-      case 'Últimos 90 días':
-        start.setDate(now.getDate() - 90);
-        return [start, end];
-
-      default:
-        return [start, end];
-    }
-  };
-
-  // Para convertir el string del filtro a número de días
-  const getNumericRange = (filter: string): 1 | 7 | 30 | 90 => {
-    if (filter === 'Ayer') return 1;
-    if (filter === 'Esta semana' || filter === 'Semana pasada') return 7;
+  // Retorna el número de días según el filtro seleccionado
+  const getDaysFromFilter = (filter: string): 7 | 30 | 90 => {
     if (filter === 'Últimos 30 días') return 30;
-    return 90;
+    if (filter === 'Últimos 90 días') return 90;
+    return 7; // Por defecto "Esta semana"
   };
 
-  // Agrupa los datos de cada estadística por día (según el rango) y devuelve un array con la suma diaria.
-  const groupDataByDay = (items: { date: Date; value: number }[], range: number) => {
-    const now = new Date();
-    // Fecha de inicio = hoy - (range - 1) días
-    const start = new Date(now);
-    start.setDate(now.getDate() - (range - 1));
-    start.setHours(0, 0, 0, 0);
+  // Obtiene el rango de fechas: el último día es el momento actual y el primero es (n-1) días atrás
+  const getRange = (days: number): [Date, Date] => {
+    const now = new Date(); // Ahora mismo
+    const start = new Date(now.getTime() - (days - 1) * 24 * 60 * 60 * 1000);
+    return [start, now];
+  };
 
-    // Array para almacenar la suma por cada día
-    const dailyValues = Array(range).fill(0);
+  // Calcula la diferencia en días entre dos fechas (ignorando la hora)
+  const differenceInCalendarDays = (d: Date, start: Date): number => {
+    const startDay = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+    const dDay = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    const diffTime = dDay.getTime() - startDay.getTime();
+    return Math.floor(diffTime / (24 * 60 * 60 * 1000));
+  };
 
+  // Agrupa los datos por día usando la fecha real guardada
+  const groupDataByDay = (items: { date: Date; value: number }[], start: Date, end: Date) => {
+    const dayCount = Math.floor((end.getTime() - start.getTime()) / (24 * 60 * 60 * 1000)) + 1;
+    const dailyValues = Array(dayCount).fill(0);
     items.forEach((item) => {
-      // Normalizamos la fecha del item
-      const d = new Date(item.date);
-      d.setHours(0, 0, 0, 0);
-
-      // Diferencia en días desde el día de inicio
-      const diff = Math.floor((d.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
-      // Si está dentro del rango, se acumula
-      if (diff >= 0 && diff < range) {
-        dailyValues[diff] += item.value;
-      }
+      const itemDate = new Date(item.date);
+      const diff = differenceInCalendarDays(itemDate, start);
+      if (diff >= 0 && diff < dayCount) dailyValues[diff] += item.value;
     });
-
     return dailyValues;
+  };
+
+  // Crea las etiquetas para el eje X:
+  // Para los primeros días muestra "MM/DD" y para el último la fecha y hora actuales.
+  const createLabels = (start: Date, end: Date, days: number): string[] => {
+    const labels: string[] = [];
+    for (let i = 0; i < days - 1; i++) {
+      const d = new Date(start.getTime() + i * 24 * 60 * 60 * 1000);
+      // Puedes ajustar el formato de la fecha a tus necesidades
+      labels.push(`${d.getMonth() + 1}/${d.getDate()}`);
+    }
+    labels.push(end.toLocaleString()); // Última etiqueta: fecha y hora actuales
+    return labels;
   };
 
   const fetchStats = async () => {
     setIsLoading(true);
-    const [startDate, endDate] = getRange(selectedFilter);
+    const days = getDaysFromFilter(selectedFilter);
+    const [startDate, endDate] = getRange(days);
 
     const promises = Object.keys(Entities)
       .filter((key) => key.startsWith('stats_'))
       .map(async (entity) => {
         const res = await SERVICES.CMS.get(Entities[entity as Entities], [
-          { field: 'createdAt', operator: '>=', value: startDate },
-          { field: 'createdAt', operator: '<=', value: endDate },
+          { field: 'date', operator: '>=', value: startDate },
+          { field: 'date', operator: '<=', value: endDate },
         ]);
         return { entity, data: res };
       });
 
     const results = await Promise.all(promises);
 
-    console.log(results);
+    setStats(
+      results
+        .map(({ entity, data }) =>
+          data
+            ? {
+                label: entity,
+                data: data.map((item: any) => ({
+                  date: item.date.toDate ? item.date.toDate() : new Date(item.date),
+                  value: item?.value ?? 0,
+                })),
+              }
+            : null,
+        )
+        .filter(Boolean) as { label: string; data: { date: Date; value: number }[] }[],
+    );
 
-    const formattedStats = results
-      .map(({ entity, data }) => {
-        if (!data) return null;
-        return {
-          label: entity,
-          data: data.map((item: any) => ({
-            date: item.createdAt.toDate ? item.createdAt.toDate() : item.createdAt,
-            value: item?.data ?? 0,
-          })),
-        };
-      })
-      .filter(Boolean) as {
-      label: string;
-      data: { date: Date; value: number }[];
-    }[];
-
-    setStats(formattedStats);
     setIsLoading(false);
   };
 
@@ -150,32 +100,31 @@ const DashboardView = () => {
 
   if (isLoading) return <Loader />;
 
-  const numericRange = getNumericRange(selectedFilter);
-  const isAyer = numericRange === 1;
+  const days = getDaysFromFilter(selectedFilter);
+  const [rangeStart, rangeEnd] = getRange(days);
+  const labels = createLabels(rangeStart, rangeEnd, days);
 
   return (
     <div className="p-4 bg-gray-50 rounded shadow">
       <h2 className="text-center font-semibold mb-4">Dashboard</h2>
 
-      <div className="my-4">
-        <select
-          className="border p-2 rounded w-full"
-          value={selectedFilter}
-          onChange={(e) => setSelectedFilter(e.target.value)}
-        >
-          {filters.map((filter) => (
-            <option key={filter} value={filter}>
-              {filter}
-            </option>
-          ))}
-        </select>
-      </div>
+      <select
+        className="border p-2 rounded w-full my-4"
+        value={selectedFilter}
+        onChange={(e) => setSelectedFilter(e.target.value)}
+      >
+        {filters.map((filter) => (
+          <option key={filter} value={filter}>
+            {filter}
+          </option>
+        ))}
+      </select>
 
       <div className="grid grid-cols-2 gap-4 mb-4">
-        {stats.map((stat, idx) => {
-          const total = stat.data.reduce((acc, curr) => acc + (curr.value || 0), 0);
+        {stats.map((stat) => {
+          const total = stat.data.reduce((acc, curr) => acc + curr.value, 0);
           return (
-            <div key={idx} className="p-4 bg-white rounded shadow">
+            <div key={stat.label} className="p-4 bg-white rounded shadow">
               <p>{stat.label.replace('stats_', '').replace(/([A-Z])/g, ' $1')}</p>
               <h3 className="text-xl font-bold">{total}</h3>
             </div>
@@ -183,26 +132,24 @@ const DashboardView = () => {
         })}
       </div>
 
-      {/* Si el usuario elige una opción más antigua que Ayer, mostramos los charts. */}
-      {!isAyer && (
-        <div className="grid grid-cols-1 gap-6">
-          {stats.map((stat, idx) => {
-            // Obtenemos un array con las sumas diarias
-            const dailyValues = groupDataByDay(stat.data, numericRange);
-            return (
-              <StatsChart
-                key={idx}
-                range={numericRange}
-                title={stat.label
-                  .replace('stats_', '')
-                  .replace(/([A-Z])/g, ' $1')
-                  .toUpperCase()}
-                values={dailyValues}
-              />
-            );
-          })}
-        </div>
-      )}
+      <div className="grid grid-cols-1 gap-6">
+        {stats.map((stat) => {
+          const dailyValues = groupDataByDay(stat.data, rangeStart, rangeEnd);
+
+          return (
+            <StatsChart
+              key={stat.label}
+              range={days}
+              title={stat.label
+                .replace('stats_', '')
+                .replace(/([A-Z])/g, ' $1')
+                .toUpperCase()}
+              values={dailyValues}
+              labels={labels} // Se pasan las etiquetas para el eje X
+            />
+          );
+        })}
+      </div>
     </div>
   );
 };

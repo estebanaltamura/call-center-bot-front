@@ -136,28 +136,36 @@ export interface IHat {
 }
 
 export interface IStats_newConversations {
-  data: number;
+  value: number;
+  date: Timestamp;
 }
 export interface IStats_returnedConversations {
-  data: number;
+  value: number;
+  date: Timestamp;
 }
 export interface IStats_leads {
-  data: number;
+  value: number;
+  date: Timestamp;
 }
 export interface IStats_sales {
-  data: number;
+  value: number;
+  date: Timestamp;
 }
 export interface IStats_whatsappApiCost {
-  data: number;
+  value: number;
+  date: Timestamp;
 }
 export interface IStats_iaCost {
-  data: number;
+  value: number;
+  date: Timestamp;
 }
 export interface IStats_facebookAdsCost {
-  data: number;
+  value: number;
+  date: Timestamp;
 }
 export interface IStats_googleAdsCost {
-  data: number;
+  value: number;
+  date: Timestamp;
 }
 
 interface IEntity {

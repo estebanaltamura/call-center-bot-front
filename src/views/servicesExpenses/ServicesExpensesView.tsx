@@ -1,5 +1,5 @@
 // ServicesExpensesView.tsx
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { collection, query, where, getDocs, Timestamp } from 'firebase/firestore';
 import { db } from 'firebaseConfig';
 
@@ -7,11 +7,12 @@ import { db } from 'firebaseConfig';
 import { Entities, EntityTypesMapReturnedValues } from 'types/dynamicSevicesTypes';
 import { dynamicUpdate } from 'services/dynamicServices/dynamicUpdate';
 import { dynamicCreate } from 'services/dynamicServices/dynamicCreate';
-import { dynamicDelete } from 'services/dynamicServices/dynamicDelete';
 import Loader from 'components/general/Loader';
 
 // Íconos (se usa react-icons, asegúrate de tenerla instalada)
 import { FaPencilAlt, FaTrashAlt, FaCheck, FaTimes } from 'react-icons/fa';
+import { SERVICES } from 'services/index';
+import UTILS from 'utils';
 
 // -----------------------------------------------------------------------------
 // 1. Definición de las “entidades de cost”
@@ -36,6 +37,14 @@ const entityLabels: Record<CostEntity, string> = {
   [Entities.stats_googleAdsCost]: 'Costo Google Ads',
 };
 
+// Constante con las imágenes (reemplaza las URL por las imágenes que correspondan)
+const entityImages: Record<CostEntity, string> = {
+  [Entities.stats_whatsappApiCost]: '/logos/whatsapp.svg.webp',
+  [Entities.stats_iaCost]: '/logos/iaLogo.png',
+  [Entities.stats_facebookAdsCost]: '/logos/facebookLogo.jpg',
+  [Entities.stats_googleAdsCost]: '/logos/googleLogo.png',
+};
+
 // -----------------------------------------------------------------------------
 // 2. Componente para cada “tarjeta” de registro de costo
 interface CostRecordCardProps {
@@ -55,14 +64,21 @@ const CostRecordCard: React.FC<CostRecordCardProps> = ({
 }) => {
   // Estado para controlar si se está editando o creando
   const [isEditing, setIsEditing] = useState(false);
-  // Estado para el valor del input (trabajamos con string para facilitar el manejo del input)
-  const [inputValue, setInputValue] = useState(record ? record.data.toString() : '');
+  // Estado para el valor del input (se usa string para facilitar el manejo)
+  const [inputValue, setInputValue] = useState(record?.value?.toString() ?? '');
 
-  // Cada vez que cambie el registro (por ejemplo, al cambiar la fecha) se reinicia el input y se cancela la edición
+  // Al cambiar el registro (por ejemplo, al cambiar de fecha) se reinicia el input y se cancela la edición
   useEffect(() => {
-    setInputValue(record ? record.data.toString() : '');
+    setInputValue(record?.value?.toString() ?? '');
     setIsEditing(false);
   }, [record]);
+
+  // Función para obtener una fecha clonada con horas reiniciadas
+  const getNormalizedDate = (date: Date) => {
+    const normalized = new Date(date.getTime());
+    normalized.setHours(0, 0, 0, 0);
+    return normalized;
+  };
 
   // Función para confirmar (crear o actualizar)
   const handleConfirm = async () => {
@@ -81,28 +97,33 @@ const CostRecordCard: React.FC<CostRecordCardProps> = ({
       setIsLoading(false);
       return;
     }
-    // Si existe el registro y el valor no cambió, no se hace nada
-    if (record && numericValue === record.data) {
+    // Si ya existe el registro y el valor no ha cambiado, no se hace nada
+    if (record && numericValue === record.value) {
       setIsEditing(false);
       setIsLoading(false);
       return;
     }
+    // Se prepara el payload, incluyendo el valor y la fecha normalizada convertida a Timestamp
+    const payload = {
+      value: numericValue,
+      date: Timestamp.fromDate(getNormalizedDate(selectedDate)),
+    };
     if (record) {
       // Actualizar registro existente
-      const updated = await dynamicUpdate(entity, record.id, { data: numericValue });
+      const updated = await dynamicUpdate(entity, record.id, payload);
       onRecordChange(updated || record);
     } else {
       // Crear nuevo registro
-      const newRecord = await dynamicCreate(entity, { data: numericValue });
+      const newRecord = await dynamicCreate(entity, payload);
       onRecordChange(newRecord || null);
     }
     setIsEditing(false);
     setIsLoading(false);
   };
 
-  // Cancelar la edición: se restablece el valor original
+  // Función para cancelar la edición: se restablece el valor original
   const handleCancel = () => {
-    setInputValue(record ? record.data.toString() : '');
+    setInputValue(record ? record.value.toString() : '');
     setIsEditing(false);
   };
 
@@ -111,76 +132,113 @@ const CostRecordCard: React.FC<CostRecordCardProps> = ({
     setIsEditing(true);
   };
 
-  // Eliminar registro (se pide confirmación)
+  // Función para eliminar el registro (con confirmación)
   const handleDelete = async () => {
-    if (record && window.confirm('¿Está seguro de eliminar este registro?')) {
-      setIsLoading(true);
-      await dynamicDelete(entity, record.id);
-      onRecordChange(null);
-      setIsLoading(false);
+    if (record) {
+      UTILS.POPUPS.twoOptionsPopUp('¿Está seguro de eliminar este registro?', async () => {
+        setIsLoading(true);
+        await SERVICES.CMS.delete(entity, record.id);
+        onRecordChange(null);
+        setIsLoading(false);
+      });
     }
   };
 
-  // Render según si existe registro y si se está en modo edición
   return (
     <div
       style={{
         border: '1px solid #ccc',
         padding: '1rem',
-        marginBottom: '1rem',
         borderRadius: '4px',
+        display: 'flex',
+        alignItems: 'stretch',
       }}
     >
-      <h2>{entityLabels[entity]}</h2>
-      {record ? (
-        !isEditing ? (
-          // Modo visualización: mostrar el valor y botones para editar y eliminar
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <p className="text-right" style={{ fontSize: '1.25rem', margin: 0 }}>
-              {record.data}
-            </p>
-            <div>
-              <button onClick={handleEdit} title="Editar" style={{ marginRight: '0.5rem' }}>
-                <FaPencilAlt />
-              </button>
-              <button onClick={handleDelete} title="Eliminar">
-                <FaTrashAlt />
-              </button>
-            </div>
-          </div>
-        ) : (
-          // Modo edición: se muestra input y botones de confirmar y cancelar
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <input
-              type="number"
-              min="0"
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              className="no-arrows border rounded p-2 w-14 text-right"
-            />
-            <button onClick={handleConfirm} title="Confirmar" style={{ marginLeft: '0.5rem' }}>
-              <FaCheck />
-            </button>
-            <button onClick={handleCancel} title="Cancelar" style={{ marginLeft: '0.5rem' }}>
-              <FaTimes />
-            </button>
-          </div>
-        )
-      ) : (
-        // No existe registro: se muestra input y botón para crear
-        <div style={{ display: 'flex', alignItems: 'center' }}>
+      {/* 30% izquierdo para la imagen */}
+      <div
+        style={{
+          width: '30%',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          borderRight: '1px solid #eee',
+          paddingRight: '0.5rem',
+        }}
+      >
+        <img
+          src={entityImages[entity]}
+          alt={entityLabels[entity]}
+          style={{ maxWidth: '100px', height: 'auto' }}
+        />
+      </div>
+      {/* 70% derecho para el contenido */}
+      <div
+        style={{
+          width: '70%',
+          paddingLeft: '1rem',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+        }}
+      >
+        <h2 className="text-lg font-semibold text-center">{entityLabels[entity]}</h2>
+        <div style={{ marginTop: '0.5rem', display: 'flex', justifyContent: 'center' }}>
           <input
             type="number"
             min="0"
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
-            className="no-arrows border rounded p-2 w-14 text-right"
+            className="no-arrows border rounded p-2 w-80 text-center"
+            disabled={!isEditing && record ? true : false}
           />
-          <button onClick={handleConfirm} style={{ marginLeft: '0.5rem' }}>
-            Crear
-          </button>
         </div>
-      )}
+        <div style={{ marginTop: '15px', display: 'flex', justifyContent: 'center' }}>
+          {record ? (
+            !isEditing ? (
+              // Modo visualización: botones para editar y eliminar
+              <div className="flex gap-3">
+                <button
+                  onClick={handleEdit}
+                  title="Editar"
+                  className="bg-blue-600 text-white px-7 py-3 rounded"
+                >
+                  <FaPencilAlt className="text-white" />
+                </button>
+                <button
+                  onClick={handleDelete}
+                  title="Eliminar"
+                  className="bg-red-600 text-white px-7 py-3 rounded"
+                >
+                  <FaTrashAlt className="text-white" />
+                </button>
+              </div>
+            ) : (
+              // Modo edición: botones para confirmar y cancelar
+              <div className="flex gap-2">
+                <button
+                  onClick={handleCancel}
+                  title="Cancelar"
+                  className="bg-red-600 text-white px-7 py-3 rounded"
+                >
+                  <FaTimes className="text-white" />
+                </button>
+                <button
+                  onClick={handleConfirm}
+                  title="Confirmar"
+                  className="bg-green-600 text-white px-7 py-3 rounded"
+                >
+                  <FaCheck className="text-white" />
+                </button>
+              </div>
+            )
+          ) : (
+            // No existe registro: botón para crear
+            <button onClick={handleConfirm} className="bg-green-600 text-white px-7 py-2 rounded">
+              Crear
+            </button>
+          )}
+        </div>
+      </div>
     </div>
   );
 };
@@ -203,22 +261,18 @@ const ServicesExpensesView: React.FC = () => {
 
   // Función para consultar el registro de una entidad para la fecha seleccionada
   const fetchCostRecord = async (entity: CostEntity, date: Date) => {
-    // Calcula el inicio y fin del día
-    const start = new Date(date);
+    // Calcula el inicio y fin del día sin modificar selectedDate
+    const start = new Date(date.getTime());
     start.setHours(0, 0, 0, 0);
-    const end = new Date(date);
+    const end = new Date(date.getTime());
     end.setHours(23, 59, 59, 999);
 
     const startTimestamp = Timestamp.fromDate(start);
     const endTimestamp = Timestamp.fromDate(end);
 
     const collRef = collection(db, entity);
-    // Se consulta filtrando por la propiedad createdAt
-    const q = query(
-      collRef,
-      where('createdAt', '>=', startTimestamp),
-      where('createdAt', '<=', endTimestamp),
-    );
+    // Se consulta filtrando por la propiedad 'date' (nueva propiedad)
+    const q = query(collRef, where('date', '>=', startTimestamp), where('date', '<=', endTimestamp));
     const snapshot = await getDocs(q);
     if (snapshot.empty) {
       return null;
@@ -245,22 +299,85 @@ const ServicesExpensesView: React.FC = () => {
     fetchAll();
   }, [selectedDate]);
 
+  // --- Componente DatePicker ---
+  interface DatePickerProps {
+    selectedDate: Date;
+    setSelectedDate: (date: Date) => void;
+  }
+
+  const DatePickerContainer: React.FC<DatePickerProps> = ({ selectedDate, setSelectedDate }) => {
+    const dateInputRef = useRef<HTMLInputElement>(null);
+
+    const handleContainerClick = () => {
+      // Si el método showPicker está disponible, lo usamos para forzar el despliegue del almanaque
+      if (dateInputRef.current) {
+        if (typeof dateInputRef.current.showPicker === 'function') {
+          dateInputRef.current.showPicker();
+        } else {
+          // Fallback: usamos click() para forzar el desplegado
+          dateInputRef.current.click();
+        }
+      }
+    };
+
+    return (
+      <div
+        onClick={handleContainerClick}
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          marginTop: '20px',
+          cursor: 'pointer',
+        }}
+      >
+        <label htmlFor="datePicker" style={{ marginRight: '2px', fontSize: '20px', cursor: 'pointer' }}>
+          Fecha:
+        </label>
+        <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
+          <input
+            ref={dateInputRef}
+            id="datePicker"
+            type="date"
+            value={selectedDate.toISOString().split('T')[0]}
+            onChange={(e) => setSelectedDate(new Date(e.target.value))}
+            style={{ marginRight: '0.5rem', fontSize: '19px', cursor: 'pointer' }}
+            // Asegúrate de NO aplicar estilos que oculten el picker nativo
+            className="custom-date-input"
+          />
+          <span
+            role="img"
+            aria-label="calendar"
+            style={{
+              marginLeft: '-38px',
+              fontSize: '20px',
+              position: 'relative',
+              top: '1px',
+              cursor: 'pointer',
+            }}
+          >
+            📅
+          </span>
+        </div>
+      </div>
+    );
+  };
+
   if (isLoading) return <Loader />;
 
   return (
-    <div style={{ padding: '1rem' }}>
-      <h1>Servicios de Gastos</h1>
-      <div style={{ marginBottom: '1rem' }}>
-        <label htmlFor="datePicker">Selecciona una fecha: </label>
-        <input
-          id="datePicker"
-          type="date"
-          value={selectedDate.toISOString().split('T')[0]}
-          onChange={(e) => setSelectedDate(new Date(e.target.value))}
-        />
-      </div>
+    <div className="p-4 space-y-4">
+      <h1 className="text-xl font-bold text-center">COSTOS DE SERVICIOS</h1>
+      {/* Date picker con ícono personalizado */}
+      <DatePickerContainer selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
       {/* Organiza las 4 tarjetas en 2 columnas */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem' }}>
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(2, 1fr)',
+          gap: '1rem',
+          marginTop: '40px',
+        }}
+      >
         {costEntities.map((entity) => (
           <CostRecordCard
             key={entity}

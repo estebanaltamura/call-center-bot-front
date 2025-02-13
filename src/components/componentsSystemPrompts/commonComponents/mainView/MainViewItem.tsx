@@ -76,7 +76,7 @@ const MainViewItem = ({
   const hardDeleteBusinessHandler = async () => {
     await UTILS.POPUPS.twoOptionsPopUp(
       `Confirma que quieres eliminar definitivamente ${adaptedText1}. No se podrá recuperar`,
-      () => SERVICES.CMS.delete(entity, docItem.id),
+      () => SERVICES.CMS.dynamicHardDelete(entity, docItem.id),
     );
   };
 

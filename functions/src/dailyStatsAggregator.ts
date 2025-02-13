@@ -78,7 +78,8 @@ export const dailyStatsAggregator = onSchedule(
       // 5. Guardar los resultados en las colecciones de estadísticas utilizando batch writes
       const batch = db.batch();
       const statsData = {
-        data: 0,
+        value: 0,
+        date: admin.firestore.FieldValue.serverTimestamp(),
         createdAt: admin.firestore.FieldValue.serverTimestamp(),
       };
 

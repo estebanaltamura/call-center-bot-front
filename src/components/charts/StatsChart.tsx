@@ -5,6 +5,7 @@ type Props = {
   range: 1 | 7 | 30 | 90;
   title: string;
   values: number[];
+  labels: string[]; // <-- Asegurar que la prop labels está definida
 };
 
 const StatsChart: React.FC<Props> = ({ range, title, values }) => {
@@ -15,13 +16,10 @@ const StatsChart: React.FC<Props> = ({ range, title, values }) => {
   const getDataForRange = (vals: number[]) => {
     const totalDays = range;
 
-    // Fecha de referencia: Ayer a medianoche (sin horas/minutos)
-    const referenceDay = new Date();
-    referenceDay.setDate(referenceDay.getDate() - 1); // Ayer
-    referenceDay.setHours(0, 0, 0, 0); // Resetear a medianoche
-
-    // Generar array de fechas desde (ayer - (totalDays - 1)) hasta ayer
+    // Generar array de fechas desde (referenceDay - (totalDays - 1)) hasta referenceDay (HOY)
     const dates = Array.from({ length: totalDays }, (_, i) => {
+      const referenceDay = new Date();
+      +referenceDay.setHours(0, 0, 0, 0); // Hoy a medianoche
       const date = new Date(referenceDay);
       date.setDate(date.getDate() - (totalDays - 1 - i));
       return date.getTime();

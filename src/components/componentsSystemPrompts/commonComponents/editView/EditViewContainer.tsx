@@ -109,7 +109,7 @@ const EditViewContainer = ({ promptComponentType }: { promptComponentType: Promp
           promptComponentType === PromptComponentsEnum.RULE ? 'nueva' : 'nuevo'
         }, este se borrará`,
         async () => {
-          await SERVICES.CMS.delete(entity, itemToEdit.id);
+          await SERVICES.CMS.dynamicHardDelete(entity, itemToEdit.id);
           handleCancel();
         },
       );

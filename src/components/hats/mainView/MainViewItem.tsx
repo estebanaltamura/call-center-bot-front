@@ -36,7 +36,7 @@ const MainViewItem = ({
   const hardDeleteBusinessHandler = async () => {
     await UTILS.POPUPS.twoOptionsPopUp(
       'Confirma que quieres eliminar definitivamente este sombrero. No se podrá recuperar',
-      () => SERVICES.CMS.delete(Entities.hats, item.id),
+      () => SERVICES.CMS.dynamicHardDelete(Entities.hats, item.id),
     );
   };
 
