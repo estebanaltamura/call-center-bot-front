@@ -30,22 +30,22 @@ const ConversationCard = ({ conversation }: ConversationCardProps) => {
     <div className={`p-4 rounded shadow transition-all duration-300 w-full ${backgroundColor}`}>
       <div className="flex flex-col gap-2">
         <div className="flex items-center gap-2">
-          <Typo type="body3Semibold">Número de teléfono:</Typo>
-          <Typo type="body3" style={ellipsisStyle} title={phone}>
+          <Typo type="body3Semibold">Teléfono:</Typo>
+          <p className="text-body3" style={ellipsisStyle} title={phone}>
             {phone}
-          </Typo>
+          </p>
         </div>
         <div className="flex items-center gap-2">
           <Typo type="body3Semibold">Nombre:</Typo>
-          <Typo type="body3" style={ellipsisStyle} title={name}>
+          <p className="text-body3" style={ellipsisStyle} title={name}>
             {name}
-          </Typo>
+          </p>
         </div>
         <div className="flex items-center gap-2">
           <Typo type="body3Semibold">Apellido:</Typo>
-          <Typo type="body3" style={ellipsisStyle} title={lastName}>
+          <p className="text-body3" style={ellipsisStyle} title={lastName}>
             {lastName}
-          </Typo>
+          </p>
         </div>
       </div>
     </div>

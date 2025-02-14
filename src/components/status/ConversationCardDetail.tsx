@@ -26,19 +26,23 @@ import UTILS from 'utils';
 
 // ** Contexts
 import ChatHistoryContext from 'contexts/ChatHistoryProvider';
+import { IFilter } from 'services/dynamicServices/dynamicGet';
 
 interface ConversationCardDetailProps {
   conversation: IConversationsEntity; // Tipo concreto
   onClose: () => void;
+  onStatusChange: (newStatus: ConversationStatusEnum) => Promise<void>;
 }
 
-const ConversationCardDetail = ({ conversation, onClose }: ConversationCardDetailProps) => {
+const ConversationCardDetail = ({ conversation, onClose, onStatusChange }: ConversationCardDetailProps) => {
   const combinedData = useContext(ChatHistoryContext);
 
   // ** States data
   const [reviews, setReviews] = useState<IReviewsEntity[]>([]);
   const [newStatus, setNewStatus] = useState<ConversationStatusEnum>(conversation.status);
   const [summary, setSummary] = useState<string>('');
+  const [fullRefunded, setFullRefunded] = useState<boolean>();
+  const [partialRefunded, setPartialRefunded] = useState<boolean>();
 
   // ** States UI
   const [showStateChangePopup, setShowStateChangePopup] = useState<boolean>(false);
@@ -49,6 +53,8 @@ const ConversationCardDetail = ({ conversation, onClose }: ConversationCardDetai
     switch (name) {
       case ConversationStatusEnum.LEAD:
         return 'Lead';
+      case ConversationStatusEnum.SALES:
+        return 'Sales';
       case ConversationStatusEnum.NOLEAD:
         return 'No lead';
       case ConversationStatusEnum.NOEVALUABLE:
@@ -113,6 +119,7 @@ const ConversationCardDetail = ({ conversation, onClose }: ConversationCardDetai
 
     try {
       await SERVICES.CMS.update(Entities.conversations, conversation.id, payload);
+      onStatusChange(newStatus);
     } catch (error) {
       console.error('Error al actualizar lastReviewDate', error);
     }
@@ -159,7 +166,99 @@ const ConversationCardDetail = ({ conversation, onClose }: ConversationCardDetai
   };
 
   // Calcula los estados disponibles (excluyendo el actual)
-  const availableStates = Object.values(ConversationStatusEnum).filter((s) => s !== conversation.status);
+  const availableStates = Object.values(ConversationStatusEnum).filter((state) => {
+    // Excluir el estado actual
+    if (state === conversation.status) return false;
+    // Si se quiere cambiar a SALES, solo permitirlo si el estado actual es LEAD
+    if (state === ConversationStatusEnum.SALES && conversation.status !== ConversationStatusEnum.LEAD)
+      return false;
+    return true;
+  });
+
+  const handleFullRefundToggle = async () => {
+    try {
+      const newRefundStatus = !fullRefunded;
+      setFullRefunded(newRefundStatus);
+
+      const filters: IFilter[] = [
+        {
+          field: 'conversationId',
+          operator: '==',
+          value: conversation.id,
+        },
+      ];
+
+      const res = await SERVICES.CMS.get(Entities.sales, filters);
+
+      if (!res || res.length === 0) {
+        UTILS.POPUPS.simplePopUp('Documento no encontrado');
+        return;
+      }
+
+      const salesDocId = res[0].id;
+
+      await SERVICES.CMS.update(Entities.sales, salesDocId, { fullRefunded: newRefundStatus });
+    } catch (error) {
+      console.error('Error al actualizar el estado de reembolso:', error);
+    }
+  };
+
+  const handlePartialRefundToggle = async () => {
+    try {
+      const newRefundStatus = !partialRefunded;
+      setPartialRefunded(newRefundStatus);
+
+      const filters: IFilter[] = [
+        {
+          field: 'conversationId',
+          operator: '==',
+          value: conversation.id,
+        },
+      ];
+
+      const res = await SERVICES.CMS.get(Entities.sales, filters);
+
+      if (!res || res.length === 0) {
+        UTILS.POPUPS.simplePopUp('Documento no encontrado');
+        return;
+      }
+
+      const salesDocId = res[0].id;
+
+      await SERVICES.CMS.update(Entities.sales, salesDocId, { partialRefunded: newRefundStatus });
+    } catch (error) {
+      console.error('Error al actualizar el estado de reembolso:', error);
+    }
+  };
+
+  useEffect(() => {
+    const doAsync = async () => {
+      const filters: IFilter[] = [
+        {
+          field: 'conversationId',
+          operator: '==',
+          value: conversation.id,
+        },
+      ];
+
+      const res = await SERVICES.CMS.get(Entities.sales, filters);
+
+      if (!res) {
+        UTILS.POPUPS.simplePopUp('Documento no encontrado');
+
+        return;
+      }
+
+      const sales = res[0];
+
+      setFullRefunded(sales.fullRefunded);
+      setPartialRefunded(sales.partialRefunded);
+    };
+
+    if (conversation.status === ConversationStatusEnum.SALES) {
+      doAsync();
+    }
+  }, [conversation.status]);
 
   return (
     <div
@@ -168,7 +267,7 @@ const ConversationCardDetail = ({ conversation, onClose }: ConversationCardDetai
     >
       <div
         className="bg-white rounded shadow-lg p-6 relative"
-        style={{ width: '1300px', height: '1000px' }}
+        style={{ width: '1300px', height: '1050px' }}
         onClick={(e) => e.stopPropagation()}
       >
         <button
@@ -177,8 +276,56 @@ const ConversationCardDetail = ({ conversation, onClose }: ConversationCardDetai
         >
           X
         </button>
-        <h2 className="text-center font-bold">Detalle de la Conversación</h2>
-        <div className="flex h-full pt-4">
+        <h2 className="text-center font-bold">DETALLE DE LA CONVERSACION</h2>
+        <div className="flex gap-5 mt-3">
+          <div className="flex gap-5">
+            <div className="px-3 py-2 bg-gray-50 rounded shadow  flex gap-2">
+              <h2 className="text-center font-bold">Mensajes:</h2>
+              <h2 className="text-center font-bold">
+                {combinedData &&
+                  combinedData.find((converdation) => converdation.id === conversation.id)?.messages.length}
+              </h2>
+            </div>
+            <div className="px-3 py-2 bg-gray-50 rounded shadow  flex gap-2">
+              <h2 className="text-center font-bold">Antiguedad:</h2>
+              <h2 className="text-center font-bold">
+                {combinedData &&
+                  (() => {
+                    const conversationData = combinedData.find(
+                      (conversation) => conversation.id === conversation.id,
+                    );
+                    if (!conversationData) return null;
+                    const createdAtTime = conversationData.createdAt.toDate().getTime();
+                    const currentTime = new Date().getTime();
+                    return Math.floor((currentTime - createdAtTime) / (1000 * 60 * 60 * 24));
+                  })()}{' '}
+                días
+              </h2>
+            </div>
+
+            <div className="px-3 py-2 bg-gray-50 rounded shadow  flex gap-2">
+              <h2 className="text-center font-bold">Días con actividad:</h2>
+              <h2 className="text-center font-bold">
+                {combinedData &&
+                  (() => {
+                    const conversationData = combinedData.find((conv) => conv.id === conversation.id);
+                    if (!conversationData) return null;
+
+                    const uniqueDays = new Set(
+                      conversationData.messages.map((message) => {
+                        const date = new Date(message.createdAt.seconds * 1000);
+                        return new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime();
+                      }),
+                    );
+
+                    return uniqueDays.size;
+                  })()}
+              </h2>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex h-[950px] pt-4">
           {/* Columna izquierda: detalles y acciones */}
           <div className="w-1/2 pr-4 border-gray-300">
             <div className="flex flex-col gap-3">
@@ -186,7 +333,7 @@ const ConversationCardDetail = ({ conversation, onClose }: ConversationCardDetai
               <div className="flex flex-col h-60 gap-3  pr-4">
                 <h3 className="font-bold mb-1">Datos</h3>
                 <div className="flex gap-2">
-                  <Typo type="body2Semibold">Número de teléfono:</Typo>
+                  <Typo type="body2Semibold">Teléfono:</Typo>
                   <Typo type="body2">{conversation.phoneNumber}</Typo>
                 </div>
                 <div className="flex gap-2">
@@ -246,7 +393,7 @@ const ConversationCardDetail = ({ conversation, onClose }: ConversationCardDetai
               <>
                 <h3 className="font-bold mb-1">Resumen</h3>
                 <div
-                  className={` pr-4 max-h-60 h-60 overflow-auto scroll-custom flex ${
+                  className={`pr-4 max-h-60 h-60 overflow-auto scroll-custom flex ${
                     loadingSummary ? 'items-center' : 'items-start'
                   } justify-center`}
                 >
@@ -260,27 +407,57 @@ const ConversationCardDetail = ({ conversation, onClose }: ConversationCardDetai
                 </div>
               </>
             </div>
-            <div className="flex justify-end mt-6 gap-4">
-              <button
-                disabled={isLoading}
-                onClick={() => {
-                  // Al abrir el popup, inicializamos newStatus con el primer estado disponible
-                  if (availableStates.length > 0) {
-                    setNewStatus(availableStates[0]);
-                  }
-                  setShowStateChangePopup(true);
-                }}
-                className="px-4 py-2 red text-white rounded"
-              >
-                Cambiar de Estado
-              </button>
-              <button
-                disabled={isLoading}
-                onClick={handleConfirm}
-                className="px-4 py-2 green text-white rounded"
-              >
-                Confirmar estado
-              </button>
+            {conversation.status !== ConversationStatusEnum.SALES && (
+              <div className="flex justify-end mt-6 gap-4">
+                <button
+                  disabled={isLoading}
+                  onClick={() => {
+                    // Al abrir el popup, inicializamos newStatus con el primer estado disponible
+                    if (availableStates.length > 0) {
+                      setNewStatus(availableStates[0]);
+                    }
+                    setShowStateChangePopup(true);
+                  }}
+                  className="px-4 py-2 red text-white rounded"
+                >
+                  Cambiar de Estado
+                </button>
+                <button
+                  disabled={isLoading}
+                  onClick={handleConfirm}
+                  className="px-4 py-2 green text-white rounded"
+                >
+                  Confirmar estado
+                </button>
+              </div>
+            )}
+            <div className="flex items-center gap-5 mt-4">
+              {typeof fullRefunded !== 'undefined' &&
+                typeof partialRefunded !== 'undefined' &&
+                !partialRefunded && (
+                  <div className="flex items-center gap-2 mt-4">
+                    <input
+                      type="checkbox"
+                      checked={fullRefunded}
+                      onChange={handleFullRefundToggle}
+                      className="w-5 h-5 cursor-pointer"
+                    />
+                    <label className="text-lg font-semibold cursor-pointer">Reembolso total</label>
+                  </div>
+                )}
+              {typeof partialRefunded !== 'undefined' &&
+                typeof fullRefunded !== 'undefined' &&
+                !fullRefunded && (
+                  <div className="flex items-center gap-2 mt-4">
+                    <input
+                      type="checkbox"
+                      checked={partialRefunded}
+                      onChange={handlePartialRefundToggle}
+                      className="w-5 h-5 cursor-pointer"
+                    />
+                    <label className="text-lg font-semibold cursor-pointer">Reembolso parcial</label>
+                  </div>
+                )}
             </div>
           </div>
           {/* Columna derecha: ChatDetail */}

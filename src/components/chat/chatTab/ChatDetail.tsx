@@ -52,7 +52,7 @@ const ChatDetail = ({
         className={`flex flex-col overflow-y-auto px-4 py-2 ${heightStyle} scroll-custom`}
       >
         {[...selectedConversation.messages].reverse().map((message, index) => {
-          const timestampAdapted = UTILS.DATES.timestampToDate(message.timestamp.seconds);
+          const timestampAdapted = UTILS.DATES.timestampToDate(message.createdAt.seconds);
 
           return (
             <div

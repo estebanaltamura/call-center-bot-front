@@ -59,22 +59,6 @@ export const dailyStatsAggregator = onSchedule(
         .get();
       const returnedConversationsCount = returnedConversationsSnap.size;
 
-      // 3. Leads: documentos creados en el día anterior
-      const leadsSnap = await db
-        .collection('leads')
-        .where('createdAt', '>=', start)
-        .where('createdAt', '<=', end)
-        .get();
-      const leadsCount = leadsSnap.size;
-
-      // 4. Ventas: documentos creados en el día anterior
-      const salesSnap = await db
-        .collection('sales')
-        .where('createdAt', '>=', start)
-        .where('createdAt', '<=', end)
-        .get();
-      const salesCount = salesSnap.size;
-
       // 5. Guardar los resultados en las colecciones de estadísticas utilizando batch writes
       const batch = db.batch();
       const statsData = {
@@ -91,18 +75,10 @@ export const dailyStatsAggregator = onSchedule(
       const returnedConversationsDoc = db.collection('stats_returnedConversations').doc(dateKey);
       batch.set(returnedConversationsDoc, { ...statsData, data: returnedConversationsCount });
 
-      // Estadísticas de leads
-      const leadsDoc = db.collection('stats_leads').doc(dateKey);
-      batch.set(leadsDoc, { ...statsData, data: leadsCount });
-
-      // Estadísticas de ventas
-      const salesDoc = db.collection('stats_sales').doc(dateKey);
-      batch.set(salesDoc, { ...statsData, data: salesCount });
-
       await batch.commit();
 
       logger.log(
-        `Estadísticas del día ${dateKey}: nuevas=${newConversationsCount}, retomadas=${returnedConversationsCount}, leads=${leadsCount}, ventas=${salesCount}`,
+        `Estadísticas del día ${dateKey}: nuevas=${newConversationsCount}, retomadas=${returnedConversationsCount}`,
       );
     } catch (error) {
       logger.error('Error al agregar las estadísticas diarias:', error);

@@ -1,4 +1,4 @@
-export const layoutMaxWidth = 1500;
+export const layoutMaxWidth = 1700;
 export const paddingLayoutTopMobile = 40;
 export const paddingLayoutTopDesktop = 85;
 export const paddingLayoutLeftRightMobile = 16;

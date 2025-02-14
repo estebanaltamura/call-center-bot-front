@@ -13,6 +13,8 @@ export enum Entities {
   'rules' = 'rules',
   'knowledge' = 'knowledge',
   'hats' = 'hats',
+  'leads' = 'leads',
+  'sales' = 'sales',
   'stats_newConversations' = 'stats_newConversations',
   'stats_returnedConversations' = 'stats_returnedConversations',
   'stats_leads' = 'stats_leads',
@@ -29,11 +31,21 @@ export type EntityTypesMapReturnedValues = {
   [Entities.conversations]: IConversationsEntity;
   [Entities.systemPrompt]: ISystemPromptEntity;
   [Entities.settings]: ISettingsEntity;
+
+  // Prompt
   [Entities.business]: IBusinessEntity;
   [Entities.assistant]: IAssistantEntity;
   [Entities.rules]: IRulesEntity;
   [Entities.knowledge]: IKnowledgeEntity;
   [Entities.hats]: IHatEntity;
+
+  // Leads
+  [Entities.leads]: ILeadsEntity;
+
+  // Sales
+  [Entities.sales]: ISalesEntity;
+
+  // Estadisticas
   [Entities.stats_newConversations]: IStats_newConversationsEntity;
   [Entities.stats_returnedConversations]: IStats_returnedConversationsEntity;
   [Entities.stats_leads]: IStats_leadsEntity;
@@ -55,6 +67,8 @@ export type EntityTypesMapPayloadValues = {
   [Entities.rules]: IRules;
   [Entities.knowledge]: IKnowledge;
   [Entities.hats]: IHat;
+  [Entities.leads]: ILead;
+  [Entities.sales]: ISales;
   [Entities.stats_newConversations]: IStats_newConversations;
   [Entities.stats_returnedConversations]: IStats_returnedConversations;
   [Entities.stats_leads]: IStats_leads;
@@ -91,6 +105,7 @@ export interface IConversations {
 export enum ConversationStatusEnum {
   INPROGRESS = 'inProgress',
   LEAD = 'lead',
+  SALES = 'sales',
   NOLEAD = 'noLead',
   NOEVALUABLE = 'noEvaluable',
 }
@@ -135,6 +150,27 @@ export interface IHat {
   prompt: string;
 }
 
+export interface ILead {
+  conversationId: string;
+  startDate: Timestamp;
+  conversionDate: Timestamp;
+  messageQuantity: number;
+  activityDaysQuantity: number;
+}
+
+export interface ISales {
+  conversationId: string;
+  startDate: Timestamp;
+  conversionDateLead: Timestamp;
+  messageQuantityLead: number;
+  activityDaysQuantityLead: number;
+  conversionDateSales: Timestamp;
+  messageQuantitySales: number;
+  activityDaysQuantitySales: number;
+  fullRefunded: boolean;
+  partialRefunded: boolean;
+}
+
 export interface IStats_newConversations {
   value: number;
   date: Timestamp;
@@ -146,10 +182,12 @@ export interface IStats_returnedConversations {
 export interface IStats_leads {
   value: number;
   date: Timestamp;
+  conversationId: string;
 }
 export interface IStats_sales {
   value: number;
   date: Timestamp;
+  conversationId: string;
 }
 export interface IStats_whatsappApiCost {
   value: number;
@@ -191,6 +229,10 @@ export interface IStats_returnedConversationsEntity extends IStats_returnedConve
 export interface IStats_leadsEntity extends IStats_leads, IEntity {}
 
 export interface IStats_salesEntity extends IStats_sales, IEntity {}
+
+export interface ILeadsEntity extends ILead, IEntity {}
+
+export interface ISalesEntity extends ISales, IEntity {}
 
 export interface IStats_whatsappApiCostEntity extends IStats_whatsappApiCost, IEntity {}
 

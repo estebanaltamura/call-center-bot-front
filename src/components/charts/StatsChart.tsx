@@ -1,71 +1,19 @@
+// ** React
 import React, { useEffect, useRef, useState } from 'react';
+
+// ** Chart library
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
-type Props = {
-  range: 1 | 7 | 30 | 90;
+type StatsChartProps = {
+  range: number;
   title: string;
   values: number[];
-  labels: string[]; // <-- Asegurar que la prop labels está definida
+  labels: string[];
 };
 
-const StatsChart: React.FC<Props> = ({ range, title, values }) => {
+const StatsChart: React.FC<StatsChartProps> = ({ range, title, values, labels }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
-  const months = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
-
-  const getDataForRange = (vals: number[]) => {
-    const totalDays = range;
-
-    // Generar array de fechas desde (referenceDay - (totalDays - 1)) hasta referenceDay (HOY)
-    const dates = Array.from({ length: totalDays }, (_, i) => {
-      const referenceDay = new Date();
-      +referenceDay.setHours(0, 0, 0, 0); // Hoy a medianoche
-      const date = new Date(referenceDay);
-      date.setDate(date.getDate() - (totalDays - 1 - i));
-      return date.getTime();
-    });
-
-    // Alinear valores con las fechas generadas (valores[0] corresponde a la fecha más antigua)
-    const paddedValues = Array(totalDays).fill(0);
-    const valuesToUse = values.slice(-totalDays); // Tomar los últimos N valores
-
-    valuesToUse.forEach((value, index) => {
-      paddedValues[index] = value;
-    });
-
-    return dates.map((date, index) => ({
-      date,
-      value: paddedValues[index],
-    }));
-  };
-
-  const CustomTooltip = ({
-    active,
-    payload,
-    label,
-  }: {
-    active?: boolean;
-    payload?: any[];
-    label?: number;
-  }) => {
-    if (active && payload && payload.length) {
-      const displayDate = new Date(label ?? 0).toLocaleDateString('es-ES', {
-        month: 'short',
-        day: 'numeric',
-      });
-      return (
-        <div className="flex flex-col bg-white border border-gray-300 rounded p-2 text-sm shadow">
-          <span className="font-bold mb-1">{displayDate}</span>
-          <span className="text-gray-700">
-            {title}: {payload[0].value}
-          </span>
-        </div>
-      );
-    }
-    return null;
-  };
-
-  const chartData = getDataForRange(values);
 
   useEffect(() => {
     const ro = new ResizeObserver((entries) => {
@@ -82,38 +30,33 @@ const StatsChart: React.FC<Props> = ({ range, title, values }) => {
     };
   }, []);
 
+  // Arma los datos: cada objeto representa un día, usando las etiquetas y los valores
+  const data = Array.from({ length: range }, (_, i) => ({
+    date: labels[i],
+    value: values[i] || 0,
+  }));
+
   return (
     <div ref={containerRef} className="w-full bg-white shadow rounded p-4 mb-4">
       <h2 className="text-lg font-bold mb-4">{title}</h2>
       <div className="w-full" style={{ height: dimensions.height }}>
         <ResponsiveContainer width="100%" height="100%">
-          <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -30, bottom: 0 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="rgba(200, 200, 200, 0.3)" />
+          <AreaChart data={data} margin={{ top: 10, right: 10, left: -30, bottom: 0 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="rgba(200,200,200,0.3)" />
             <XAxis
               dataKey="date"
-              type="number"
-              domain={['dataMin', 'dataMax']}
-              scale="time"
               tick={{ fill: '#000', fontSize: 12 }}
-              tickFormatter={(timestamp: number) => {
-                const d = new Date(timestamp);
-                return `${d.getDate()} ${months[d.getMonth()]}`;
-              }}
+              tickFormatter={(value: string) => value}
             />
             <YAxis tick={{ fill: '#000', fontSize: 12 }} />
-            <Tooltip content={<CustomTooltip />} />
+            <Tooltip formatter={(value: number) => [value, title]} labelFormatter={(label) => label} />
             <Area
               type="monotone"
               dataKey="value"
-              name={title}
               stroke="#42A5F5"
               fill="rgba(66, 165, 245, 0.3)"
               activeDot={{ r: 6 }}
-              dot={{
-                fill: 'white',
-                stroke: '#42A5F5',
-                r: 3,
-              }}
+              dot={{ fill: 'white', stroke: '#42A5F5', r: 3 }}
             />
           </AreaChart>
         </ResponsiveContainer>

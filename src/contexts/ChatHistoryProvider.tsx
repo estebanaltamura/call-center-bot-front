@@ -2,17 +2,17 @@ import React, { createContext, useState, useEffect, useMemo } from 'react';
 import { collection, onSnapshot, DocumentData, QuerySnapshot } from 'firebase/firestore';
 import { db } from 'firebaseConfig';
 import { IMessage } from 'types';
-import { IConversations, IConversationsEntity } from 'types/dynamicSevicesTypes';
+import { IConversations, IConversationsEntity, IMessageEntity } from 'types/dynamicSevicesTypes';
 
 interface CombinedConversation extends IConversationsEntity {
-  messages: IMessage[];
+  messages: IMessageEntity[];
 }
 
 const ChatHistoryContext = createContext<CombinedConversation[]>([]);
 
 const ChatHistoryProvider = ({ children }: { children: React.ReactNode }) => {
   const [conversations, setConversations] = useState<IConversationsEntity[]>([]);
-  const [messages, setMessages] = useState<IMessage[]>([]);
+  const [messages, setMessages] = useState<IMessageEntity[]>([]);
 
   useEffect(() => {
     const unsubscribeConversations = onSnapshot(
@@ -29,7 +29,7 @@ const ChatHistoryProvider = ({ children }: { children: React.ReactNode }) => {
       collection(db, 'messages'),
       (snapshot: QuerySnapshot<DocumentData>) => {
         const msgs = snapshot.docs.map((doc) => {
-          return doc.data() as IMessage;
+          return doc.data() as IMessageEntity;
         });
         setMessages(msgs);
       },
@@ -47,10 +47,10 @@ const ChatHistoryProvider = ({ children }: { children: React.ReactNode }) => {
       const filteredMessages = messages
         .filter((msg) => msg.conversationId === conversation.phoneNumber)
         .sort((a, b) => {
-          if (a.timestamp.seconds === b.timestamp.seconds) {
-            return b.timestamp.nanoseconds - a.timestamp.nanoseconds;
+          if (a.createdAt.seconds === b.createdAt.seconds) {
+            return b.createdAt.nanoseconds - a.createdAt.nanoseconds;
           }
-          return b.timestamp.seconds - a.timestamp.seconds;
+          return b.createdAt.seconds - a.createdAt.seconds;
         });
       return { ...conversation, messages: filteredMessages };
     });
@@ -61,10 +61,10 @@ const ChatHistoryProvider = ({ children }: { children: React.ReactNode }) => {
       const bRecentMessage = b.messages[0];
 
       if (aRecentMessage && bRecentMessage) {
-        if (aRecentMessage.timestamp.seconds === bRecentMessage.timestamp.seconds) {
-          return bRecentMessage.timestamp.nanoseconds - aRecentMessage.timestamp.nanoseconds;
+        if (aRecentMessage.createdAt.seconds === bRecentMessage.createdAt.seconds) {
+          return bRecentMessage.createdAt.nanoseconds - aRecentMessage.createdAt.nanoseconds;
         }
-        return bRecentMessage.timestamp.seconds - aRecentMessage.timestamp.seconds;
+        return bRecentMessage.createdAt.seconds - aRecentMessage.createdAt.seconds;
       } else if (aRecentMessage) {
         return -1;
       } else if (bRecentMessage) {

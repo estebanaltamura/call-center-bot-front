@@ -49,7 +49,7 @@ const SideBar = ({
                 <div className="flex flex-col">
                   <div className="text-gray-800 text-sm">{conversation.phoneNumber}</div>
                   <div className="text-xs text-gray-500">
-                    {UTILS.DATES.timestampToDate(conversation.messages[0]?.timestamp.seconds)}
+                    {UTILS.DATES.timestampToDate(conversation.messages[0]?.createdAt.seconds)}
                   </div>
                 </div>
 
