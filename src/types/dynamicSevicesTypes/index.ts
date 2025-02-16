@@ -23,6 +23,9 @@ export enum Entities {
   'stats_iaCost' = 'stats_iaCost',
   'stats_facebookAdsCost' = 'stats_facebookAdsCost',
   'stats_googleAdsCost' = 'stats_googleAdsCost',
+  'stats_iaCostPlatform' = 'stats_iaCostPlatform',
+  'stats_firebaseCostPlatfrom' = 'stats_firebaseCostPlatfrom',
+  'scenes_Stats' = 'scenes_Stats',
 }
 
 export type EntityTypesMapReturnedValues = {
@@ -54,6 +57,9 @@ export type EntityTypesMapReturnedValues = {
   [Entities.stats_iaCost]: IStats_iaCostEntity;
   [Entities.stats_facebookAdsCost]: IStats_facebookAdsCostEntity;
   [Entities.stats_googleAdsCost]: IStats_googleAdsCostEntity;
+  [Entities.scenes_Stats]: IScenesStatsEntity;
+  [Entities.stats_iaCostPlatform]: IStats_iaCostPlatformEntity;
+  [Entities.stats_firebaseCostPlatfrom]: IStats_firebaseCostPlatfromEntity;
 };
 
 export type EntityTypesMapPayloadValues = {
@@ -77,7 +83,15 @@ export type EntityTypesMapPayloadValues = {
   [Entities.stats_iaCost]: IStats_iaCost;
   [Entities.stats_facebookAdsCost]: IStats_facebookAdsCost;
   [Entities.stats_googleAdsCost]: IStats_googleAdsCost;
+  [Entities.scenes_Stats]: IScenesStats;
+  [Entities.stats_iaCostPlatform]: IStats_iaCostPlatform;
+  [Entities.stats_firebaseCostPlatfrom]: IStats_firebaseCostPlatfrom;
 };
+
+export interface IScenesStats {
+  name: string;
+  selectedStats: string[];
+}
 
 export interface IMessage {
   conversationId: string;
@@ -206,6 +220,15 @@ export interface IStats_googleAdsCost {
   date: Timestamp;
 }
 
+interface IStats_iaCostPlatform {
+  value: number;
+  date: Timestamp;
+}
+interface IStats_firebaseCostPlatfrom {
+  value: number;
+  date: Timestamp;
+}
+
 interface IEntity {
   id: string;
   softState: StateTypes;
@@ -242,6 +265,10 @@ export interface IStats_facebookAdsCostEntity extends IStats_facebookAdsCost, IE
 
 export interface IStats_googleAdsCostEntity extends IStats_googleAdsCost, IEntity {}
 
+export interface IStats_iaCostPlatformEntity extends IStats_iaCostPlatform, IEntity {}
+
+export interface IStats_firebaseCostPlatfromEntity extends IStats_firebaseCostPlatfrom, IEntity {}
+
 export interface IKnowledgeEntity extends IKnowledge, IEntity {}
 
 export interface ISystemPromptEntity extends ISystemPrompt, IEntity {}
@@ -255,6 +282,8 @@ export interface IAssistantEntity extends IAssistant, IEntity {}
 export interface IRulesEntity extends IRules, IEntity {}
 
 export interface IHatEntity extends IHat, IEntity {}
+
+export interface IScenesStatsEntity extends IScenesStats, IEntity {}
 
 export enum StateTypes {
   'active' = 'active',

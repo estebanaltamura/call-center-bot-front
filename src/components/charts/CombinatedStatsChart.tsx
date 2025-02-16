@@ -44,7 +44,7 @@ const CombinedStatsChart: React.FC<CombinedStatsChartProps> = ({ range, startDat
   const colors = ['#42A5F5', '#66BB6A', '#FFA726', '#AB47BC', '#EF5350', '#26A69A'];
 
   return (
-    <div ref={containerRef} className="w-full bg-white shadow rounded p-4 mb-4">
+    <div ref={containerRef} className="w-full bg-[#f4f8ff]  shadow rounded p-4 mb-4">
       <h2 className="text-lg font-bold mb-4">Gráfico Combinado</h2>
       <div className="w-full" style={{ height: dimensions.height }}>
         <ResponsiveContainer width="100%" height="100%">

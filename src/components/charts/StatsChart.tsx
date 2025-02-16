@@ -37,7 +37,7 @@ const StatsChart: React.FC<StatsChartProps> = ({ range, title, values, labels })
   }));
 
   return (
-    <div ref={containerRef} className="w-full bg-white shadow rounded p-4 mb-4">
+    <div ref={containerRef} className="w-full bg-[#f4f8ff] shadow rounded p-4">
       <h2 className="text-lg font-bold mb-4">{title}</h2>
       <div className="w-full" style={{ height: dimensions.height }}>
         <ResponsiveContainer width="100%" height="100%">
